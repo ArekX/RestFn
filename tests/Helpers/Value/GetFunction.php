@@ -40,6 +40,14 @@ trait GetFunction
         $this->assertEquals('value', $result);
     }
 
+
+    public function testGetValueFromDotNotationArray()
+    {
+        $ob = ['test.a.b.c' => 'value'];
+        $result = Value::get($ob, 'test.a.b.c');
+        $this->assertEquals('value', $result);
+    }
+
     public function testTraversalToNonExistingValue()
     {
         $ob = ['test' => ['a' => ['b' => 'value']]];

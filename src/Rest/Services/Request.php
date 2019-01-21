@@ -14,6 +14,9 @@ class Request implements RequestInterface
     /** @var null|array */
     protected $body = null;
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getBody(): array
     {
         if ($this->body !== null) {

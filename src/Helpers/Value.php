@@ -30,7 +30,7 @@ class Value
 
     public static function get($object, $name, $default = null)
     {
-        if (strpos($name, '.') === -1) {
+        if (strpos($name, '.') === -1 || static::has($object, $name)) {
             return static::resolveValue($object, $name, $default);
         }
 
@@ -50,6 +50,13 @@ class Value
         }
 
         return static::resolveValue($walker, $lastPart, $default);
+    }
+
+    public static function has($object, $name)
+    {
+        return
+            (is_array($object) && array_key_exists($name, $object)) ||
+            (is_object($object) && property_exists($object, $name));
     }
 
     public static function setup($object, $config, $defaultConfig)

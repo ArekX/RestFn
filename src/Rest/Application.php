@@ -10,7 +10,7 @@ namespace ArekX\JsonQL\Rest;
 use ArekX\JsonQL\BaseApplication;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
-use Rest\Handlers\InvalidHandlerException;
+use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
 
 class Application extends BaseApplication
 {

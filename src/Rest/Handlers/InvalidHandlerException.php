@@ -5,7 +5,7 @@
  *
  **/
 
-namespace Rest\Handlers;
+namespace ArekX\JsonQL\Rest\Handlers;
 
 class InvalidHandlerException extends \Exception
 {

@@ -16,6 +16,8 @@ class MockHandler implements HandlerInterface
 
     public $result = [];
 
+    public $isRun = false;
+
     /**
      * Returns handler request type.
      *
@@ -45,6 +47,7 @@ class MockHandler implements HandlerInterface
     public function handle(array $data): array
     {
         $this->data = $data;
+        $this->isRun = true;
         return $this->result;
     }
 }
