@@ -7,7 +7,7 @@
 
 namespace tests;
 
-use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Config\ConfigInterface;
 use DI\Container;
 use tests\Mock\MockConfig;
@@ -17,7 +17,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /** @var ConfigInterface */
     protected $config;
 
-    /** @var BaseApplication */
+    /** @var MainApplication */
     protected $app;
 
     /** @var Container */
@@ -27,7 +27,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     {
         $this->config = $this->createConfig();
         $this->di = $this->config->getDI();
-        $this->app = $this->di->get(BaseApplication::class);
+        $this->app = $this->di->get(MainApplication::class);
     }
 
     protected function createConfig()

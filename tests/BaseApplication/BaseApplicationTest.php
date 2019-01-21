@@ -7,11 +7,7 @@
 
 namespace tests\BaseApplication;
 
-use ArekX\JsonQL\BaseApplication;
-use ArekX\JsonQL\Helpers\DI;
-use ArekX\JsonQL\Rest\Application;
-use ArekX\JsonQL\Rest\Handlers\Performer;
-use function DI\autowire;
+use ArekX\JsonQL\MainApplication as BaseApplication;
 use tests\TestCase;
 
 class BaseApplicationTest extends TestCase

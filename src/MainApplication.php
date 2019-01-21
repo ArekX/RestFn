@@ -10,7 +10,7 @@ namespace ArekX\JsonQL;
 use ArekX\JsonQL\Config\ConfigInterface;
 use ArekX\JsonQL\Services\Request\RequestInterface;
 
-abstract class BaseApplication
+abstract class MainApplication
 {
     /** @var ConfigInterface */
     protected $config;

@@ -7,9 +7,9 @@
 
 namespace tests\Mock;
 
-use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\MainApplication;
 
-class MockApplication extends BaseApplication
+class MockApplication extends MainApplication
 {
     public $setupValues = [];
     public $ran = false;

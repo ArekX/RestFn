@@ -7,12 +7,11 @@
 
 namespace ArekX\JsonQL\Rest;
 
-use ArekX\JsonQL\BaseApplication;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
 use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
 
-class Application extends BaseApplication
+class Application extends \ArekX\JsonQL\MainApplication
 {
     /** @var HandlerInterface[] */
     public $handlers = [];

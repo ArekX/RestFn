@@ -7,7 +7,7 @@
 
 namespace tests\Rest;
 
-use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\MainApplication as BaseApplication;
 use ArekX\JsonQL\Rest\Application;
 use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
 use ArekX\JsonQL\Services\Request\RequestInterface;

@@ -7,7 +7,7 @@
 
 namespace tests\Mock;
 
-use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Rest\Application;
 use ArekX\JsonQL\Rest\Config;
@@ -18,7 +18,7 @@ class MockRestConfig extends Config
     protected function getCoreServices()
     {
         return [
-            BaseApplication::class => DI::setup(Application::class, [
+            MainApplication::class => DI::setup(Application::class, [
                 'handlers' => [
                     MockHandler::class
                 ]
