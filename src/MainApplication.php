@@ -8,7 +8,8 @@
 namespace ArekX\JsonQL;
 
 use ArekX\JsonQL\Config\ConfigInterface;
-use ArekX\JsonQL\Services\Request\RequestInterface;
+use ArekX\JsonQL\Services\RequestInterface;
+use ArekX\JsonQL\Services\ResponseInterface;
 
 abstract class MainApplication
 {
@@ -18,10 +19,19 @@ abstract class MainApplication
     /** @var RequestInterface  */
     protected $request;
 
-    public function __construct(ConfigInterface $config, RequestInterface $request, array $setup)
+    /** @var ResponseInterface  */
+    protected $response;
+
+    public function __construct(
+        ConfigInterface $config,
+        RequestInterface $request,
+        ResponseInterface $response,
+        array $setup
+    )
     {
         $this->config = $config;
         $this->request = $request;
+        $this->response = $response;
 
         $this->setup($setup);
     }

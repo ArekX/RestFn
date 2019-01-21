@@ -9,6 +9,7 @@ namespace ArekX\JsonQL\Config;
 
 
 use ArekX\JsonQL\Helpers\Value;
+use ArekX\JsonQL\MainApplication;
 use DI\Container;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
@@ -140,5 +141,13 @@ class Config implements ConfigInterface
         ]);
 
         return $builder->build();
+    }
+
+    /**
+     * Bootstrap the application.
+     */
+    public function bootstrap()
+    {
+        $this->getDI()->get(MainApplication::class)->run();
     }
 }

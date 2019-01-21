@@ -7,10 +7,10 @@
 
 namespace tests\Rest;
 
-use ArekX\JsonQL\MainApplication as BaseApplication;
+use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Rest\Application;
 use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
-use ArekX\JsonQL\Services\Request\RequestInterface;
+use ArekX\JsonQL\Services\RequestInterface;
 use tests\Mock\MockHandler;
 use tests\Mock\MockRequest;
 
@@ -19,7 +19,7 @@ class ApplicationTest extends TestCase
     public function testInitializedWithHandlers()
     {
         /** @var Application $app */
-        $app = $this->di->get(BaseApplication::class);
+        $app = $this->di->get(MainApplication::class);
         $this->assertEquals($app->handlers, [MockHandler::class]);
     }
 

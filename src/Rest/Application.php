@@ -27,14 +27,12 @@ class Application extends \ArekX\JsonQL\MainApplication
     {
         $request = $this->request->getBody();
 
-        $responses = [];
-
         foreach ($request as $type => $data) {
             $handler = $this->getHandler($type);
-            $responses[$handler->getResponseType()] = $handler->handle($data);
+            $this->response->write($handler, $handler->handle($data));
         }
 
-        echo json_encode($responses);
+        $this->response->output();
     }
 
     protected function getHandler($type): HandlerInterface

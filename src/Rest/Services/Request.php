@@ -7,7 +7,7 @@
 
 namespace ArekX\JsonQL\Rest\Services;
 
-use ArekX\JsonQL\Services\Request\RequestInterface;
+use ArekX\JsonQL\Services\RequestInterface;
 
 class Request implements RequestInterface
 {

@@ -13,8 +13,10 @@ use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Rest\Handlers\Performer;
 use ArekX\JsonQL\Rest\Handlers\Reader;
 use ArekX\JsonQL\Rest\Handlers\Writer;
+use ArekX\JsonQL\Rest\Services\JsonResponse;
 use ArekX\JsonQL\Rest\Services\Request;
-use ArekX\JsonQL\Services\Request\RequestInterface;
+use ArekX\JsonQL\Services\RequestInterface;
+use ArekX\JsonQL\Services\ResponseInterface;
 
 class Config extends \ArekX\JsonQL\Config\Config
 {
@@ -28,12 +30,8 @@ class Config extends \ArekX\JsonQL\Config\Config
                     Writer::class
                 ]
             ]),
-            RequestInterface::class => DI::class(Request::class)
+            RequestInterface::class => DI::class(Request::class),
+            ResponseInterface::class => DI::class(JsonResponse::class),
         ];
-    }
-
-    public function bootstrap()
-    {
-        $this->getDI()->get(MainApplication::class)->run();
     }
 }

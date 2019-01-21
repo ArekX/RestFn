@@ -5,7 +5,7 @@
  *
  **/
 
-namespace ArekX\JsonQL\Services\Request;
+namespace ArekX\JsonQL\Services;
 
 
 interface RequestInterface
