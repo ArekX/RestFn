@@ -14,21 +14,21 @@ use ArekX\JsonQL\Rest\Handlers\Reader;
 use ArekX\JsonQL\Rest\Handlers\Writer;
 use ArekX\JsonQL\Rest\Services\Request;
 use ArekX\JsonQL\Services\Request\RequestInterface;
-use function DI\autowire;
+use ArekX\JsonQL\Helpers\DI;
 
 class Config extends \ArekX\JsonQL\Config\Config
 {
     protected function getCoreServices()
     {
         return [
-            BaseApplication::class => autowire(Application::class)->constructorParameter('setup', [
+            BaseApplication::class => DI::setup(Application::class, [
                 'handlers' => [
                     Performer::class,
                     Reader::class,
                     Writer::class
                 ]
             ]),
-            RequestInterface::class => autowire(Request::class)
+            RequestInterface::class => DI::class(Request::class)
         ];
     }
 }
