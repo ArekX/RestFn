@@ -5,25 +5,25 @@
  *
  **/
 
-namespace tests;
+namespace tests\Mock;
 
 use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Rest\Application;
 use ArekX\JsonQL\Rest\Config;
 use ArekX\JsonQL\Services\Request\RequestInterface;
-use tests\Mock\MockRequest;
-
-use function DI\autowire;
 
 class MockRestConfig extends Config
 {
     protected function getCoreServices()
     {
         return [
-            BaseApplication::class => autowire(Application::class)->constructorParameter('setup', [
-                'handlers' => []
+            BaseApplication::class => DI::setup(Application::class, [
+                'handlers' => [
+                    MockHandler::class
+                ]
             ]),
-            RequestInterface::class => autowire(MockRequest::class)
+            RequestInterface::class => DI::class(MockRequest::class)
         ];
     }
 }

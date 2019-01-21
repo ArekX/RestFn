@@ -8,7 +8,10 @@
 namespace tests\BaseApplication;
 
 use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Rest\Application;
+use ArekX\JsonQL\Rest\Handlers\Performer;
+use function DI\autowire;
 use tests\TestCase;
 
 class BaseApplicationTest extends TestCase
@@ -17,12 +20,5 @@ class BaseApplicationTest extends TestCase
     {
         $app = $this->di->get(BaseApplication::class);
         $this->assertEquals($this->app, $app);
-    }
-
-    public function testInitializedWithEmptyHandlers()
-    {
-        /** @var Application $app */
-        $app = $this->di->get(BaseApplication::class);
-        $this->assertEquals($app->handlers, []);
     }
 }

@@ -7,12 +7,16 @@
 
 namespace tests\Rest;
 
-use tests\TestCase;
+use ArekX\JsonQL\BaseApplication;
+use ArekX\JsonQL\Rest\Application;
+use tests\Mock\MockHandler;
 
 class ApplicationTest extends TestCase
 {
-    public function testEnvironment()
+    public function testInitializedWithEmptyHandlers()
     {
-        $this->assertTrue(true);
+        /** @var Application $app */
+        $app = $this->di->get(BaseApplication::class);
+        $this->assertEquals($app->handlers, [MockHandler::class]);
     }
 }
