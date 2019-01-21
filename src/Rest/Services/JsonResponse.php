@@ -23,6 +23,24 @@ class JsonResponse implements ResponseInterface
     }
 
     /**
+     * Clears all data from result.
+     */
+    public function clearAll()
+    {
+        $this->data = [];
+    }
+
+    /**
+     * Clears handler result from response.
+     *
+     * @param HandlerInterface $handler
+     */
+    public function clearHandler(HandlerInterface $handler)
+    {
+        $this->data[$handler->getResponseType()] = (object)[];
+    }
+
+    /**
      * Outputs response.
      */
     public function output(): void
@@ -43,6 +61,6 @@ class JsonResponse implements ResponseInterface
      */
     public function write(HandlerInterface $handler, array $data): void
     {
-        $this->data[$handler->getResponseType()] = $data;
+        $this->data[$handler->getResponseType()] = !empty($data) ? $data : (object)[];
     }
 }
