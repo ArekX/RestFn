@@ -29,7 +29,14 @@ class Application extends \ArekX\JsonQL\MainApplication
 
         foreach ($request as $type => $data) {
             $handler = $this->getHandler($type);
-            $this->response->write($handler, $handler->handle($data));
+
+            try {
+                $result = $handler->handle($data);
+            } catch (\Exception $e) {
+
+            }
+
+            $this->response->write($handler, $result);
         }
 
         $this->response->output();

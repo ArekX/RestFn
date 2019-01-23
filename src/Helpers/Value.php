@@ -42,7 +42,7 @@ class Value
         foreach ($parts as $part) {
             if (is_array($walker) && array_key_exists($part, $walker)) {
                 $walker = &$walker[$part];
-            } elseif (is_object($walker) && property_exists($walker, $part))  {
+            } elseif (is_object($walker) && property_exists($walker, $part)) {
                 $walker = &$walker->{$part};
             } else {
                 return $default;
@@ -64,6 +64,18 @@ class Value
         foreach ($defaultConfig as $key => $defaultValue) {
             $object->{$key} = $config[$key] ?? $defaultValue;
         }
+    }
+
+    public static function isEmpty($value, $strict = true)
+    {
+        if ($strict) {
+            return $value === "" ||
+                $value === null ||
+                $value === 0 ||
+                $value === 0.00;
+        }
+
+        return empty($value);
     }
 
     protected static function resolveValue($object, $name, $default = null)

@@ -12,9 +12,14 @@ use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\MainApplication;
 use DI\Container;
 use DI\ContainerBuilder;
+use DI\DependencyException;
+use DI\FactoryInterface;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
-class Config implements ConfigInterface
+class Config implements ConfigInterface, ContainerInterface, FactoryInterface
 {
     const SERVICES = 'services';
     const CORE = 'core';
@@ -148,6 +153,30 @@ class Config implements ConfigInterface
      */
     public function bootstrap()
     {
-        $this->getDI()->get(MainApplication::class)->run();
+        $this->get(MainApplication::class)->run();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function has($id)
+    {
+        return $this->container->has($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get($id)
+    {
+        return $this->container->get($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function make($name, array $parameters = [])
+    {
+        return $this->container->make($name, $parameters);
     }
 }
