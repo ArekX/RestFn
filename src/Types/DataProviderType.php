@@ -21,7 +21,7 @@ use function DI\string;
 
 class DataProviderType extends BaseType
 {
-    public function fields(): array
+    public static function fields(): array
     {
         return [
             'pagination' => subType(PaginationType::class)->info('Pagination information'),

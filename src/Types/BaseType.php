@@ -7,27 +7,38 @@
 
 namespace ArekX\JsonQL\Types;
 
+use ArekX\JsonQL\Traits\Memoize;
 use function ArekX\JsonQL\Validation\objectType;
-use ArekX\JsonQL\Validation\RuleInterface;
+use ArekX\JsonQL\Validation\Rules\ObjectRule;
 
 abstract class BaseType implements TypeInterface
 {
-    /** @var RuleInterface */
-    protected $validator;
+    use Memoize;
 
-    public function __construct()
+    public static function resolvedFields(): array
     {
-        $this->validator = objectType($this->fields());
+        return static::staticMemoize(__METHOD__, function() {
+            return static::fields();
+        });
     }
 
-    public function validate(array $data): array
+    public static function getValidator(): ObjectRule
     {
-        ['data' => $results] = $this->validator->validate('_', $data, ['_' => $data]);
+        return static::staticMemoize(__METHOD__, function() {
+           return objectType(static::resolvedFields());
+        });
+    }
+
+    public static function name(): string
+    {
+        return static::staticMemoize(__METHOD__, function() {
+            return (new \ReflectionClass(__CLASS__))->getShortName();
+        });
+    }
+
+    public static function validate(array $data): array
+    {
+        ['data' => $results] = static::getValidator()->validate('_', $data, ['_' => $data]);
         return $results;
-    }
-
-    public function getValidator(): RuleInterface
-    {
-        return $this->validator;
     }
 }

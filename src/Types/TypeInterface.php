@@ -11,7 +11,9 @@ use ArekX\JsonQL\Validation\Rules\ObjectRule;
 
 interface TypeInterface
 {
-    public function fields(): array;
-    public function validate(array $data): array;
-    public function getValidator(): ObjectRule;
+    public static function name(): string;
+    public static function fields(): array;
+    public static function resolvedFields(): array;
+    public static function getValidator(): ObjectRule;
+    public static function validate(array $data): array;
 }

@@ -19,7 +19,7 @@ use function DI\string;
 
 class PaginationType extends BaseType
 {
-    public function fields(): array
+    public static function fields(): array
     {
         return [
             'page' => numberType()->required()->info('Current page'),

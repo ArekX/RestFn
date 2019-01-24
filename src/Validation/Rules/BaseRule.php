@@ -18,9 +18,17 @@ use ArekX\JsonQL\Validation\RuleInterface;
  */
 abstract class BaseRule implements RuleInterface
 {
+    /** @var bool  */
     protected $required = false;
+
+    /** @var bool  */
     protected $requiredStrict = false;
+
+    /** @var string */
     protected $message;
+
+    /** @var array */
+    protected $example;
 
     /**
      * Returns whether or not field is required.
@@ -42,9 +50,10 @@ abstract class BaseRule implements RuleInterface
      * @param string $message
      * @return static
      */
-    public function info(string $message): RuleInterface
+    public function info(string $message, $example = []): RuleInterface
     {
         $this->message = $message;
+        $this->example = $example;
         return $this;
     }
 

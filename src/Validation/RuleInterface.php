@@ -23,9 +23,10 @@ interface RuleInterface
      * Adds rule information to be displayed.
      *
      * @param string $message Message to be added.
+     * @param array $example Example used to specify the type better.
      * @return RuleInterface
      */
-    public function info(string $message): RuleInterface;
+    public function info(string $message, $example = []): RuleInterface;
 
     /**
      * Validates current field's whether or not it is valid.

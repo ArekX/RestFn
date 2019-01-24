@@ -21,14 +21,14 @@ use function DI\string;
 
 class SortType extends BaseType
 {
-    public function fields(): array
+    public static function fields(): array
     {
         $sortType = objectType([
             '[key]' => arrayType()->required()->of(enumType(['ascending', 'descending']))
         ])->required();
 
         return [
-            'sorted_by' => arrayType()->required()->of($sortType)->info('What values are used for sorting.'),
+            'sorted_by' => arrayType()->required()->of($sortType)->info('Values that were used for sorting.'),
             'allow_multisort' => boolType()->required()->info('Whether or not multisort is allowed.'),
             'sort_items' => arrayType()->required()->of($sortType)->info('Items which are available for sorting by.')
         ];

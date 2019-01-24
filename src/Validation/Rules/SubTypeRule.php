@@ -18,30 +18,29 @@ class SubTypeRule extends BaseRule
 {
     const SUBTYPE_INVALID = 'subtype_invalid';
 
-    /** @var TypeInterface */
-    protected $subType;
+    /** @var string */
+    protected $subTypeName;
 
     protected $overrideFields = [];
+
+    /** @var RuleInterface[] */
+    protected $fields;
 
     /** @var RuleInterface */
     protected $validator;
 
-    public function __construct(TypeInterface $subType, Config $config)
+    public function __construct($subTypeClass)
     {
-        $this->subType = is_object($subType) ? $subType : $config->get($config);
-        $this->validator = $this->subType->getValidator();
+        /** @var $subTypeClass TypeInterface */
+
+        $this->fields = $subTypeClass::resolvedFields();
+        $this->subTypeName = $subTypeClass::name();
+        $this->validator = objectType($this->fields);
     }
 
     public function override(?array $fields = null): SubTypeRule
     {
-        if ($fields === null) {
-            $this->validator = $this->subType->getValidator();
-        } else {
-            $this->validator = objectType(Value::merge(
-                $this->subType->getValidator()->fields,
-                $fields
-            ));
-        }
+        $this->validator = objectType($fields === null ? $this->fields : Value::merge($this->fields, $fields));
         return $this;
     }
 
@@ -58,7 +57,13 @@ class SubTypeRule extends BaseRule
         $results = $this->validator->validate($field, $value, $data, $errors);
 
         if (!empty($results)) {
-            $errors[] = ['type' => self::SUBTYPE_INVALID, 'data' => $results];
+            $errors[] = [
+                'type' => self::SUBTYPE_INVALID,
+                'data' => [
+                    'type' => $this->subTypeName,
+                    'errors' => $results
+                ]
+            ];
         }
 
         return $errors;
