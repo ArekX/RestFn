@@ -7,10 +7,11 @@
 
 namespace ArekX\JsonQL\Types;
 
+use ArekX\JsonQL\Validation\Rules\ObjectRule;
 
 interface TypeInterface
 {
     public function fields(): array;
-
-    public function toArray(): array;
+    public function validate(array $data): array;
+    public function getValidator(): ObjectRule;
 }

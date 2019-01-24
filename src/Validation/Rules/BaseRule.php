@@ -11,12 +11,24 @@ namespace ArekX\JsonQL\Validation\Rules;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Validation\RuleInterface;
 
+/**
+ * Class BaseRule
+ * @package ArekX\JsonQL\Validation\Rules
+ *
+ */
 abstract class BaseRule implements RuleInterface
 {
     protected $required = false;
     protected $requiredStrict = false;
     protected $message;
 
+    /**
+     * Returns whether or not field is required.
+     *
+     * @param bool $required
+     * @param bool $strict
+     * @return static
+     */
     public function required($required = true, $strict = false): RuleInterface
     {
         $this->required = $required;
@@ -24,6 +36,12 @@ abstract class BaseRule implements RuleInterface
         return $this;
     }
 
+    /**
+     * Add information about the field.
+     *
+     * @param string $message
+     * @return static
+     */
     public function info(string $message): RuleInterface
     {
         $this->message = $message;
@@ -38,7 +56,7 @@ abstract class BaseRule implements RuleInterface
         $errors = [];
 
         if ($this->required || Value::isEmpty($value, $this->requiredStrict)) {
-            $errors[] = 'Value is empty.';
+            $errors[] = ['type' => 'empty_value'];
         }
 
         return $this->doValidate($field, $value, $data, $errors);

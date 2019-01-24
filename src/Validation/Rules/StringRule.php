@@ -9,6 +9,12 @@ namespace ArekX\JsonQL\Validation\Rules;
 
 class StringRule extends BaseRule
 {
+    const NOT_EXACT_LENGTH = 'not_exact_length';
+    const NOT_A_STRING = 'not_a_string';
+    const BELOW_MINIMUM = 'below_minimum';
+    const OVER_MAXIMUM = 'over_maximum';
+    const DOES_NOT_MATCH = 'does_not_match';
+
     protected $minLength = null;
     protected $maxLength = null;
     protected $canBeEmpty = true;
@@ -45,7 +51,7 @@ class StringRule extends BaseRule
     protected function doValidate(string $field, $value, $data, $errors): array
     {
         if (!is_string($value)) {
-            $errors[] = 'Value is not a string.';
+            $errors[] = ['type' => self::NOT_A_STRING];
             return $errors;
         }
 
@@ -53,20 +59,20 @@ class StringRule extends BaseRule
 
         if ($this->minLength !== null && $this->maxLength !== null && $this->minLength === $this->maxLength) {
             if ($valueLength !== $this->minLength) {
-                $errors[] = 'Value must have exact length of ' . $this->minLength . ' characters.';
+                $errors[] = ['type' => self::NOT_EXACT_LENGTH, 'data' => ['length' => $this->minLength]];
             }
         }
 
         if ($this->minLength !== null && $valueLength < $this->minLength) {
-            $errors[] = 'Value is less than ' . $this->minLength . ' characters.';
+            $errors[] = ['type' => self::BELOW_MINIMUM, 'data' => ['length' => $this->minLength]];
         }
 
         if ($this->maxLength !== null && $valueLength > $this->maxLength) {
-            $errors[] = 'Value is larger than ' . $this->maxLength . ' characters.';
+            $errors[] = ['type' => self::OVER_MAXIMUM, 'data' => ['length' => $this->maxLength]];
         }
 
         if ($this->mustMatch !== null && !preg_match($this->mustMatch, $value)) {
-            $errors[] = 'Value must match regex: ' . $this->mustMatch;
+            $errors[] = ['type' => self::DOES_NOT_MATCH, 'data' => ['match' => $this->mustMatch]];
         }
 
         return $errors;

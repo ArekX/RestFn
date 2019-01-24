@@ -15,7 +15,7 @@ interface RuleInterface
      *
      * @param bool $required Required value.
      * @param bool $strict Whether or not to use strict checking for empty or just to use empty() in PHP.
-     * @return RuleInterface Instance of this field.
+     * @return static Instance of this field.
      */
     public function required($required = true, $strict = false): RuleInterface;
 

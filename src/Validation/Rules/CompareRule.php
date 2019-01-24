@@ -12,6 +12,8 @@ use ArekX\JsonQL\Traits\Memoize;
 
 class CompareRule extends BaseRule
 {
+    const COMPARE_FAILED = 'compare_failed';
+
     use Memoize;
 
     /** @var array */
@@ -107,8 +109,14 @@ class CompareRule extends BaseRule
                 $operatorMap[$operator]($value, Value::get($data, $vsField));
 
             if ($result !== $expectedResult) {
-                $stringOperator = ($isInverted ? '!' : '') . $operator;
-                $errors[] = 'Field ' . $field . ' does not match field ' . $vsField . ' for operator: ' . $stringOperator;
+                $errors[] = [
+                    'type' => self::COMPARE_FAILED,
+                    'data' => [
+                        'vsField' => $vsField,
+                        'inverted' => $isInverted,
+                        'operator' => $operator
+                    ]
+                ];
             }
         }
 
