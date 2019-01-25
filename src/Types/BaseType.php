@@ -8,7 +8,6 @@
 namespace ArekX\JsonQL\Types;
 
 use ArekX\JsonQL\Traits\Memoize;
-use function ArekX\JsonQL\Validation\objectType;
 use ArekX\JsonQL\Validation\FieldInterface;
 use function ArekX\JsonQL\Validation\classType;
 use ArekX\JsonQL\Validation\ValidatedTypeInterface;
@@ -26,14 +25,16 @@ abstract class BaseType implements TypeInterface, ValidatedTypeInterface
 
     public static function validator(): FieldInterface
     {
-        return static::staticMemoize(static::class . __METHOD__, function () {
+        $key = static::class . __METHOD__;
+        return static::staticMemoize($key, function () {
             return classType(static::class)->required(true, true);
         });
     }
 
     public static function strictValidator(): FieldInterface
     {
-        return static::staticMemoize(static::class . __METHOD__, function () {
+        $key = static::class . __METHOD__;
+        return static::staticMemoize($key, function () {
             return classType(static::class)->required(true, true)->strict();
         });
     }

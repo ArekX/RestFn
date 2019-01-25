@@ -34,18 +34,17 @@ if (!function_exists('ArekX\JsonQL\Validation\compareType')) {
     }
 }
 
-
 if (!function_exists('ArekX\JsonQL\Validation\allOfType')) {
-    function allOfType(...$rules): AllOfField
+    function allOfType(...$fields): AllOfField
     {
-        return new AllOfField($rules);
+        return new AllOfField($fields);
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\oneOf')) {
-    function oneOf(...$rules): OneOfField
+    function oneOf(...$fields): OneOfField
     {
-        return new OneOfField($rules);
+        return new OneOfField($fields);
     }
 }
 
@@ -85,9 +84,9 @@ if (!function_exists('ArekX\JsonQL\Validation\enumType')) {
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\classType')) {
-    function classType($subType): ClassTypeField
+    function classType($typeClass, $fieldConfig = []): ClassTypeField
     {
-        return new ClassTypeField($subType);
+        return new ClassTypeField($typeClass, $fieldConfig);
     }
 }
 

@@ -28,12 +28,12 @@ class ClassTypeField extends BaseField
     /** @var FieldInterface */
     protected $validator;
 
-    public function __construct($subTypeClass)
+    public function __construct(string $typeClass, array $fieldConfig = [])
     {
-        /** @var $subTypeClass TypeInterface */
+        /** @var $typeClass TypeInterface */
 
-        $this->fields = $subTypeClass::resolvedFields();
-        $this->classTypeName = $subTypeClass::name();
+        $this->fields = $typeClass::resolvedFields($fieldConfig);
+        $this->classTypeName = $typeClass::name();
 
         $this->override();
     }

@@ -14,9 +14,9 @@ class OneOfField extends BaseField
     /** @var FieldInterface[] */
     protected $childRules = [];
 
-    public function __construct(array $childRules)
+    public function __construct(array $fields)
     {
-        $this->childRules = $childRules;
+        $this->childRules = $fields;
     }
 
     /**

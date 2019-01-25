@@ -47,15 +47,7 @@ abstract class TypedValue implements \ArrayAccess
         Validator::ensure($this->data, $this->type);
     }
 
-
     public static abstract function definition(): array;
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetExists($offset)
-    {
-    }
 
     /**
      * @inheritdoc
@@ -79,4 +71,13 @@ abstract class TypedValue implements \ArrayAccess
     public function offsetUnset($offset)
     {
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->data[$offset]);
+    }
+
 }

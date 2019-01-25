@@ -7,15 +7,11 @@
 
 namespace ArekX\JsonQL\Helpers;
 
-
-use ArekX\JsonQL\Traits\Memoize;
 use ArekX\JsonQL\Validation\InvalidTypeException;
 use ArekX\JsonQL\Validation\ValidatedTypeInterface;
 
 class Validator
 {
-    use Memoize;
-
     /**
      * Validates data against a type.
      *

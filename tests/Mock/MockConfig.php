@@ -19,10 +19,10 @@ class MockConfig extends Config
     protected function getCoreServices()
     {
         return [
-            MainApplication::class => DI::setup(MockApplication::class, []),
-            RequestInterface::class => DI::class(MockRequest::class),
-            ResponseInterface::class => DI::class(MockResponse::class),
-            Reader::class => DI::setup(Reader::class, [
+            MainApplication::class => DI::wireSetup(MockApplication::class, []),
+            RequestInterface::class => DI::wireClass(MockRequest::class),
+            ResponseInterface::class => DI::wireClass(MockResponse::class),
+            Reader::class => DI::wireSetup(Reader::class, [
                 'namespace' => ''
             ])
         ];

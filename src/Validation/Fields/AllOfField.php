@@ -14,9 +14,9 @@ class AllOfField extends BaseField
     /** @var FieldInterface[] */
     protected $childFields = [];
 
-    public function __construct(array $childRules)
+    public function __construct(array $fields)
     {
-        $this->childFields = $childRules;
+        $this->childFields = $fields;
     }
 
     /**

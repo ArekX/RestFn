@@ -18,9 +18,7 @@ class ReadListRequestType extends BaseType
     public static function fields(): array
     {
         return [
-            'at' => objectType()->of([
-                ObjectField::ANY_KEY => anyType()
-            ]),
+            'at' => objectType()->of([ObjectField::ANY_KEY => anyType()])->required(),
             'pagination' => objectType()->of([
                 'page' => numberType(),
                 'size' => numberType()->min(10)->max(50)

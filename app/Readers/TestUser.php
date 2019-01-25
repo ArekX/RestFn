@@ -16,20 +16,7 @@ class TestUser implements ReaderInterface
     {
         return [
             'data' => 'test',
-            'def' => DataProvider::definition(),
-            'definition' => DataProvider::create([
-                'pagination' => [
-                    'page' => 1,
-                    'size' => 10,
-                    'total' => 200
-                ],
-                'sort' => [
-                    'sorted_by' => ['test' => 'ascending'],
-                    'allow_multisort' => true,
-                    'sort_items' => ['test' => ['ascending', 'descending']]
-                ],
-                'items' => ['ss']
-            ])
+            'def' => DataProvider::definition()
         ];
     }
 }

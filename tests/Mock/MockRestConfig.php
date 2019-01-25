@@ -21,15 +21,15 @@ class MockRestConfig extends Config
     protected function getCoreServices()
     {
         return [
-            MainApplication::class => DI::setup(Application::class, [
+            MainApplication::class => DI::wireSetup(Application::class, [
                 'handlers' => [
                     MockHandler::class
                 ]
             ]),
-            RequestInterface::class => DI::class(MockRequest::class),
-            ResponseInterface::class => DI::class(MockResponse::class),
-            JsonResponse::class => DI::class(MockJsonResponse::class),
-            Reader::class => DI::setup(Reader::class, [
+            RequestInterface::class => DI::wireClass(MockRequest::class),
+            ResponseInterface::class => DI::wireClass(MockResponse::class),
+            JsonResponse::class => DI::wireClass(MockJsonResponse::class),
+            Reader::class => DI::wireSetup(Reader::class, [
                 'namespace' => ''
             ])
         ];

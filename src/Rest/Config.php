@@ -23,15 +23,15 @@ class Config extends \ArekX\JsonQL\Config\Config
     protected function getCoreServices()
     {
         return [
-            MainApplication::class => DI::setup(Application::class, [
+            MainApplication::class => DI::wireSetup(Application::class, [
                 'handlers' => [
                     Performer::class,
                     Reader::class,
                     Writer::class
                 ]
             ]),
-            RequestInterface::class => DI::class(Request::class),
-            ResponseInterface::class => DI::class(JsonResponse::class),
+            RequestInterface::class => DI::wireClass(Request::class),
+            ResponseInterface::class => DI::wireClass(JsonResponse::class),
         ];
     }
 }

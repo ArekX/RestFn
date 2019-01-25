@@ -77,7 +77,11 @@ class Reader implements HandlerInterface
                     'validation' => $e->getErrors()
                 ];
             } catch (\Exception $e) {
-                $results[$readerName] = $e;
+                $results[$readerName] = [
+                    'message' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'trace' => $e->getTrace()
+                ];
             }
 
         }
