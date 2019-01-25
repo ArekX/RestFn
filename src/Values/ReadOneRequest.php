@@ -11,13 +11,5 @@ use ArekX\JsonQL\Types\ReadOneRequestType;
 
 class ReadOneRequest extends TypedValue
 {
-    public static function create($data)
-    {
-        return new static($data, ReadOneRequestType::class);
-    }
-
-    public static function definition(): array
-    {
-        return ReadOneRequestType::strictValidator()->getDefinition();
-    }
+    protected static $type = ReadOneRequestType::class;
 }

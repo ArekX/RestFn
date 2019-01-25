@@ -17,11 +17,10 @@ abstract class TypedValue implements \ArrayAccess
     protected $data;
 
     /** @var ValidatedTypeInterface */
-    protected $type;
+    protected static $type;
 
-    protected function __construct($data, $type)
+    protected function __construct($data)
     {
-        $this->type = $type;
         $this->setData($data);
     }
 
@@ -44,10 +43,13 @@ abstract class TypedValue implements \ArrayAccess
 
     protected function validate()
     {
-        Validator::ensure($this->data, $this->type);
+        Validator::ensure($this->data, static::$type);
     }
 
-    public static abstract function definition(): array;
+    public static function definition(): array
+    {
+        return static::$type::strictValidator()->getDefinition();
+    }
 
     /**
      * @inheritdoc

@@ -11,13 +11,5 @@ use ArekX\JsonQL\Types\ReadListRequestType;
 
 class ReadListRequest extends TypedValue
 {
-    public static function create($data)
-    {
-        return new static($data, ReadListRequestType::class);
-    }
-
-    public static function definition(): array
-    {
-        return ReadListRequestType::strictValidator()->getDefinition();
-    }
+    protected static $type = ReadListRequestType::class;
 }
