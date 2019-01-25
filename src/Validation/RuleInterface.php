@@ -20,6 +20,14 @@ interface RuleInterface
     public function required($required = true, $strict = false): RuleInterface;
 
     /**
+     * Whether to perform strict validation or not.
+     *
+     * @param bool $strict Whether or not to use strict checking for empty or just to use empty() in PHP.
+     * @return static Instance of this field.
+     */
+    public function strict($strict = true): RuleInterface;
+
+    /**
      * Adds rule information to be displayed.
      *
      * @param string $message Message to be added.
@@ -39,5 +47,16 @@ interface RuleInterface
      * @param array $data All other data to be validated.
      * @return array
      */
-    public function validate(string $field, $value, $data): array;
+    public function validateField(string $field, $value, $data): array;
+
+    /**
+     * Validates value whether or not it is valid.
+     *
+     * If returned value is an empty array then value is valid,
+     * otherwise the returned value has errors.
+     *
+     * @param mixed $value Value to be validated.
+     * @return array
+     */
+    public function validate($value): array;
 }

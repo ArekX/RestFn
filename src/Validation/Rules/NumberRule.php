@@ -42,8 +42,10 @@ class NumberRule extends BaseRule
      */
     protected function doValidate(string $field, $value, $data, $errors): array
     {
-        if (!is_numeric($value)) {
-            $errors[] = ['type' => self::NOT_A_NUMBER];
+        $typeError = $this->validateType($value);
+
+        if ($typeError !== null) {
+            $errors[] = $typeError;
             return $errors;
         }
 
@@ -61,5 +63,16 @@ class NumberRule extends BaseRule
         }
 
         return $errors;
+    }
+
+    protected function validateType($value)
+    {
+        if ($this->strict && (!is_float($value) && !is_int($value))) {
+            return ['type' => self::NOT_A_NUMBER];
+        } elseif (!is_numeric($value)) {
+            return ['type' => self::NOT_A_NUMBER];
+        }
+
+        return null;
     }
 }

@@ -37,7 +37,7 @@ class ArrayRule extends BaseRule
         }
 
         foreach ($value as $index => $item) {
-            $itemErrors = $this->itemRule->validate((string)$index, $item, $value);
+            $itemErrors = $this->itemRule->validateField((string)$index, $item, $value);
 
             if (!empty($itemErrors)) {
                 $errors[] = ['type' => 'item_invalid', 'data' => $itemErrors];

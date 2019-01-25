@@ -18,10 +18,12 @@ use ArekX\JsonQL\Validation\RuleInterface;
  */
 abstract class BaseRule implements RuleInterface
 {
-    /** @var bool  */
+    const EMPTY_VALUE = 'empty_value';
+
+    /** @var bool */
     protected $required = false;
 
-    /** @var bool  */
+    /** @var bool */
     protected $requiredStrict = false;
 
     /** @var string */
@@ -29,6 +31,9 @@ abstract class BaseRule implements RuleInterface
 
     /** @var array */
     protected $example;
+
+    /** @var bool */
+    protected $strict = false;
 
     /**
      * Returns whether or not field is required.
@@ -58,17 +63,37 @@ abstract class BaseRule implements RuleInterface
     }
 
     /**
+     * Whether to perform strict validation or not.
+     *
+     * @param bool $strict Whether or not to use strict checking for empty or just to use empty() in PHP.
+     * @return static Instance of this field.
+     */
+    public function strict($strict = true): RuleInterface
+    {
+        $this->strict = $strict;
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
-    public function validate(string $field, $value, $data): array
+    public function validateField(string $field, $value, $data): array
     {
         $errors = [];
 
         if ($this->required || Value::isEmpty($value, $this->requiredStrict)) {
-            $errors[] = ['type' => 'empty_value'];
+            $errors[] = ['type' => self::EMPTY_VALUE];
         }
 
         return $this->doValidate($field, $value, $data, $errors);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validate($value): array
+    {
+        return $this->validateField('@', $value, ['@' => $value]);
     }
 
     /**

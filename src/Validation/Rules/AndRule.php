@@ -25,7 +25,7 @@ class AndRule extends BaseRule
     protected function doValidate(string $field, $value, $data, $errors): array
     {
         foreach ($this->childRules as $childRule) {
-            $childErrors = $childRule->validate($field, $value, $data);
+            $childErrors = $childRule->validateField($field, $value, $data);
 
             if (empty($childErrors)) {
                 continue;

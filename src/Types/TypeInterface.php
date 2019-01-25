@@ -7,13 +7,13 @@
 
 namespace ArekX\JsonQL\Types;
 
-use ArekX\JsonQL\Validation\Rules\ObjectRule;
+use ArekX\JsonQL\Validation\RuleInterface;
 
 interface TypeInterface
 {
     public static function name(): string;
     public static function fields(): array;
     public static function resolvedFields(): array;
-    public static function getValidator(): ObjectRule;
-    public static function validate(array $data): array;
+    public static function validator(): RuleInterface;
+    public static function strictValidator(): RuleInterface;
 }

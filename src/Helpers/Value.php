@@ -82,7 +82,11 @@ class Value
             return $default;
         }
 
-        if (strpos($name, '.') === -1 || static::has($object, $name)) {
+        $hasProperty =
+            (is_array($object) && array_key_exists($name, $object)) ||
+            (is_object($object) && property_exists($object, $name));
+
+        if (strpos($name, '.') === -1 || $hasProperty) {
             return static::resolveValue($object, $name, $default);
         }
 
@@ -117,7 +121,7 @@ class Value
         return $default;
     }
 
-    public static function has(&$object, $name)
+    public static function has($object, $name)
     {
         return
             (is_array($object) && array_key_exists($name, $object)) ||

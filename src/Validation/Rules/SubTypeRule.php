@@ -7,8 +7,6 @@
 
 namespace ArekX\JsonQL\Validation\Rules;
 
-
-use ArekX\JsonQL\Config\Config;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Types\TypeInterface;
 use function ArekX\JsonQL\Validation\objectType;
@@ -21,6 +19,7 @@ class SubTypeRule extends BaseRule
     /** @var string */
     protected $subTypeName;
 
+    /** @var RuleInterface[] */
     protected $overrideFields = [];
 
     /** @var RuleInterface[] */
@@ -35,7 +34,7 @@ class SubTypeRule extends BaseRule
 
         $this->fields = $subTypeClass::resolvedFields();
         $this->subTypeName = $subTypeClass::name();
-        $this->validator = objectType($this->fields);
+        $this->validator = $subTypeClass::validator();
     }
 
     public function override(?array $fields = null): SubTypeRule
@@ -54,7 +53,7 @@ class SubTypeRule extends BaseRule
      */
     protected function doValidate(string $field, $value, $data, $errors): array
     {
-        $results = $this->validator->validate($field, $value, $data, $errors);
+        $results = $this->validator->validateField($field, $value, $data);
 
         if (!empty($results)) {
             $errors[] = [

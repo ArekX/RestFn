@@ -20,17 +20,9 @@ class ObjectRule extends BaseRule
     /** @var RuleInterface[] */
     public $fields;
 
-    protected $strict = null;
-
     public function __construct(array $object)
     {
         $this->fields = $object;
-    }
-
-    public function strict(?bool $strict = true): ObjectRule
-    {
-        $this->strict = $strict;
-        return $this;
     }
 
     /**
@@ -43,12 +35,12 @@ class ObjectRule extends BaseRule
      */
     protected function doValidate(string $field, $value, $data, $errors): array
     {
-        $this->validateFields($data, $errors);
-        $this->validateAnyKey($data, $errors);
-
         if ($this->strict) {
             $this->validateValidKeys(array_keys($data));
         }
+
+        $this->validateFields($data, $errors);
+        $this->validateAnyKey($data, $errors);
 
         return $errors;
 
@@ -71,7 +63,7 @@ class ObjectRule extends BaseRule
 
     protected function validateField($field, RuleInterface $validator, array &$data, array &$errors)
     {
-        $fieldErrors = $validator->validate($field, Value::get($data, $field), $data);
+        $fieldErrors = $validator->validateField($field, Value::get($data, $field), $data);
 
         if (!empty($fieldErrors)) {
             $errors[$field] = $fieldErrors;

@@ -15,6 +15,7 @@ use function ArekX\JsonQL\Validation\nullType;
 use function ArekX\JsonQL\Validation\numberType;
 use function ArekX\JsonQL\Validation\objectType;
 use function ArekX\JsonQL\Validation\orType;
+use ArekX\JsonQL\Validation\Rules\ObjectRule;
 use function ArekX\JsonQL\Validation\stringType;
 use function ArekX\JsonQL\Validation\subType;
 use function DI\string;
@@ -24,7 +25,7 @@ class SortType extends BaseType
     public static function fields(): array
     {
         $sortType = objectType([
-            '[key]' => arrayType()->required()->of(enumType(['ascending', 'descending']))
+            ObjectRule::ANY_KEY => arrayType()->required()->of(enumType(['ascending', 'descending']))
         ])->required();
 
         return [

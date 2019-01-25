@@ -27,7 +27,7 @@ class OrRule extends BaseRule
         $allChildrenErrors = [];
 
         foreach ($this->childRules as $childRule) {
-            $childErrors = $childRule->validate($field, $value, $data);
+            $childErrors = $childRule->validateField($field, $value, $data);
 
             if (empty($childErrors)) {
                 return $errors;
