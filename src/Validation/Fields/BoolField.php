@@ -5,9 +5,9 @@
  *
  **/
 
-namespace ArekX\JsonQL\Validation\Rules;
+namespace ArekX\JsonQL\Validation\Fields;
 
-class BoolRule extends BaseRule
+class BoolField extends BaseField
 {
     const NOT_A_BOOL = 'not_a_bool';
 
@@ -26,5 +26,31 @@ class BoolRule extends BaseRule
         }
 
         return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getName(): string
+    {
+        return 'bool';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getFieldDefinition(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clone()
+    {
+        $instance = new static();
+        $this->setupClone($instance);
+        return $instance;
     }
 }

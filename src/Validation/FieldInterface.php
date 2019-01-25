@@ -8,7 +8,7 @@
 namespace ArekX\JsonQL\Validation;
 
 
-interface RuleInterface
+interface FieldInterface
 {
     /**
      * Specifies whether or not specific field is required.
@@ -17,7 +17,28 @@ interface RuleInterface
      * @param bool $strict Whether or not to use strict checking for empty or just to use empty() in PHP.
      * @return static Instance of this field.
      */
-    public function required($required = true, $strict = false): RuleInterface;
+    public function required($required = true, $strict = false): FieldInterface;
+
+
+    /**
+     * Default value to be set.
+     * @param mixed $value Mixed value to be set.
+     * @return static Instance of this field.
+     */
+    public function default($value): FieldInterface;
+
+    /**
+     * Returns set default value.
+     *
+     * @return mixed
+     */
+    public function getDefaultValue();
+
+    /**
+     * Returns array definition of this field.
+     * @return array
+     */
+    public function getDefinition(): array;
 
     /**
      * Whether to perform strict validation or not.
@@ -25,16 +46,16 @@ interface RuleInterface
      * @param bool $strict Whether or not to use strict checking for empty or just to use empty() in PHP.
      * @return static Instance of this field.
      */
-    public function strict($strict = true): RuleInterface;
+    public function strict($strict = true): FieldInterface;
 
     /**
      * Adds rule information to be displayed.
      *
      * @param string $message Message to be added.
      * @param array $example Example used to specify the type better.
-     * @return RuleInterface
+     * @return FieldInterface
      */
-    public function info(string $message, $example = []): RuleInterface;
+    public function info(string $message, $example = []): FieldInterface;
 
     /**
      * Validates current field's whether or not it is valid.

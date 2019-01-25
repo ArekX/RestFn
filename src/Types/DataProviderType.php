@@ -16,7 +16,7 @@ use function ArekX\JsonQL\Validation\numberType;
 use function ArekX\JsonQL\Validation\objectType;
 use function ArekX\JsonQL\Validation\orType;
 use function ArekX\JsonQL\Validation\stringType;
-use function ArekX\JsonQL\Validation\subType;
+use function ArekX\JsonQL\Validation\classType;
 use function DI\string;
 
 class DataProviderType extends BaseType
@@ -24,9 +24,9 @@ class DataProviderType extends BaseType
     public static function fields(): array
     {
         return [
-            'pagination' => subType(PaginationType::class)->info('Pagination information'),
-            'sort' => subType(SortType::class)->info('Sorting information'),
-            'items' => arrayType()->of(anyType())->info('Item information')
+            'pagination' => classType(PaginationType::class)->required()->info('Pagination information'),
+            'sort' => classType(SortType::class)->required()->info('Sorting information'),
+            'items' => arrayType()->required()->info('Item information')
         ];
     }
 }

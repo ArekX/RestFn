@@ -11,6 +11,7 @@ namespace ArekX\JsonQL\Rest\Handlers;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Config;
 use ArekX\JsonQL\Services\ReaderInterface;
+use ArekX\JsonQL\Validation\InvalidTypeException;
 
 class Reader implements HandlerInterface
 {
@@ -70,6 +71,11 @@ class Reader implements HandlerInterface
                 $results[$readerName] = $instance->run();
             } catch (\DI\NotFoundException $e) {
                 $results[$readerName] = 'Reader does not exist.';
+            } catch (InvalidTypeException $e) {
+                $results[$readerName] = [
+                    'error' => get_class($e),
+                    'validation' => $e->getErrors()
+                ];
             } catch (\Exception $e) {
                 $results[$readerName] = $e;
             }

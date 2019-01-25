@@ -7,31 +7,26 @@
 
 namespace ArekX\JsonQL\Types;
 
-use function ArekX\JsonQL\Validation\anyType;
 use function ArekX\JsonQL\Validation\arrayType;
 use function ArekX\JsonQL\Validation\boolType;
 use function ArekX\JsonQL\Validation\enumType;
-use function ArekX\JsonQL\Validation\nullType;
-use function ArekX\JsonQL\Validation\numberType;
 use function ArekX\JsonQL\Validation\objectType;
-use function ArekX\JsonQL\Validation\orType;
-use ArekX\JsonQL\Validation\Rules\ObjectRule;
-use function ArekX\JsonQL\Validation\stringType;
-use function ArekX\JsonQL\Validation\subType;
-use function DI\string;
+use ArekX\JsonQL\Validation\Fields\ObjectField;
 
 class SortType extends BaseType
 {
     public static function fields(): array
     {
-        $sortType = objectType([
-            ObjectRule::ANY_KEY => arrayType()->required()->of(enumType(['ascending', 'descending']))
-        ])->required();
+        $enumType = enumType(['ascending', 'descending']);
 
         return [
-            'sorted_by' => arrayType()->required()->of($sortType)->info('Values that were used for sorting.'),
+            'sorted_by' => objectType()->of([
+                ObjectField::ANY_KEY => $enumType
+            ])->required()->info('Values that were used for sorting.'),
             'allow_multisort' => boolType()->required()->info('Whether or not multisort is allowed.'),
-            'sort_items' => arrayType()->required()->of($sortType)->info('Items which are available for sorting by.')
+            'sort_items' => objectType()->of([
+                ObjectField::ANY_KEY => arrayType()->required()->of($enumType)
+            ])->required()->info('Items which are available for sorting by.')
         ];
     }
 }

@@ -7,101 +7,101 @@
 
 namespace ArekX\JsonQL\Validation;
 
-use ArekX\JsonQL\Validation\Rules\AnyRule;
-use ArekX\JsonQL\Validation\Rules\ArrayRule;
-use ArekX\JsonQL\Validation\Rules\BoolRule;
-use ArekX\JsonQL\Validation\Rules\NullRule;
-use ArekX\JsonQL\Validation\Rules\ObjectRule;
-use ArekX\JsonQL\Validation\Rules\SubTypeRule;
-use ArekX\JsonQL\Validation\Rules\AndRule;
-use ArekX\JsonQL\Validation\Rules\CompareRule;
-use ArekX\JsonQL\Validation\Rules\EnumRule;
-use ArekX\JsonQL\Validation\Rules\NumberRule;
-use ArekX\JsonQL\Validation\Rules\OrRule;
-use ArekX\JsonQL\Validation\Rules\StringRule;
+use ArekX\JsonQL\Validation\Fields\AnyField;
+use ArekX\JsonQL\Validation\Fields\ArrayField;
+use ArekX\JsonQL\Validation\Fields\BoolField;
+use ArekX\JsonQL\Validation\Fields\NullField;
+use ArekX\JsonQL\Validation\Fields\ObjectField;
+use ArekX\JsonQL\Validation\Fields\ClassTypeField;
+use ArekX\JsonQL\Validation\Fields\AllOfField;
+use ArekX\JsonQL\Validation\Fields\CompareField;
+use ArekX\JsonQL\Validation\Fields\EnumField;
+use ArekX\JsonQL\Validation\Fields\NumberField;
+use ArekX\JsonQL\Validation\Fields\OneOfField;
+use ArekX\JsonQL\Validation\Fields\StringField;
 
 if (!function_exists('ArekX\JsonQL\Validation\stringType')) {
-    function stringType(): StringRule
+    function stringType(): StringField
     {
-        return new StringRule();
+        return new StringField();
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\compareType')) {
-    function compareType(): CompareRule
+    function compareType(): CompareField
     {
-        return new CompareRule();
+        return new CompareField();
     }
 }
 
 
-if (!function_exists('ArekX\JsonQL\Validation\andType')) {
-    function andType(...$rules): AndRule
+if (!function_exists('ArekX\JsonQL\Validation\allOfType')) {
+    function allOfType(...$rules): AllOfField
     {
-        return new AndRule($rules);
+        return new AllOfField($rules);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\orType')) {
-    function orType(...$rules): OrRule
+if (!function_exists('ArekX\JsonQL\Validation\oneOf')) {
+    function oneOf(...$rules): OneOfField
     {
-        return new OrRule($rules);
+        return new OneOfField($rules);
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\anyType')) {
-    function anyType(): AnyRule
+    function anyType(): AnyField
     {
-        return new AnyRule();
+        return new AnyField();
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\objectType')) {
-    function objectType($fields): ObjectRule
+    function objectType(): ObjectField
     {
-        return new ObjectRule($fields);
+        return new ObjectField();
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\numberType')) {
-    function numberType(): NumberRule
+    function numberType(): NumberField
     {
-        return new NumberRule();
+        return new NumberField();
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\nullType')) {
-    function nullType(): NullRule
+    function nullType(): NullField
     {
-        return new NullRule();
+        return new NullField();
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\enumType')) {
-    function enumType(array $enum): EnumRule
+    function enumType(array $enum): EnumField
     {
-        return new EnumRule($enum);
+        return new EnumField($enum);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\subType')) {
-    function subType($subType): SubTypeRule
+if (!function_exists('ArekX\JsonQL\Validation\classType')) {
+    function classType($subType): ClassTypeField
     {
-        return new SubTypeRule($subType);
+        return new ClassTypeField($subType);
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\arrayType')) {
-    function arrayType(): ArrayRule
+    function arrayType(): ArrayField
     {
-        return new ArrayRule();
+        return new ArrayField();
     }
 }
 
 
 if (!function_exists('ArekX\JsonQL\Validation\boolType')) {
-    function boolType(): BoolRule
+    function boolType(): BoolField
     {
-        return new BoolRule();
+        return new BoolField();
     }
 }

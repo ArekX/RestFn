@@ -5,9 +5,9 @@
  *
  **/
 
-namespace ArekX\JsonQL\Validation\Rules;
+namespace ArekX\JsonQL\Validation\Fields;
 
-class NullRule extends BaseRule
+class NullField extends BaseField
 {
     const NOT_A_NULL = 'not_a_null';
 
@@ -26,5 +26,31 @@ class NullRule extends BaseRule
         }
 
         return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getName(): string
+    {
+        return 'null';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getFieldDefinition(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clone()
+    {
+        $instance = new static();
+        $this->setupClone($instance);
+        return $instance;
     }
 }

@@ -5,9 +5,9 @@
  *
  **/
 
-namespace ArekX\JsonQL\Validation\Rules;
+namespace ArekX\JsonQL\Validation\Fields;
 
-class StringRule extends BaseRule
+class StringField extends BaseField
 {
     const NOT_EXACT_LENGTH = 'not_exact_length';
     const NOT_A_STRING = 'not_a_string';
@@ -15,31 +15,59 @@ class StringRule extends BaseRule
     const OVER_MAXIMUM = 'over_maximum';
     const DOES_NOT_MATCH = 'does_not_match';
 
+    /** @var null|int */
     protected $minLength = null;
+
+    /** @var null|int */
     protected $maxLength = null;
-    protected $canBeEmpty = true;
+
+    /** @var null|int */
     protected $mustMatch = null;
 
-    public function min($length = null): StringRule
+    /**
+     * Set minimum length of string.
+     *
+     * @param null|int $length Length of a string
+     * @return static
+     */
+    public function min($length = null): StringField
     {
         $this->minLength = $length;
         return $this;
     }
 
-    public function max($length = null): StringRule
+    /**
+     * Set maximum length of string.
+     *
+     * @param null|int $length Length of a string
+     * @return static
+     */
+    public function max($length = null): StringField
     {
         $this->maxLength = $length;
         return $this;
     }
 
-    public function exact($length = null): StringRule
+    /**
+     * Set minimum/maximum length of string.
+     *
+     * @param null|int $length Length of a string
+     * @return static
+     */
+    public function exact($length = null): StringField
     {
         $this->min($length);
         $this->max($length);
         return $this;
     }
 
-    public function mustMatch($pattern = null): StringRule
+    /**
+     * Set pattern match of a string.
+     *
+     * @param null|int $length Length of a string
+     * @return static
+     */
+    public function mustMatch($pattern = null): StringField
     {
         $this->mustMatch = $pattern;
         return $this;
@@ -76,5 +104,39 @@ class StringRule extends BaseRule
         }
 
         return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getName(): string
+    {
+        return 'string';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getFieldDefinition(): array
+    {
+        return [
+            'minLength' => $this->minLength,
+            'maxLength' => $this->maxLength,
+            'match' => $this->mustMatch
+        ];
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function clone()
+    {
+        $instance = new static();
+        $this->setupClone($instance);
+        $instance->minLength = $this->minLength;
+        $instance->maxLength = $this->maxLength;
+        $instance->mustMatch = $this->mustMatch;
+        return $instance;
     }
 }

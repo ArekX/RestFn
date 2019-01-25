@@ -5,11 +5,12 @@
  *
  **/
 
-namespace ArekX\JsonQL\Validation;
+namespace ArekX\JsonQL\Helpers;
 
 
 use ArekX\JsonQL\Traits\Memoize;
-use ArekX\JsonQL\Types\TypeInterface;
+use ArekX\JsonQL\Validation\InvalidTypeException;
+use ArekX\JsonQL\Validation\ValidatedTypeInterface;
 
 class Validator
 {
@@ -19,7 +20,7 @@ class Validator
      * Validates data against a type.
      *
      * @param mixed $data
-     * @param TypeInterface $type
+     * @param ValidatedTypeInterface $type
      * @param bool $strict Whether or not to perform strict validation.
      * @return $errors Array of errors
      */
@@ -33,7 +34,7 @@ class Validator
      * Ensures data is of specific type.
      *
      * @param mixed $data Data to be validated
-     * @param TypeInterface $type Type to be validated against.
+     * @param ValidatedTypeInterface $type Type to be validated against.
      * @param bool $strict Whether or not to perform strict validation.
      * @throws InvalidTypeException Exception to be thrown if $data is not valid.
      */

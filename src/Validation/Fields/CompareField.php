@@ -5,12 +5,12 @@
  *
  **/
 
-namespace ArekX\JsonQL\Validation\Rules;
+namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Traits\Memoize;
 
-class CompareRule extends BaseRule
+class CompareField extends BaseField
 {
     const COMPARE_FAILED = 'compare_failed';
 
@@ -18,45 +18,42 @@ class CompareRule extends BaseRule
 
     /** @var array */
     protected $fieldChecks = [];
+
+    /** @var bool  */
     protected $inverted = false;
 
-    public function __construct(string $withField)
-    {
-        $this->withField = $withField;
-    }
-
-    public function not(): CompareRule
+    public function not(): CompareField
     {
         $this->inverted = !$this->inverted;
         return $this;
     }
 
-    public function lessThanOrEqualTo($fieldName): CompareRule
+    public function lessThanOrEqualTo($fieldName): CompareField
     {
         return $this->addOperator('<=', $fieldName);
     }
 
-    public function greaterThanOrEqualTo($fieldName): CompareRule
+    public function greaterThanOrEqualTo($fieldName): CompareField
     {
         return $this->addOperator('>=', $fieldName);
     }
 
-    public function lessThan($fieldName): CompareRule
+    public function lessThan($fieldName): CompareField
     {
         return $this->addOperator('<', $fieldName);
     }
 
-    public function greaterThan($fieldName): CompareRule
+    public function greaterThan($fieldName): CompareField
     {
         return $this->addOperator('>', $fieldName);
     }
 
-    public function equalTo($fieldName): CompareRule
+    public function equalTo($fieldName): CompareField
     {
         return $this->addOperator('=', $fieldName);
     }
 
-    public function sameAs($fieldName): CompareRule
+    public function sameAs($fieldName): CompareField
     {
         return $this->addOperator('==', $fieldName);
     }
@@ -70,7 +67,7 @@ class CompareRule extends BaseRule
 
     protected static function getOperatorMap()
     {
-        return static::staticMemoize(__METHOD__, function () {
+        return static::staticMemoize(static::class . __METHOD__, function () {
             return [
                 '=' => function ($valueA, $valueB) {
                     return $valueA == $valueB;
@@ -121,5 +118,35 @@ class CompareRule extends BaseRule
         }
 
         return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getName(): string
+    {
+        return 'compare';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getFieldDefinition(): array
+    {
+        return [
+            'checks' => $this->fieldChecks
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clone()
+    {
+        $instance = new static();
+        $this->setupClone($instance);
+        $instance->fieldChecks = $this->fieldChecks;
+        $instance->inverted = $this->inverted;
+        return $instance;
     }
 }
