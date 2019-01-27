@@ -9,32 +9,32 @@ namespace ArekX\JsonQL\Types;
 
 use ArekX\JsonQL\Traits\Memoize;
 use ArekX\JsonQL\Validation\FieldInterface;
-use function ArekX\JsonQL\Validation\classType;
-use ArekX\JsonQL\Validation\ValidatedTypeInterface;
+use ArekX\JsonQL\Validation\TypeInterface;
+use ArekX\JsonQL\Validation\TypeValidatorInterface;
 
-abstract class BaseType implements TypeInterface, ValidatedTypeInterface
+use function ArekX\JsonQL\Validation\classType;
+
+abstract class BaseType implements TypeInterface, TypeValidatorInterface
 {
     use Memoize;
 
-    public static function resolvedFields(): array
+    public static function fields(): array
     {
         return static::staticMemoize(static::class . __METHOD__, function () {
-            return static::fields();
+            return static::typeFields();
         });
     }
 
     public static function validator(): FieldInterface
     {
-        $key = static::class . __METHOD__;
-        return static::staticMemoize($key, function () {
+        return static::staticMemoize(static::class . __METHOD__, function () {
             return classType(static::class)->required(true, true);
         });
     }
 
     public static function strictValidator(): FieldInterface
     {
-        $key = static::class . __METHOD__;
-        return static::staticMemoize($key, function () {
+        return static::staticMemoize(static::class . __METHOD__, function () {
             return classType(static::class)->required(true, true)->strict();
         });
     }
@@ -45,4 +45,13 @@ abstract class BaseType implements TypeInterface, ValidatedTypeInterface
             return (new \ReflectionClass(static::class))->getShortName();
         });
     }
+
+    public static function definition(): array
+    {
+        return static::staticMemoize(static::class . __METHOD__, function () {
+            return static::strictValidator()->getDefinition();
+        });
+    }
+
+    protected static abstract function typeFields(): array;
 }

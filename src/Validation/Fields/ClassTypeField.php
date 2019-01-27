@@ -8,9 +8,10 @@
 namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\Value;
-use ArekX\JsonQL\Types\TypeInterface;
-use function ArekX\JsonQL\Validation\objectType;
 use ArekX\JsonQL\Validation\FieldInterface;
+use ArekX\JsonQL\Validation\TypeInterface;
+
+use function ArekX\JsonQL\Validation\objectType;
 
 class ClassTypeField extends BaseField
 {
@@ -28,11 +29,11 @@ class ClassTypeField extends BaseField
     /** @var FieldInterface */
     protected $validator;
 
-    public function __construct(string $typeClass, array $fieldConfig = [])
+    public function __construct(string $typeClass)
     {
-        /** @var $typeClass TypeInterface */
+        /** @var TypeInterface $typeClass */
 
-        $this->fields = $typeClass::resolvedFields($fieldConfig);
+        $this->fields = $typeClass::fields();
         $this->classTypeName = $typeClass::name();
 
         $this->override();
@@ -45,6 +46,24 @@ class ClassTypeField extends BaseField
             ->strict();
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function strict($strict = true): FieldInterface
+    {
+        $this->validator->strict($strict);
+        return parent::strict($strict);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function required($required = true, $strict = false): FieldInterface
+    {
+        $this->validator->required($required, $strict);
+        return parent::required($required, $strict);
     }
 
     /**
@@ -85,9 +104,10 @@ class ClassTypeField extends BaseField
      */
     protected function getFieldDefinition(): array
     {
+        $definition = $this->validator->getDefinition();
         return [
             'name' => $this->classTypeName,
-            'definition' => $this->validator->getDefinition()
+            'fields' => $definition['fields'] ?? []
         ];
     }
 

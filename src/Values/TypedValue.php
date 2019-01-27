@@ -9,25 +9,55 @@ namespace ArekX\JsonQL\Values;
 
 use ArekX\JsonQL\Helpers\Validator;
 use ArekX\JsonQL\Helpers\Value;
-use ArekX\JsonQL\Validation\ValidatedTypeInterface;
+use ArekX\JsonQL\Types\BaseType;
 
 abstract class TypedValue implements \ArrayAccess
 {
     /** @var mixed */
     protected $data;
 
-    /** @var ValidatedTypeInterface */
+    /** @var BaseType */
     protected static $type;
 
-    protected function __construct($data)
+    protected function __construct(array $data)
     {
         $this->setData($data);
+    }
+
+    public static function from(array $data)
+    {
+        return new static($data);
+    }
+
+    protected static function defaultValues()
+    {
+        return null;
     }
 
     public function setData($data)
     {
         $this->data = $data;
-        $this->validate();
+        $this->processType();
+    }
+
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        $this->set($name, $value);
+    }
+
+    public function __isset($name)
+    {
+        return $this->offsetExists($name);
+    }
+
+    public function __unset($name)
+    {
+        $this->offsetUnset($name);
     }
 
     public function get($name, $defaultValue = null)
@@ -38,17 +68,26 @@ abstract class TypedValue implements \ArrayAccess
     public function set($name, $value)
     {
         Value::set($this->data, $name, $value);
-        $this->validate();
+        $this->processType();
     }
 
-    protected function validate()
+    protected function processType()
     {
+        $defaultValues = static::defaultValues();
+
+        if (!empty($defaultValues)) {
+            $this->data = Value::merge(static::defaultValues(), $this->data);
+        }
+
         Validator::ensure($this->data, static::$type);
     }
 
     public static function definition(): array
     {
-        return static::$type::strictValidator()->getDefinition();
+        return [
+            'type' => static::$type::definition(),
+            'default' => static::defaultValues()
+        ];
     }
 
     /**
@@ -72,6 +111,8 @@ abstract class TypedValue implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
+        unset($this->data[$offset]);
+        $this->processType();
     }
 
     /**

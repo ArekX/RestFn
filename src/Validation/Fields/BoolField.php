@@ -7,9 +7,12 @@
 
 namespace ArekX\JsonQL\Validation\Fields;
 
+use ArekX\JsonQL\Validation\FieldInterface;
+
 class BoolField extends BaseField
 {
     const NOT_A_BOOL = 'not_a_bool';
+
 
     /**
      * Performs child field validation.

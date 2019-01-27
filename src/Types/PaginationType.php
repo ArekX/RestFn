@@ -11,7 +11,7 @@ use function ArekX\JsonQL\Validation\numberType;
 
 class PaginationType extends BaseType
 {
-    public static function fields(): array
+    protected static function typeFields(): array
     {
         return [
             'page' => numberType()->required()->info('Current page'),

@@ -12,11 +12,11 @@ use ArekX\JsonQL\Validation\FieldInterface;
 class OneOfField extends BaseField
 {
     /** @var FieldInterface[] */
-    protected $childRules = [];
+    protected $childFields = [];
 
     public function __construct(array $fields)
     {
-        $this->childRules = $fields;
+        $this->childFields = $fields;
     }
 
     /**
@@ -26,7 +26,7 @@ class OneOfField extends BaseField
     {
         $allChildrenErrors = [];
 
-        foreach ($this->childRules as $childRule) {
+        foreach ($this->childFields as $childRule) {
             $childErrors = $childRule->validateField($field, $value, $data);
 
             if (empty($childErrors)) {
@@ -55,10 +55,19 @@ class OneOfField extends BaseField
         return [
             'children' => array_map(function(FieldInterface $field) {
                 return $field->getDefinition();
-            }, $this->childRules)
+            }, $this->childFields)
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function writeDefaultValue(&$data): void
+    {
+        foreach ($this->childFields as $childField) {
+            $childField->writeDefaultValue($data);
+        }
+    }
 
     /**
      * @inheritdoc
@@ -67,7 +76,7 @@ class OneOfField extends BaseField
     {
         $instance = new static();
         $this->setupClone($instance);
-        $instance->childRules = $this->childRules;
+        $instance->childFields = $this->childFields;
         return $instance;
     }
 }

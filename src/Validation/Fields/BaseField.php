@@ -32,9 +32,6 @@ abstract class BaseField implements FieldInterface
     /** @var array */
     protected $example;
 
-    /** @var null */
-    protected $default = null;
-
     /** @var bool */
     protected $strict = false;
 
@@ -50,26 +47,6 @@ abstract class BaseField implements FieldInterface
         $this->required = $required;
         $this->requiredStrict = $strict;
         return $this;
-    }
-
-    /**
-     * Set default value of the field.
-     *
-     * @param mixed $value
-     * @return static
-     */
-    public function default($value): FieldInterface
-    {
-        $this->default = $value;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultValue()
-    {
-        return $this->default;
     }
 
     /**
@@ -129,7 +106,6 @@ abstract class BaseField implements FieldInterface
             'type' => $this->getName(),
             'required' => $this->required,
             'strict' => $this->strict,
-            'default' => $this->default,
             'info' => [
                 'message' => $this->message,
                 'example' => $this->example
@@ -174,7 +150,6 @@ abstract class BaseField implements FieldInterface
         $self->requiredStrict = $this->requiredStrict;
         $self->message = $this->message;
         $self->example = $this->example;
-        $self->default = $this->default;
         $self->strict = $this->strict;
     }
 }

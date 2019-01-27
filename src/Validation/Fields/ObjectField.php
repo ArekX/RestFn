@@ -9,7 +9,6 @@ namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Validation\FieldInterface;
-use ArekX\JsonQL\Validation\Fields\BaseField;
 
 class ObjectField extends BaseField
 {
@@ -82,8 +81,12 @@ class ObjectField extends BaseField
         }
     }
 
-    protected function validateSubField($field, FieldInterface $validator, array &$data, array &$errors)
+    protected function validateSubField($field, ?FieldInterface $validator, array &$data, array &$errors)
     {
+        if (empty($validator)) {
+            return;
+        }
+
         $fieldErrors = $validator->validateField($field, Value::get($data, $field), $data);
 
         if (!empty($fieldErrors)) {
@@ -166,6 +169,11 @@ class ObjectField extends BaseField
     {
         $fields = [];
         foreach ($this->fields as $fieldName => $field) {
+
+            if (empty($field)) {
+                continue;
+            }
+
             $fields[$fieldName] = $field->getDefinition();
         }
 

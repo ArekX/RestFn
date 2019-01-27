@@ -12,12 +12,17 @@ use function ArekX\JsonQL\Validation\classType;
 
 class DataProviderType extends BaseType
 {
-    public static function fields(): array
+    protected static function typeFields(): array
     {
         return [
             'pagination' => classType(PaginationType::class)->required()->info('Pagination information'),
             'sort' => classType(SortType::class)->required()->info('Sorting information'),
-            'items' => arrayType()->required()->info('Item information')
+            'items' => static::itemType()
         ];
+    }
+
+    protected static function itemType()
+    {
+        return arrayType()->required()->info('Item information');
     }
 }

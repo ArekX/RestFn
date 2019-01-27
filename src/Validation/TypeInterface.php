@@ -5,11 +5,10 @@
  *
  **/
 
-namespace ArekX\JsonQL\Types;
+namespace ArekX\JsonQL\Validation;
 
 interface TypeInterface
 {
     public static function name(): string;
     public static function fields(): array;
-    public static function resolvedFields(): array;
 }

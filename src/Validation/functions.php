@@ -84,9 +84,9 @@ if (!function_exists('ArekX\JsonQL\Validation\enumType')) {
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\classType')) {
-    function classType($typeClass, $fieldConfig = []): ClassTypeField
+    function classType($typeClass): ClassTypeField
     {
-        return new ClassTypeField($typeClass, $fieldConfig);
+        return new ClassTypeField($typeClass);
     }
 }
 

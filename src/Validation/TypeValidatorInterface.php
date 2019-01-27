@@ -8,7 +8,7 @@
 namespace ArekX\JsonQL\Validation;
 
 
-interface ValidatedTypeInterface
+interface TypeValidatorInterface
 {
     public static function validator(): FieldInterface;
     public static function strictValidator(): FieldInterface;

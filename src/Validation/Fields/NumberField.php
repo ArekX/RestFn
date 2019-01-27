@@ -7,6 +7,8 @@
 
 namespace ArekX\JsonQL\Validation\Fields;
 
+use ArekX\JsonQL\Validation\FieldInterface;
+
 class NumberField extends BaseField
 {
     const NOT_A_NUMBER = 'not_a_number';

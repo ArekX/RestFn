@@ -11,10 +11,15 @@ use function ArekX\JsonQL\Validation\objectType;
 
 class ReadOneRequestType extends BaseType
 {
-    public static function fields(): array
+    protected static function typeFields(): array
     {
         return [
-            'at' => objectType()->required()
+            'at' => static::atType()
         ];
+    }
+
+    protected static function atType()
+    {
+        return objectType()->required();
     }
 }

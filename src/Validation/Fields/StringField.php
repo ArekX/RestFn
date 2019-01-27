@@ -83,7 +83,7 @@ class StringField extends BaseField
             return $errors;
         }
 
-        $valueLength  = mb_strlen($value);
+        $valueLength = mb_strlen($value);
 
         if ($this->minLength !== null && $this->maxLength !== null && $this->minLength === $this->maxLength) {
             if ($valueLength !== $this->minLength) {

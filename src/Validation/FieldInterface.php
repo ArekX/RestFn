@@ -19,21 +19,6 @@ interface FieldInterface
      */
     public function required($required = true, $strict = false): FieldInterface;
 
-
-    /**
-     * Default value to be set.
-     * @param mixed $value Mixed value to be set.
-     * @return static Instance of this field.
-     */
-    public function default($value): FieldInterface;
-
-    /**
-     * Returns set default value.
-     *
-     * @return mixed
-     */
-    public function getDefaultValue();
-
     /**
      * Returns array definition of this field.
      * @return array
