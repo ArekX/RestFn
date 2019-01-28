@@ -15,8 +15,8 @@ use ArekX\JsonQL\Rest\Handlers\Reader;
 use ArekX\JsonQL\Rest\Handlers\Writer;
 use ArekX\JsonQL\Rest\Services\JsonResponse;
 use ArekX\JsonQL\Rest\Services\Request;
-use ArekX\JsonQL\Services\RequestInterface;
-use ArekX\JsonQL\Services\ResponseInterface;
+use ArekX\JsonQL\Interfaces\RequestInterface;
+use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class Config extends \ArekX\JsonQL\Config\Config
 {

@@ -8,8 +8,8 @@
 namespace ArekX\JsonQL;
 
 use ArekX\JsonQL\Config\ConfigInterface;
-use ArekX\JsonQL\Services\RequestInterface;
-use ArekX\JsonQL\Services\ResponseInterface;
+use ArekX\JsonQL\Interfaces\RequestInterface;
+use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 abstract class MainApplication
 {

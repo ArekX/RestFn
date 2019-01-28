@@ -13,8 +13,8 @@ use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Rest\Application;
 use ArekX\JsonQL\Rest\Handlers\Reader;
 use ArekX\JsonQL\Rest\Services\JsonResponse;
-use ArekX\JsonQL\Services\RequestInterface;
-use ArekX\JsonQL\Services\ResponseInterface;
+use ArekX\JsonQL\Interfaces\RequestInterface;
+use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class MockRestConfig extends Config
 {

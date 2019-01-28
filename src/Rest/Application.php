@@ -25,7 +25,7 @@ class Application extends \ArekX\JsonQL\MainApplication
 
     public function run(): void
     {
-        $request = $this->request->getBody();
+        $request = $this->request->read();
 
         foreach ($request as $type => $data) {
             $handler = $this->getHandler($type);

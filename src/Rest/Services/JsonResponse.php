@@ -8,7 +8,7 @@
 namespace ArekX\JsonQL\Rest\Services;
 
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
-use ArekX\JsonQL\Services\ResponseInterface;
+use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class JsonResponse implements ResponseInterface
 {

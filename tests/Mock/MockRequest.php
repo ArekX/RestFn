@@ -7,7 +7,7 @@
 
 namespace tests\Mock;
 
-class MockRequest implements \ArekX\JsonQL\Services\RequestInterface
+class MockRequest implements \ArekX\JsonQL\Interfaces\RequestInterface
 {
     public $body = [];
 
@@ -16,7 +16,7 @@ class MockRequest implements \ArekX\JsonQL\Services\RequestInterface
      *
      * @return array
      */
-    public function getBody(): array
+    public function read(): array
     {
         return $this->body;
     }

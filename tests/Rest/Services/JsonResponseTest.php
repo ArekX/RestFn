@@ -9,7 +9,7 @@ namespace tests\Rest\Services;
 
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
 use ArekX\JsonQL\Rest\Services\JsonResponse;
-use ArekX\JsonQL\Services\ResponseInterface;
+use ArekX\JsonQL\Interfaces\ResponseInterface;
 use tests\Mock\MockHandler;
 use tests\Rest\TestCase;
 

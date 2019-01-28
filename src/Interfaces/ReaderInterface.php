@@ -5,7 +5,7 @@
  *
  **/
 
-namespace ArekX\JsonQL\Services;
+namespace ArekX\JsonQL\Interfaces;
 
 
 interface ReaderInterface

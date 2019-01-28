@@ -5,9 +5,10 @@
  *
  **/
 
-namespace ArekX\JsonQL\Validation;
+namespace ArekX\JsonQL\Interfaces;
 
-interface TypeDefinitionInterface
+
+interface DefinitionInterface
 {
     public static function definition(): array;
 }

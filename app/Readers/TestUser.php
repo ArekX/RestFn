@@ -7,7 +7,7 @@
 
 namespace App\Readers;
 
-use ArekX\JsonQL\Services\ReaderInterface;
+use ArekX\JsonQL\Interfaces\ReaderInterface;
 use ArekX\JsonQL\Values\DataProvider;
 
 class TestUser implements ReaderInterface

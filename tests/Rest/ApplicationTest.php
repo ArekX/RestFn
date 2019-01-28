@@ -10,7 +10,7 @@ namespace tests\Rest;
 use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Rest\Application;
 use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
-use ArekX\JsonQL\Services\RequestInterface;
+use ArekX\JsonQL\Interfaces\RequestInterface;
 use tests\Mock\MockHandler;
 use tests\Mock\MockRequest;
 

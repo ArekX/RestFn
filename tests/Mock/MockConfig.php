@@ -11,8 +11,8 @@ use ArekX\JsonQL\Config\Config;
 use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Rest\Handlers\Reader;
-use ArekX\JsonQL\Services\RequestInterface;
-use ArekX\JsonQL\Services\ResponseInterface;
+use ArekX\JsonQL\Interfaces\RequestInterface;
+use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class MockConfig extends Config
 {

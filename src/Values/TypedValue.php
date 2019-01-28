@@ -7,11 +7,12 @@
 
 namespace ArekX\JsonQL\Values;
 
+use ArekX\JsonQL\Interfaces\DefinitionInterface;
 use ArekX\JsonQL\Validation\Helpers\Validator;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Types\BaseType;
 
-abstract class TypedValue implements \ArrayAccess
+abstract class TypedValue implements \ArrayAccess, DefinitionInterface
 {
     /** @var mixed */
     protected $data;

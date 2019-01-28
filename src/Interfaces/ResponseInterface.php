@@ -5,7 +5,7 @@
  *
  **/
 
-namespace ArekX\JsonQL\Services;
+namespace ArekX\JsonQL\Interfaces;
 
 
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;

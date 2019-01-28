@@ -7,7 +7,7 @@
 
 namespace ArekX\JsonQL\Rest\Services;
 
-use ArekX\JsonQL\Services\RequestInterface;
+use ArekX\JsonQL\Interfaces\RequestInterface;
 
 class Request implements RequestInterface
 {
@@ -17,7 +17,7 @@ class Request implements RequestInterface
     /**
      * @codeCoverageIgnore
      */
-    public function getBody(): array
+    public function read(): array
     {
         if ($this->body !== null) {
             return $this->body;

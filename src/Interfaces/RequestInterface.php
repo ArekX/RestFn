@@ -5,7 +5,7 @@
  *
  **/
 
-namespace ArekX\JsonQL\Services;
+namespace ArekX\JsonQL\Interfaces;
 
 
 interface RequestInterface
@@ -15,5 +15,5 @@ interface RequestInterface
      *
      * @return array
      */
-    public function getBody(): array;
+    public function read(): array;
 }

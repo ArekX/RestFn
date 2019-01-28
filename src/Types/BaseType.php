@@ -7,6 +7,7 @@
 
 namespace ArekX\JsonQL\Types;
 
+use ArekX\JsonQL\Interfaces\DefinitionInterface;
 use ArekX\JsonQL\Traits\Memoize;
 use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\TypeInterface;
@@ -14,7 +15,7 @@ use ArekX\JsonQL\Validation\TypeValidatorInterface;
 
 use function ArekX\JsonQL\Validation\classField;
 
-abstract class BaseType implements TypeInterface, TypeValidatorInterface
+abstract class BaseType implements TypeInterface, TypeValidatorInterface, DefinitionInterface
 {
     use Memoize;
 
