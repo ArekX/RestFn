@@ -11,7 +11,7 @@ use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\TypeInterface;
 
-use function ArekX\JsonQL\Validation\objectType;
+use function ArekX\JsonQL\Validation\objectField;
 
 class ClassTypeField extends BaseField
 {
@@ -29,19 +29,19 @@ class ClassTypeField extends BaseField
     /** @var FieldInterface */
     protected $validator;
 
-    public function __construct(string $typeClass)
+    public function __construct(string $name, array $fields)
     {
         /** @var TypeInterface $typeClass */
 
-        $this->fields = $typeClass::fields();
-        $this->classTypeName = $typeClass::name();
+        $this->fields = $fields;
+        $this->classTypeName = $name;
 
         $this->override();
     }
 
     public function override(?array $fields = null): ClassTypeField
     {
-        $this->validator = objectType()
+        $this->validator = objectField()
             ->of($fields === null ? $this->fields : Value::merge($this->fields, $fields))
             ->strict();
 

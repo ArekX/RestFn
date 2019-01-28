@@ -7,16 +7,16 @@
 
 namespace ArekX\JsonQL\Types;
 
-use function ArekX\JsonQL\Validation\numberType;
+use function ArekX\JsonQL\Validation\numberField;
 
 class PaginationType extends BaseType
 {
     protected static function typeFields(): array
     {
         return [
-            'page' => numberType()->required()->info('Current page'),
-            'size' => numberType()->required()->info('Page size'),
-            'total' => numberType()->required()->info('Total items')
+            'page' => numberField()->required()->info('Current page'),
+            'size' => numberField()->required()->info('Page size'),
+            'total' => numberField()->required()->info('Total items')
         ];
     }
 }

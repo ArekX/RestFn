@@ -7,7 +7,7 @@
 
 namespace ArekX\JsonQL\Validation\Fields;
 
-use function ArekX\JsonQL\Validation\anyType;
+use function ArekX\JsonQL\Validation\anyField;
 use ArekX\JsonQL\Validation\FieldInterface;
 
 class ArrayField extends BaseField
@@ -67,7 +67,7 @@ class ArrayField extends BaseField
     public function getFieldDefinition(): array
     {
         return [
-            'item' => ($this->itemRule ? $this->itemRule : anyType())->getDefinition()
+            'item' => ($this->itemRule ? $this->itemRule : anyField())->getDefinition()
         ];
     }
 

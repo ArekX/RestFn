@@ -5,7 +5,7 @@
  *
  **/
 
-namespace ArekX\JsonQL\Helpers;
+namespace ArekX\JsonQL\Validation\Helpers;
 
 use ArekX\JsonQL\Validation\InvalidTypeException;
 use ArekX\JsonQL\Validation\TypeValidatorInterface;

@@ -8,15 +8,15 @@
 namespace ArekX\JsonQL\Types;
 
 use function ArekX\JsonQL\Validation\arrayType;
-use function ArekX\JsonQL\Validation\classType;
+use function ArekX\JsonQL\Validation\classField;
 
 class DataProviderType extends BaseType
 {
     protected static function typeFields(): array
     {
         return [
-            'pagination' => classType(PaginationType::class)->required()->info('Pagination information'),
-            'sort' => classType(SortType::class)->required()->info('Sorting information'),
+            'pagination' => classField(PaginationType::class)->required()->info('Pagination information'),
+            'sort' => classField(SortType::class)->required()->info('Sorting information'),
             'items' => static::itemType()
         ];
     }

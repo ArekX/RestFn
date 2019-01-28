@@ -44,7 +44,7 @@ class AllOfField extends BaseField
     public function getFieldDefinition(): array
     {
         return [
-            'children' => array_map(function(FieldInterface $field) {
+            'fields' => array_map(function(FieldInterface $field) {
                 return $field->getDefinition();
             }, $this->childFields)
         ];

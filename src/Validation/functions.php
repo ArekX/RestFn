@@ -7,6 +7,7 @@
 
 namespace ArekX\JsonQL\Validation;
 
+use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
 use ArekX\JsonQL\Validation\Fields\BoolField;
@@ -17,90 +18,98 @@ use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\CompareField;
 use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
-use ArekX\JsonQL\Validation\Fields\OneOfField;
+use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use ArekX\JsonQL\Validation\Fields\StringField;
 
-if (!function_exists('ArekX\JsonQL\Validation\stringType')) {
-    function stringType(): StringField
+if (!function_exists('ArekX\JsonQL\Validation\allOfFields')) {
+    function allOfFields(FieldInterface ...$fields): AllOfField
     {
-        return new StringField();
+        return DI::make(AllOfField::class, [
+            'fields' => $fields
+        ]);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\compareType')) {
-    function compareType(): CompareField
+if (!function_exists('ArekX\JsonQL\Validation\anyOfFields')) {
+    function anyOfFields(...$fields): AnyOfField
     {
-        return new CompareField();
+        return DI::make(AnyOfField::class, [
+            'fields' => $fields
+        ]);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\allOfType')) {
-    function allOfType(...$fields): AllOfField
+if (!function_exists('ArekX\JsonQL\Validation\stringField')) {
+    function stringField(): StringField
     {
-        return new AllOfField($fields);
+        return DI::make(StringField::class);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\oneOf')) {
-    function oneOf(...$fields): OneOfField
+if (!function_exists('ArekX\JsonQL\Validation\compareField')) {
+    function compareField(): CompareField
     {
-        return new OneOfField($fields);
+        return DI::make(CompareField::class);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\anyType')) {
-    function anyType(): AnyField
+if (!function_exists('ArekX\JsonQL\Validation\anyField')) {
+    function anyField(): AnyField
     {
-        return new AnyField();
+        return DI::make(AnyField::class);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\objectType')) {
-    function objectType(): ObjectField
+if (!function_exists('ArekX\JsonQL\Validation\objectField')) {
+    function objectField(): ObjectField
     {
-        return new ObjectField();
+        return DI::make(ObjectField::class);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\numberType')) {
-    function numberType(): NumberField
+if (!function_exists('ArekX\JsonQL\Validation\numberField')) {
+    function numberField(): NumberField
     {
-        return new NumberField();
+        return DI::make(NumberField::class);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\nullType')) {
-    function nullType(): NullField
+if (!function_exists('ArekX\JsonQL\Validation\nullField')) {
+    function nullField(): NullField
     {
-        return new NullField();
+        return DI::make(NullField::class);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\enumType')) {
-    function enumType(array $enum): EnumField
+if (!function_exists('ArekX\JsonQL\Validation\enumField')) {
+    function enumField(array $enum): EnumField
     {
-        return new EnumField($enum);
+        return DI::make(EnumField::class, ['values' => $enum]);
     }
 }
 
-if (!function_exists('ArekX\JsonQL\Validation\classType')) {
-    function classType($typeClass): ClassTypeField
+if (!function_exists('ArekX\JsonQL\Validation\classField')) {
+    function classField($typeClass): ClassTypeField
     {
-        return new ClassTypeField($typeClass);
+        /** @var TypeInterface $typeClass */
+        return DI::make(ClassTypeField::class, [
+            'name' => $typeClass::name(),
+            'fields' => $typeClass::fields()
+        ]);
     }
 }
 
 if (!function_exists('ArekX\JsonQL\Validation\arrayType')) {
     function arrayType(): ArrayField
     {
-        return new ArrayField();
+        return DI::make(ArrayField::class);
     }
 }
 
 
-if (!function_exists('ArekX\JsonQL\Validation\boolType')) {
-    function boolType(): BoolField
+if (!function_exists('ArekX\JsonQL\Validation\boolField')) {
+    function boolField(): BoolField
     {
-        return new BoolField();
+        return DI::make(BoolField::class);
     }
 }

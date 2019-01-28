@@ -7,9 +7,9 @@
 
 namespace ArekX\JsonQL\Types;
 
-use function ArekX\JsonQL\Validation\enumType;
-use function ArekX\JsonQL\Validation\numberType;
-use function ArekX\JsonQL\Validation\objectType;
+use function ArekX\JsonQL\Validation\enumField;
+use function ArekX\JsonQL\Validation\numberField;
+use function ArekX\JsonQL\Validation\objectField;
 use ArekX\JsonQL\Validation\Fields\ObjectField;
 
 class ReadListRequestType extends BaseType
@@ -25,14 +25,14 @@ class ReadListRequestType extends BaseType
 
     protected static function filterType()
     {
-        return objectType()->required()->info('Read list filter');
+        return objectField()->required()->info('Read list filter');
     }
 
     protected static function paginationType()
     {
-        return objectType()->of([
-            'page' => numberType()->required()->info('Current page to retrieve'),
-            'size' => numberType()
+        return objectField()->of([
+            'page' => numberField()->required()->info('Current page to retrieve'),
+            'size' => numberField()
                 ->min(10)
                 ->max(50)
                 ->info('Number of items to get per page.')
@@ -41,8 +41,8 @@ class ReadListRequestType extends BaseType
 
     protected static function sortType()
     {
-        return objectType()->of([
-            ObjectField::ANY_KEY => enumType(['ascending', 'descending'])
+        return objectField()->of([
+            ObjectField::ANY_KEY => enumField(['ascending', 'descending'])
         ])->info('Sorting information');
     }
 

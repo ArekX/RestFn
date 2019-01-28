@@ -7,7 +7,7 @@
 
 namespace ArekX\JsonQL\Values;
 
-use ArekX\JsonQL\Helpers\Validator;
+use ArekX\JsonQL\Validation\Helpers\Validator;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Types\BaseType;
 
@@ -34,7 +34,7 @@ abstract class TypedValue implements \ArrayAccess
         return null;
     }
 
-    public function setData($data)
+    public function setData(array $data)
     {
         $this->data = $data;
         $this->processType();
@@ -52,12 +52,36 @@ abstract class TypedValue implements \ArrayAccess
 
     public function __isset($name)
     {
-        return $this->offsetExists($name);
+        return $this->has($name);
     }
 
     public function __unset($name)
     {
         $this->offsetUnset($name);
+    }
+
+    public function has($name)
+    {
+        if (array_key_exists($name, $this->data)) {
+            return true;
+        }
+
+        if (!is_string($name) || strpos($name, '.') === -1) {
+            return false;
+        }
+
+        $parts = explode('.', $name);
+        $walker = &$this->data;
+
+        foreach ($parts as $part) {
+            if (!array_key_exists($part, $walker)) {
+                return false;
+            }
+
+            $walker = &$walker[$part];
+        }
+
+        return true;
     }
 
     public function get($name, $defaultValue = null)
@@ -120,7 +144,7 @@ abstract class TypedValue implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->data[$offset]);
+        return $this->has($offset);
     }
 
 }

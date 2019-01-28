@@ -12,7 +12,7 @@ use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\TypeInterface;
 use ArekX\JsonQL\Validation\TypeValidatorInterface;
 
-use function ArekX\JsonQL\Validation\classType;
+use function ArekX\JsonQL\Validation\classField;
 
 abstract class BaseType implements TypeInterface, TypeValidatorInterface
 {
@@ -28,14 +28,14 @@ abstract class BaseType implements TypeInterface, TypeValidatorInterface
     public static function validator(): FieldInterface
     {
         return static::staticMemoize(static::class . __METHOD__, function () {
-            return classType(static::class)->required(true, true);
+            return classField(static::class)->required(true, true);
         });
     }
 
     public static function strictValidator(): FieldInterface
     {
         return static::staticMemoize(static::class . __METHOD__, function () {
-            return classType(static::class)->required(true, true)->strict();
+            return classField(static::class)->required(true, true)->strict();
         });
     }
 

@@ -8,6 +8,7 @@
 namespace ArekX\JsonQL\Rest\Handlers;
 
 
+use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Config;
 use ArekX\JsonQL\Services\ReaderInterface;
@@ -67,10 +68,11 @@ class Reader implements HandlerInterface
 
             try {
                 /** @var ReaderInterface $instance */
-                $instance = $this->config->getDI()->get($readerClass);
+                $instance = DI::make($readerClass);
                 $results[$readerName] = $instance->run();
-            } catch (\DI\NotFoundException $e) {
-                $results[$readerName] = 'Reader does not exist.';
+//            } catch (\DI\NotFoundException $e) {
+                // FIXME: Does not work well if some of the inner classes exist same error is output.
+//                $results[$readerName] = 'Reader does not exist.';
             } catch (InvalidTypeException $e) {
                 $results[$readerName] = [
                     'error' => get_class($e),

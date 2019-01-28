@@ -9,7 +9,7 @@ namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\FieldInterface;
 
-class OneOfField extends BaseField
+class AnyOfField extends BaseField
 {
     /** @var FieldInterface[] */
     protected $childFields = [];
@@ -44,7 +44,7 @@ class OneOfField extends BaseField
      */
     protected function getName(): string
     {
-        return 'oneOf';
+        return 'anyOf';
     }
 
     /**
@@ -53,7 +53,7 @@ class OneOfField extends BaseField
     protected function getFieldDefinition(): array
     {
         return [
-            'children' => array_map(function(FieldInterface $field) {
+            'fields' => array_map(function(FieldInterface $field) {
                 return $field->getDefinition();
             }, $this->childFields)
         ];

@@ -7,7 +7,7 @@
 
 namespace ArekX\JsonQL\Types;
 
-use function ArekX\JsonQL\Validation\objectType;
+use function ArekX\JsonQL\Validation\objectField;
 
 class ReadOneRequestType extends BaseType
 {
@@ -20,6 +20,6 @@ class ReadOneRequestType extends BaseType
 
     protected static function atType()
     {
-        return objectType()->required();
+        return objectField()->required();
     }
 }
