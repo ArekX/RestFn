@@ -92,7 +92,7 @@ abstract class TypedValue implements \ArrayAccess, DefinitionInterface
 
     public function set($name, $value)
     {
-        Value::set($this->data, $name, $value);
+        $this->data[$name] = $value;
         $this->processType();
     }
 

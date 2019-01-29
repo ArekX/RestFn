@@ -7,7 +7,7 @@
 
 namespace ArekX\JsonQL\Helpers;
 
-use ArekX\JsonQL\Rest\Config;
+use ArekX\JsonQL\Config\Config;
 use function DI\autowire;
 
 class DI

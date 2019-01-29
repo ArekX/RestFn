@@ -14,6 +14,8 @@ class ValueTest extends TestCase
     use
         MergeFunction,
         GetFunction,
-        SetupFunction
+        SetupFunction,
+        IsEmptyFunction,
+        HasFunction
     ;
 }

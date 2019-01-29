@@ -28,54 +28,6 @@ class Value
         return $result;
     }
 
-
-    public static function set(&$object, $name, $value)
-    {
-        if (strpos($name, '.') === -1 || static::has($object, $name)) {
-            $object[$name] = $value;
-            return;
-        }
-
-        $parts = explode('.', $name);
-        $walker = &$object;
-        $lastPart = array_pop($parts);
-
-        foreach ($parts as $part) {
-            if (!is_array($walker) && !is_object($walker)) {
-                throw new \Exception('Cannot use set on non array and non object types.');
-            }
-
-            if (!static::has($walker, $part)) {
-                if (is_array($walker)) {
-                    $walker[$part] = [];
-                } else {
-                    $walker->{$part} = new \stdClass();
-                }
-            }
-
-            if (is_array($walker)) {
-                $walker = &$walker[$part];
-            } else {
-                $walker = &$walker->{$part};
-            }
-        }
-
-        if (is_array($walker)) {
-            $walker[$lastPart] = $value;
-        } else {
-            $walker->{$lastPart} = $value;
-        }
-    }
-
-    protected static function resolveSet(&$object, $name)
-    {
-        if (is_array($object)) {
-            $object[$name] = [];
-        } else {
-            $object->{$name} = new \stdClass();
-        }
-    }
-
     public static function get($object, $name, $default = null)
     {
         if (!is_array($object) && !is_object($object)) {
@@ -141,7 +93,8 @@ class Value
             return $value === "" ||
                 $value === null ||
                 $value === 0 ||
-                $value === 0.00;
+                $value === 0.00 ||
+                $value === [];
         }
 
         return empty($value);
