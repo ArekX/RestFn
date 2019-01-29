@@ -1,5 +1,13 @@
 # JsonQL
-JsonQL Rest interface framework
+
+JsonQL is a REST framework providing different and more effective access to the rest and faster and more cleaner development by using just one endpoint.
+
+Requests can be aggregated to provide "one-trip request" to the server to get all of the necessary data.
+
+All requests are checked using powerful type definitions which can be used to validate request and response data.
+These type definitions also for allow generation of REST API automatically.
+
+__NOTE:__ This framework is still a work in progress and is not production ready.
 
 # Testing
 
