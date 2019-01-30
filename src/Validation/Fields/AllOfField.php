@@ -46,7 +46,12 @@ class AllOfField implements FieldInterface
         return $this;
     }
 
-
+    /**
+     * Adds list of fields to be validated.
+     *
+     * @param array $fields Fields to be validated.
+     * @return AllOfField
+     */
     public function withFields(array $fields): AllOfField
     {
         $this->fields = array_merge($this->fields, $fields);

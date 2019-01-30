@@ -7,13 +7,36 @@
 
 namespace ArekX\JsonQL\Traits;
 
-
+/**
+ * Trait Memoize
+ * @package ArekX\JsonQL\Traits
+ *
+ * Trait to support memoization functions in classes.
+ * Memoization is used to execute expensive operations only once.
+ *
+ */
 trait Memoize
 {
+    /**
+     * @var array List of statically memoized values.
+     */
     protected static $staticMemoizedValues = [];
+
+    /**
+     * @var array List of memoized values
+     */
     protected $memoizedValues = [];
 
-    protected static function staticMemoize($key, callable $retriever)
+    /**
+     * Memoize one value statically.
+     *
+     * Memoized values are run only once, and every next time only a result is returned.
+     *
+     * @param string $key Key to be used to check whether or not value is memoized.
+     * @param callable $retriever Callable function used call expensive operation to retrieve the value.
+     * @return mixed Result from $retriever or memoized value if exists.
+     */
+    protected static function staticMemoize(string $key, callable $retriever)
     {
         if (array_key_exists($key, static::$staticMemoizedValues)) {
             return static::$staticMemoizedValues[$key];
@@ -22,6 +45,15 @@ trait Memoize
         return static::$staticMemoizedValues[$key] = $retriever();
     }
 
+    /**
+     * Memoize one value.
+     *
+     * Memoized values are run only once, and every next time only a result is returned.
+     *
+     * @param string $key Key to be used to check whether or not value is memoized.
+     * @param callable $retriever Callable function used call expensive operation to retrieve the value.
+     * @return mixed Result from $retriever or memoized value if exists.
+     */
     protected function memoize($key, callable $retriever)
     {
         if (array_key_exists($key, $this->memoizedValues)) {
