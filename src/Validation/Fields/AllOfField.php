@@ -9,62 +9,47 @@ namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\FieldInterface;
 
-class AllOfField extends BaseField
+/**
+ * Class AllOfField
+ * @package ArekX\JsonQL\Validation\Fields
+ *
+ * Field representing multiple fields which all must be true.
+ *
+ * This field is equivalent to the AND operator.
+ */
+class AllOfField implements FieldInterface
 {
-    /** @var FieldInterface[] */
-    protected $childFields = [];
+    /**
+     * @var FieldInterface[] List of fields which will be validated.
+     */
+    public $fields;
 
+    /**
+     * AllOfField constructor.
+     *
+     * @param array $fields Fields which will be validated.
+     */
     public function __construct(array $fields)
     {
-        $this->childFields = $fields;
+        $this->fields = $fields;
     }
 
     /**
-     * @inheritdoc
+     * Adds another field to the validation list.
+     *
+     * @param FieldInterface $field Field to be added.
+     * @return AllOfField
      */
-    protected function doValidate(string $field, $value, $data, $errors): array
+    public function andField(FieldInterface $field): AllOfField
     {
-        foreach ($this->childFields as $childField) {
-            $childErrors = $childField->validateField($field, $value, $data);
-
-            if (empty($childErrors)) {
-                continue;
-            }
-
-            return array_merge($errors, $childErrors);
-        }
-
-        return $errors;
+        $this->fields[] = $field;
+        return $this;
     }
 
-    /**
-     * Returns array definition of this field.
-     * @return array
-     */
-    public function getFieldDefinition(): array
-    {
-        return [
-            'fields' => array_map(function(FieldInterface $field) {
-                return $field->getDefinition();
-            }, $this->childFields)
-        ];
-    }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getName(): string
+    public function withFields(array $fields): AllOfField
     {
-        return 'allOf';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clone()
-    {
-        $instance = new static($this->childFields);
-        $this->setupClone($instance);
-        return $instance;
+        $this->fields = array_merge($this->fields, $fields);
+        return $this;
     }
 }

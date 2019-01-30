@@ -21,6 +21,9 @@ trait GetConfigsFunction
         ]);
 
         $this->assertEquals($config->getConfig(), [
+            Config::DI => [
+                'compile' => false
+            ],
             Config::SERVICES => [],
             Config::CORE => [],
             'test' => [

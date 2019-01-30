@@ -29,8 +29,8 @@
     "phpunit/php-code-coverage": "^6.1"
   },
   "scripts": {
-    "test": "vendor/bin/phpunit",
+    "test": "php vendor/bin/phpunit",
     "document": "php document.php",
-    "coverage": "vendor/bin/phpunit --coverage-html coverage --whitelist src"
+    "coverage": "php vendor/bin/phpunit --coverage-html coverage --whitelist src"
   }
 }

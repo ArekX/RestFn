@@ -21,6 +21,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class Config implements ConfigInterface, ContainerInterface, FactoryInterface
 {
+    const DI = 'di';
     const SERVICES = 'services';
     const CORE = 'core';
 
@@ -46,6 +47,9 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
     public function getCoreConfig(): array
     {
         return [
+            self::DI => [
+                'compile' => false
+            ],
             self::SERVICES => [],
             self::CORE => $this->getCoreServices()
         ];
@@ -137,7 +141,11 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
     {
         $builder = new ContainerBuilder();
 
-        // TODO: Enable compilation for production.
+        $di = $this->config[self::DI];
+
+        if ($di['compile']) {
+            $builder->enableCompilation($di['cacheFolder']);
+        }
 
         $builder->addDefinitions($this->config[self::SERVICES]);
         $builder->addDefinitions($this->config[self::CORE]);
