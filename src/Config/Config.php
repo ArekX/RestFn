@@ -143,8 +143,11 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
 
         $di = $this->config[self::DI];
 
+
         if ($di['compile']) {
+            // @codeCoverageIgnoreStart
             $builder->enableCompilation($di['cacheFolder']);
+            // @codeCoverageIgnoreEnd
         }
 
         $builder->addDefinitions($this->config[self::SERVICES]);
