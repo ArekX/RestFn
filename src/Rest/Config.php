@@ -20,7 +20,7 @@ use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class Config extends \ArekX\JsonQL\Config\Config
 {
-    protected function getCoreServices()
+    protected function getCoreConfig(): array
     {
         return [
             MainApplication::class => DI::wireSetup(Application::class, [

@@ -19,45 +19,102 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
+/**
+ * Class Config
+ * @package ArekX\JsonQL\Config
+ *
+ * Contains all of the configuration for the application.
+ *
+ * Configuration is separated into segments:
+ * [
+ *    'di' => [] // Dependency injection container configuration.
+ *    'services' => [] // App services configuration
+ *    'core' => [] // Core services configuration
+ * ]
+ */
 class Config implements ConfigInterface, ContainerInterface, FactoryInterface
 {
     const DI = 'di';
     const SERVICES = 'services';
     const CORE = 'core';
 
-    /** @var array  */
+    /** @var array Input configuration array. */
     protected $config;
 
-    /** @var array  */
+    /** @var array Input parameter array. */
     protected $params;
 
-    /** @var Container */
+    /** @var Container DI container */
     protected $container;
 
+    /**
+     * Config constructor.
+     * @param array $config Configuration array for classes.
+     * @param array $params Configuration parameters for the app.
+     */
     public function __construct(array $config = [], array $params = [])
     {
-        $this->config = Value::merge($this->getCoreConfig(), $config);
+        $this->config = Value::merge($this->getInitialConfig(), $config);
         $this->params = $params;
         $this->container = $this->createDI();
     }
 
+
     /**
      * Returns core configuration.
+     *
+     * @return array
      */
-    public function getCoreConfig(): array
+    public function getInitialConfig(): array
     {
         return [
-            self::DI => [
-                'compile' => false
-            ],
-            self::SERVICES => [],
-            self::CORE => $this->getCoreServices()
+            self::DI => $this->getDIConfig(),
+            self::SERVICES => $this->getServicesConfig(),
+            self::CORE => $this->getCoreConfig()
         ];
     }
 
-    protected function getCoreServices()
+    /**
+     * Returns initial core services configuration.
+     *
+     * This group contains list of services required for the app to run.
+     *
+     * @return array
+     */
+    protected function getCoreConfig(): array
     {
         return [];
+    }
+
+    /**
+     * Returns initial application services configuration.
+     *
+     * This group contains a list of services which will be directly added to the DI.
+     *
+     * @return array
+     */
+    protected function getServicesConfig(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns initial dependency injection configuration.
+     *
+     * This configuration is used to configure the DI builder.
+     *
+     * Available configuration:
+     * [
+     *    'compile' => false, // Whether or not to compile DI container for faster load.
+     *    'cacheFolder' => '' // Folder destination used for caching.
+     * ]
+     * @return array
+     */
+    protected function getDIConfig(): array
+    {
+        return [
+            'compile' => false
+        ];
     }
 
     /**
@@ -103,8 +160,15 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
         return Value::get($this->params, $name, $default);
     }
 
+
     /**
-     * Returns current DI container implementing ContainerInterface.
+     * Returns container interface used for building.
+     *
+     * NOTE:
+     * This should be used internally for specific logic of wiring your classes in DI way.
+     * Do not make this a service locator and get classes directly.
+     *
+     * @return ContainerInterface
      */
     public function getDI(): ContainerInterface
     {
@@ -134,8 +198,12 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
         return Value::get($this->config, $name, $default);
     }
 
+
     /**
-     * @return Container
+     * Creates dependency injection container with current configuration.
+     *
+     * @return Container Created container.
+     * @throws \Exception
      */
     protected function createDI(): Container
     {
@@ -159,8 +227,9 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
         return $builder->build();
     }
 
+
     /**
-     * Bootstrap the application.
+     * Bootstrap the main application.
      */
     public function bootstrap()
     {

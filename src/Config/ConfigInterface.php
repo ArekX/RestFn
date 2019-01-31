@@ -22,7 +22,7 @@ interface ConfigInterface
     /**
      * Returns core configuration.
      */
-    public function getCoreConfig(): array;
+    public function getInitialConfig(): array;
 
     /**
      * Returns current passed configuration.

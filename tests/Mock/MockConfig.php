@@ -16,7 +16,7 @@ use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class MockConfig extends Config
 {
-    protected function getCoreServices()
+    protected function getCoreConfig(): array
     {
         return [
             MainApplication::class => DI::wireSetup(MockApplication::class, []),
