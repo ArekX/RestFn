@@ -21,11 +21,6 @@ class MockRestConfig extends Config
     protected function getCoreConfig(): array
     {
         return [
-            MainApplication::class => DI::wireSetup(Application::class, [
-                'handlers' => [
-                    MockHandler::class
-                ]
-            ]),
             RequestInterface::class => DI::wireClass(MockRequest::class),
             ResponseInterface::class => DI::wireClass(MockResponse::class),
             JsonResponse::class => DI::wireClass(MockJsonResponse::class),
@@ -33,5 +28,23 @@ class MockRestConfig extends Config
                 'namespace' => ''
             ])
         ];
+    }
+
+    protected function getAppConfig()
+    {
+        return [
+            'handlers' => [
+                MockHandler::class
+            ]
+        ];
+    }
+
+    /**
+     * Returns application class used to bootstrap the application and configure it.
+     * @return string
+     */
+    protected function getApplicationClass(): string
+    {
+        return Application::class;
     }
 }

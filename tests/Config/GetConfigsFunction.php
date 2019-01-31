@@ -14,13 +14,14 @@ trait GetConfigsFunction
 {
     public function testConfigIsRetrieved()
     {
-        $config = new Config([
+        $config = new TestConfig([
             'test' => [
                 'value' => 1
             ]
         ]);
 
         $this->assertEquals($config->getConfig(), [
+            Config::APP => null,
             Config::DI => [
                 'compile' => false
             ],

@@ -8,16 +8,13 @@
 namespace ArekX\JsonQL\Config;
 
 
+use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\MainApplication;
 use DI\Container;
 use DI\ContainerBuilder;
-use DI\DependencyException;
 use DI\FactoryInterface;
-use DI\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class Config
@@ -27,13 +24,15 @@ use Psr\Container\NotFoundExceptionInterface;
  *
  * Configuration is separated into segments:
  * [
+ *    'app' => [] // Application class DI configuration.
  *    'di' => [] // Dependency injection container configuration.
  *    'services' => [] // App services configuration
  *    'core' => [] // Core services configuration
  * ]
  */
-class Config implements ConfigInterface, ContainerInterface, FactoryInterface
+abstract class Config implements ConfigInterface, ContainerInterface, FactoryInterface
 {
+    const APP = 'app';
     const DI = 'di';
     const SERVICES = 'services';
     const CORE = 'core';
@@ -68,6 +67,7 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
     public function getInitialConfig(): array
     {
         return [
+            self::APP => $this->getAppConfig(),
             self::DI => $this->getDIConfig(),
             self::SERVICES => $this->getServicesConfig(),
             self::CORE => $this->getCoreConfig()
@@ -221,6 +221,7 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
         $builder->addDefinitions($this->config[self::SERVICES]);
         $builder->addDefinitions($this->config[self::CORE]);
         $builder->addDefinitions([
+            MainApplication::class => DI::wireSetup($this->getApplicationClass(), $this->config[self::APP]),
             ConfigInterface::class => $this
         ]);
 
@@ -258,5 +259,21 @@ class Config implements ConfigInterface, ContainerInterface, FactoryInterface
     public function make($name, array $parameters = [])
     {
         return $this->container->make($name, $parameters);
+    }
+
+
+    /**
+     * Returns application class used to bootstrap the application and configure it.
+     * @return string
+     */
+    protected abstract function getApplicationClass(): string;
+
+    /**
+     * Returns initial main application config.
+     * @return mixed
+     */
+    protected function getAppConfig()
+    {
+        return [];
     }
 }

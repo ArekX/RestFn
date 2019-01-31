@@ -16,15 +16,25 @@ use ArekX\JsonQL\Interfaces\ResponseInterface;
 
 class MockConfig extends Config
 {
+    /**
+     * @inheritdoc
+     */
     protected function getCoreConfig(): array
     {
         return [
-            MainApplication::class => DI::wireSetup(MockApplication::class, []),
             RequestInterface::class => DI::wireClass(MockRequest::class),
             ResponseInterface::class => DI::wireClass(MockResponse::class),
             Reader::class => DI::wireSetup(Reader::class, [
                 'namespace' => ''
             ])
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getApplicationClass(): string
+    {
+        return MockApplication::class;
     }
 }

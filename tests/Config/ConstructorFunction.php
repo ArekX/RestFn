@@ -10,6 +10,7 @@ namespace tests\Config;
 
 use ArekX\JsonQL\Config\Config;
 use ArekX\JsonQL\Config\ConfigInterface;
+use tests\Mock\MockConfig;
 
 trait ConstructorFunction
 {
@@ -21,7 +22,7 @@ trait ConstructorFunction
 
     public function testEmptyConfig()
     {
-        $config = new Config();
+        $config = new TestConfig();
 
         $this->assertEquals($config->getConfigItem(Config::SERVICES), []);
         $this->assertEquals($config->getConfigItem(Config::CORE), []);
@@ -30,7 +31,7 @@ trait ConstructorFunction
 
     public function testServicesIsFilled()
     {
-        $config = new Config([
+        $config = new MockConfig([
             Config::SERVICES => [
                 'name' => 'value'
             ]
