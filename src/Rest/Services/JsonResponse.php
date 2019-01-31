@@ -37,7 +37,7 @@ class JsonResponse implements ResponseInterface
      */
     public function clearHandler(HandlerInterface $handler)
     {
-        $this->data[$handler->getResponseType()] = (object)[];
+        $this->data[$handler->responseType()] = (object)[];
     }
 
     /**
@@ -61,6 +61,6 @@ class JsonResponse implements ResponseInterface
      */
     public function write(HandlerInterface $handler, array $data): void
     {
-        $this->data[$handler->getResponseType()] = !empty($data) ? $data : (object)[];
+        $this->data[$handler->responseType()] = !empty($data) ? $data : (object)[];
     }
 }

@@ -15,7 +15,7 @@ class Writer implements HandlerInterface
      *
      * @return string
      */
-    public static function getRequestType(): string
+    public static function requestType(): string
     {
         return 'write';
     }
@@ -25,7 +25,7 @@ class Writer implements HandlerInterface
      *
      * @return string
      */
-    public function getResponseType(): string
+    public function responseType(): string
     {
         return 'wrote';
     }

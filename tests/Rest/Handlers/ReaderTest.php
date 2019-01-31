@@ -13,13 +13,13 @@ class ReaderTest extends \tests\Rest\TestCase
 {
     public function testIsValidRequestType()
     {
-        $this->assertEquals(Reader::getRequestType(), 'read');
+        $this->assertEquals(Reader::requestType(), 'read');
     }
 
     public function testIsValidResponseType()
     {
         $writer = $this->getReader();
-        $this->assertEquals($writer->getResponseType(), 'read');
+        $this->assertEquals($writer->responseType(), 'read');
     }
 
     public function testHandleEmptyData()

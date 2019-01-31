@@ -44,6 +44,6 @@ class MockResponse implements ResponseInterface
      */
     public function write(HandlerInterface $handler, array $data): void
     {
-        $this->data[$handler->getResponseType()] = $data;
+        $this->data[$handler->responseType()] = $data;
     }
 }

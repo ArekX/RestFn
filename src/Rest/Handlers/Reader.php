@@ -33,7 +33,7 @@ class Reader implements HandlerInterface
      *
      * @return string
      */
-    public static function getRequestType(): string
+    public static function requestType(): string
     {
         return 'read';
     }
@@ -43,7 +43,7 @@ class Reader implements HandlerInterface
      *
      * @return string
      */
-    public function getResponseType(): string
+    public function responseType(): string
     {
         return 'read';
     }

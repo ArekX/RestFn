@@ -12,13 +12,13 @@ class WriterTest extends \tests\Rest\TestCase
 {
     public function testIsValidRequestType()
     {
-        $this->assertEquals(Writer::getRequestType(), 'write');
+        $this->assertEquals(Writer::requestType(), 'write');
     }
 
     public function testIsValidResponseType()
     {
         $writer = $this->getWriter();
-        $this->assertEquals($writer->getResponseType(), 'wrote');
+        $this->assertEquals($writer->responseType(), 'wrote');
     }
 
     public function testHandleEmptyData()

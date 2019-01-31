@@ -15,14 +15,14 @@ interface HandlerInterface
      *
      * @return string
      */
-    public static function getRequestType(): string;
+    public static function requestType(): string;
 
     /**
      * Returns handler response type.
      *
      * @return string
      */
-    public function getResponseType(): string;
+    public function responseType(): string;
 
     /**
      * Handle request.

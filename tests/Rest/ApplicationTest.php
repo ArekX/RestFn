@@ -40,7 +40,7 @@ class ApplicationTest extends TestCase
     {
         /** @var MockRequest $request */
         $request = $this->di->get(RequestInterface::class);
-        $request->body = [MockHandler::getRequestType() => ['data' => 'value']];
+        $request->body = [MockHandler::requestType() => ['data' => 'value']];
 
         $this->app->run();
 

@@ -12,13 +12,13 @@ class SequencerTest extends \tests\Rest\TestCase
 {
     public function testIsValidRequestType()
     {
-        $this->assertEquals(Sequencer::getRequestType(), 'sequence');
+        $this->assertEquals(Sequencer::requestType(), 'sequence');
     }
 
     public function testIsValidResponseType()
     {
         $writer = $this->getSequencer();
-        $this->assertEquals($writer->getResponseType(), 'sequenced');
+        $this->assertEquals($writer->responseType(), 'sequenced');
     }
 
     public function testHandleEmptyData()
