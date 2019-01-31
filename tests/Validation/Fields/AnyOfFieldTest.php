@@ -5,7 +5,7 @@ namespace tests\Validation\Fields;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
-use tests\Validation\Mocks\DummyField;
+use tests\Validation\Mocks\MockField;
 
 /**
  * by Aleksandar Panic
@@ -17,9 +17,9 @@ class AnyOfFieldTest extends \tests\TestCase
     public function testAllOfFieldAcceptsInterfaces()
     {
         $dummyFields = [
-            new DummyField(),
-            new DummyField(),
-            new DummyField(),
+            new MockField(),
+            new MockField(),
+            new MockField(),
         ];
 
         $allOfField = $this->createField($dummyFields);
@@ -29,15 +29,15 @@ class AnyOfFieldTest extends \tests\TestCase
     public function testAddingAFieldAppendsToList()
     {
         $dummyFields = [
-            new DummyField(),
-            new DummyField(),
-            new DummyField(),
+            new MockField(),
+            new MockField(),
+            new MockField(),
         ];
 
         $allOfField = $this->createField($dummyFields);
         $this->assertEquals($allOfField->fields, $dummyFields);
 
-        $newField = new DummyField();
+        $newField = new MockField();
         $dummyFields[] = $newField;
         $allOfField->andField($newField);
 
@@ -47,18 +47,18 @@ class AnyOfFieldTest extends \tests\TestCase
     public function testAddingMultipleFieldsAddsThemToList()
     {
         $dummyFields = [
-            new DummyField(),
-            new DummyField(),
-            new DummyField(),
+            new MockField(),
+            new MockField(),
+            new MockField(),
         ];
 
         $allOfField = $this->createField($dummyFields);
         $this->assertEquals($allOfField->fields, $dummyFields);
 
         $newFields = [
-            new DummyField(),
-            new DummyField(),
-            new DummyField(),
+            new MockField(),
+            new MockField(),
+            new MockField(),
         ];
         $dummyFields = array_merge($dummyFields, $newFields);
 
@@ -69,12 +69,12 @@ class AnyOfFieldTest extends \tests\TestCase
     public function testCallingAddReturnsChainedInterface()
     {
         $allOfField = $this->createField();
-        $this->assertSame($allOfField, $allOfField->andField(new DummyField()));
+        $this->assertSame($allOfField, $allOfField->andField(new MockField()));
     }
 
     public function testCallingValidateOneDummyField()
     {
-        $allOfField = $this->createField([new DummyField()]);
+        $allOfField = $this->createField([new MockField()]);
         $result = $allOfField->validate('fieldName', 'value');
         $this->assertEmpty($result);
     }
@@ -90,7 +90,7 @@ class AnyOfFieldTest extends \tests\TestCase
 
     public function testAllOfCallsValidateOfOtherFields()
     {
-        $field = $this->createMock(DummyField::class);
+        $field = $this->createMock(MockField::class);
 
         $field
             ->expects($this->once())
@@ -103,8 +103,8 @@ class AnyOfFieldTest extends \tests\TestCase
 
     public function testFirstSuccessWontValidateSecond()
     {
-        $field1 = $this->createMock(DummyField::class);
-        $field2 = $this->createMock(DummyField::class);
+        $field1 = $this->createMock(MockField::class);
+        $field2 = $this->createMock(MockField::class);
 
         $field1->method('validate')->willReturn([]);
         $field2->expects($this->never())->method('validate')->willReturn(['error2']);
@@ -115,8 +115,8 @@ class AnyOfFieldTest extends \tests\TestCase
 
     public function testWillRunUntilItSucceeds()
     {
-        $field1 = $this->createMock(DummyField::class);
-        $field2 = $this->createMock(DummyField::class);
+        $field1 = $this->createMock(MockField::class);
+        $field2 = $this->createMock(MockField::class);
 
         $field1->method('validate')->willReturn(['error1']);
         $field2->method('validate')->willReturn(['error2']);
@@ -125,6 +125,98 @@ class AnyOfFieldTest extends \tests\TestCase
         $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error1', 'error2']);
     }
 
+    public function testSettingRequired()
+    {
+        $field = $this->createField();
+        $this->assertFalse($field->isRequired);
+        $this->assertSame($field->required(), $field);
+        $this->assertTrue($field->isRequired);
+    }
+
+    public function testSettingRequiredToNonRequired()
+    {
+        $field = $this->createField();
+        $this->assertSame($field->required(), $field);
+        $this->assertTrue($field->isRequired);
+        $this->assertSame($field->required(false), $field);
+        $this->assertFalse($field->isRequired);
+    }
+
+    public function testDoesNotRunIfNotRequiredAndEmptyValue()
+    {
+        $field1 = $this->createMock(MockField::class);
+        $field2 = $this->createMock(MockField::class);
+
+        $field1->method('validate')->willReturn(['error1']);
+        $field2->method('validate')->willReturn(['error2']);
+
+        $field = $this->createField([$field1, $field2]);
+        $field->required(false);
+        $this->assertEquals($field->validate('fieldName', null), []);
+    }
+
+
+    public function testCanSetEmptyValue()
+    {
+        $field = $this->createField();
+        $this->assertNull($field->emptyValue);
+        $this->assertSame($field->emptyValue(""), $field);
+        $this->assertEquals($field->emptyValue, "");
+    }
+
+    public function testSetEmptyValueIsChecked()
+    {
+        $field1 = $this->createMock(MockField::class);
+        $field2 = $this->createMock(MockField::class);
+
+        $field1->method('validate')->willReturn(['error1']);
+        $field2->method('validate')->willReturn(['error2']);
+
+        $field = $this->createField([$field1, $field2]);
+
+        $field->required(false);
+        $this->assertEquals($field->validate('fieldName', []), ['error1', 'error2']);
+        $field->emptyValue([]);
+        $this->assertEquals($field->validate('fieldName', []), []);
+    }
+
+    public function testDefinitionIsReturned()
+    {
+        $field = $this->createField();
+
+        $this->assertEquals([
+            'type' => 'anyOf',
+            'emptyValue' => null,
+            'required' => false,
+            'fields' => []
+        ], $field->definition());
+    }
+
+    public function testAddedFieldsAreInDefinition()
+    {
+        $field = $this->createField([
+            new MockField([], ['type' => 'mock1']),
+            new MockField([], ['type' => 'mock2'])
+        ]);
+
+        $this->assertEquals([
+            'type' => 'anyOf',
+            'emptyValue' => null,
+            'required' => false,
+            'fields' => [
+                [
+                    'type' => 'mock1',
+                    'emptyValue' => null,
+                    'required' => false,
+                ],
+                [
+                    'type' => 'mock2',
+                    'emptyValue' => null,
+                    'required' => false,
+                ]
+            ]
+        ], $field->definition());
+    }
 
     protected function createField(array $dummyFields = []): AnyOfField
     {

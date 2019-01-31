@@ -40,4 +40,11 @@ interface FieldInterface
      * @return static
      */
     public function emptyValue($emptyValue = null);
+
+    /**
+     * Returns this fields definition.
+     *
+     * @return array
+     */
+    public function definition(): array;
 }

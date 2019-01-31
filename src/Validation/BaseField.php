@@ -8,6 +8,8 @@
 namespace ArekX\JsonQL\Validation;
 
 
+use ArekX\JsonQL\Helpers\Value;
+
 abstract class BaseField implements FieldInterface
 {
     /**
@@ -56,6 +58,32 @@ abstract class BaseField implements FieldInterface
 
         return $this->doValidate($field, $value, $parentValue);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function definition(): array
+    {
+        return Value::merge([
+            'type' => $this->name(),
+            'required' => $this->isRequired,
+            'emptyValue' => $this->emptyValue
+        ], $this->fieldDefinition());
+    }
+
+    /**
+     * Returns name of this field.
+     *
+     * @return string
+     */
+    public abstract function name(): string;
+
+    /**
+     * Returns field definition.
+     *
+     * @return array
+     */
+    protected abstract function fieldDefinition(): array;
 
     /**
      * Performs actual fields validation.

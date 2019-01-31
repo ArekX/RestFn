@@ -74,4 +74,30 @@ class AllOfField extends BaseField
 
         return [];
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function fieldDefinition(): array
+    {
+        $fields = [];
+
+        foreach ($this->fields as $field) {
+            $fields[] = $field->definition();
+        }
+
+        return [
+            'fields' => $fields
+        ];
+    }
+
+    /**
+     * Returns name of this field.
+     *
+     * @return string
+     */
+    public function name(): string
+    {
+        return 'allOf';
+    }
 }
