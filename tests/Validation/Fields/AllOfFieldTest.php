@@ -124,6 +124,74 @@ class AllOfFieldTest extends \tests\TestCase
         $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error1']);
     }
 
+    public function testSettingRequired()
+    {
+        $allOfField = $this->createField();
+        $this->assertFalse($allOfField->isRequired);
+        $this->assertSame($allOfField->required(), $allOfField);
+        $this->assertTrue($allOfField->isRequired);
+    }
+
+    public function testSettingRequiredToNonRequired()
+    {
+        $allOfField = $this->createField();
+        $this->assertSame($allOfField->required(), $allOfField);
+        $this->assertTrue($allOfField->isRequired);
+        $this->assertSame($allOfField->required(false), $allOfField);
+        $this->assertFalse($allOfField->isRequired);
+    }
+
+    public function testDoesNotRunIfNotRequiredAndEmptyValue()
+    {
+        $field1 = $this->createMock(DummyField::class);
+        $field2 = $this->createMock(DummyField::class);
+
+        $field1->method('validate')->willReturn(['error1']);
+        $field2->method('validate')->willReturn(['error2']);
+
+        $allOfField = $this->createField([$field1, $field2]);
+        $allOfField->required(false);
+        $this->assertEquals($allOfField->validate('fieldName', null), []);
+    }
+
+
+    public function testCanSetEmptyValue()
+    {
+        $allOfField = $this->createField();
+        $this->assertNull($allOfField->emptyValue);
+        $this->assertSame($allOfField->emptyValue(""), $allOfField);
+        $this->assertEquals($allOfField->emptyValue, "");
+    }
+
+    public function testSetEmptyValueIsChecked()
+    {
+        $field1 = $this->createMock(DummyField::class);
+        $field2 = $this->createMock(DummyField::class);
+
+        $field1->method('validate')->willReturn(['error1']);
+        $field2->method('validate')->willReturn(['error2']);
+
+        $allOfField = $this->createField([$field1, $field2])->required(false);
+        $this->assertEquals($allOfField->validate('fieldName', []), ['error1']);
+        $allOfField->emptyValue([]);
+        $this->assertEquals($allOfField->validate('fieldName', []), []);
+    }
+
+    public function testValueIsPassedToAllFields()
+    {
+        $field1 = $this->createMock(DummyField::class);
+        $field2 = $this->createMock(DummyField::class);
+
+        $fieldName = 'fieldName';
+        $fieldValue = ['fieldValue'];
+        $parentFieldValue = ['parentFieldValue'];
+
+        $field1->method('validate')->with($fieldName, $fieldValue, $parentFieldValue)->willReturn([]);
+        $field2->method('validate')->with($fieldName, $fieldValue, $parentFieldValue)->willReturn([]);
+
+        $allOfField = $this->createField([$field1, $field2]);
+        $this->assertEquals($allOfField->validate($fieldName, $fieldValue, $parentFieldValue), []);
+    }
 
     protected function createField(array $dummyFields = []): AllOfField
     {

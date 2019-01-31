@@ -7,31 +7,22 @@
 
 namespace tests\Validation\Mocks;
 
-use ArekX\JsonQL\Validation\FieldInterface;
+use ArekX\JsonQL\Validation\BaseField;
 
-class DummyField implements FieldInterface
+class DummyField extends BaseField
 {
-    public $returns;
-
-    public static function returns($value)
-    {
-        return new static($value);
-    }
-
-    public function __construct($value = [])
-    {
-        $this->returns = $value;
-    }
-
     /**
-     * Validates one fields value using this validator.
+     * Performs actual fields validation.
      *
-     * @param string $field Name of the field to be validated.
+     * If a field if not required and has an empty value. This validation is not exectued.
+     *
+     * @param string $field Field name to be validated.
      * @param mixed $value Value to be validated.
-     * @return array List of failed validations for this field.
+     * @param mixed $parentValue Parent value this field and value is in if applicable.
+     * @return array List of errors if not valid or an empty array if it is valid.
      */
-    public function validate(string $field, $value)
+    protected function doValidate(string $field, $value, $parentValue = null): array
     {
-        return $this->returns;
+        return [];
     }
 }

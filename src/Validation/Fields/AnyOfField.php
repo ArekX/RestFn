@@ -7,6 +7,7 @@
 
 namespace ArekX\JsonQL\Validation\Fields;
 
+use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
@@ -17,7 +18,7 @@ use ArekX\JsonQL\Validation\FieldInterface;
  *
  * This field is equivalent to the AND operator.
  */
-class AnyOfField implements FieldInterface
+class AnyOfField extends BaseField
 {
     /**
      * @var FieldInterface[]
@@ -56,12 +57,12 @@ class AnyOfField implements FieldInterface
     /**
      * @inheritdoc
      */
-    public function validate(string $field, $value)
+    public function doValidate(string $field, $value, $parentValue = null): array
     {
         $errors = [];
 
         foreach ($this->fields as $fieldValidator) {
-            $results = $fieldValidator->validate($field, $value);
+            $results = $fieldValidator->validate($field, $value, $parentValue);
 
             if (empty($results)) {
                 return [];
