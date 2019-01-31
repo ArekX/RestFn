@@ -10,26 +10,21 @@ namespace ArekX\JsonQL\Validation\Fields;
 use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
- * Class AllOfField
+ * Class AnyOfField
  * @package ArekX\JsonQL\Validation\Fields
  *
  * Field representing multiple fields which all must be true.
  *
  * This field is equivalent to the AND operator.
  */
-class AllOfField implements FieldInterface
+class AnyOfField implements FieldInterface
 {
     /**
-     * @var FieldInterface[] List of fields which will be validated.
+     * @var FieldInterface[]
      */
     public $fields;
 
-    /**
-     * AllOfField constructor.
-     *
-     * @param array $fields Fields which will be validated.
-     */
-    public function __construct(array $fields)
+    public function __construct(array $fields = [])
     {
         $this->fields = $fields;
     }
@@ -38,9 +33,9 @@ class AllOfField implements FieldInterface
      * Adds another field to the validation list.
      *
      * @param FieldInterface $field Field to be added.
-     * @return AllOfField
+     * @return AnyOfField
      */
-    public function andField(FieldInterface $field): AllOfField
+    public function andField(FieldInterface $field): AnyOfField
     {
         $this->fields[] = $field;
         return $this;
@@ -50,9 +45,9 @@ class AllOfField implements FieldInterface
      * Adds list of fields to be validated.
      *
      * @param array $fields Fields to be validated.
-     * @return AllOfField
+     * @return AnyOfField
      */
-    public function withFields(array $fields): AllOfField
+    public function withFields(array $fields): AnyOfField
     {
         $this->fields = array_merge($this->fields, $fields);
         return $this;
@@ -63,14 +58,18 @@ class AllOfField implements FieldInterface
      */
     public function validate(string $field, $value)
     {
+        $errors = [];
+
         foreach ($this->fields as $fieldValidator) {
             $results = $fieldValidator->validate($field, $value);
 
-            if (!empty($results)) {
-                return $results;
+            if (empty($results)) {
+                return [];
             }
+
+            $errors = array_merge($errors, $results);
         }
 
-        return [];
+        return $errors;
     }
 }

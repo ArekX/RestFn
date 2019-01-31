@@ -4,6 +4,7 @@ namespace tests\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
+use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use tests\Validation\Mocks\DummyField;
 
 /**
@@ -11,7 +12,7 @@ use tests\Validation\Mocks\DummyField;
  * LICENSE: Apache 2.0
  *
  **/
-class AllOfFieldTest extends \tests\TestCase
+class AnyOfFieldTest extends \tests\TestCase
 {
     public function testAllOfFieldAcceptsInterfaces()
     {
@@ -100,19 +101,19 @@ class AllOfFieldTest extends \tests\TestCase
         $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
     }
 
-    public function testErrorsAreReturned()
+    public function testFirstSuccessWontValidateSecond()
     {
         $field1 = $this->createMock(DummyField::class);
         $field2 = $this->createMock(DummyField::class);
 
         $field1->method('validate')->willReturn([]);
-        $field2->method('validate')->willReturn(['error2']);
+        $field2->expects($this->never())->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error2']);
+        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), []);
     }
 
-    public function testFirstFailWontRunOtherValidators()
+    public function testWillRunUntilItSucceeds()
     {
         $field1 = $this->createMock(DummyField::class);
         $field2 = $this->createMock(DummyField::class);
@@ -121,13 +122,13 @@ class AllOfFieldTest extends \tests\TestCase
         $field2->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error1']);
+        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error1', 'error2']);
     }
 
 
-    protected function createField(array $dummyFields = []): AllOfField
+    protected function createField(array $dummyFields = []): AnyOfField
     {
-        return DI::make(\ArekX\JsonQL\Validation\Fields\AllOfField::class, [
+        return DI::make(\ArekX\JsonQL\Validation\Fields\AnyOfField::class, [
             'fields' => $dummyFields
         ]);
     }

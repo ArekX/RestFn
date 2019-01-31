@@ -15,4 +15,12 @@ namespace ArekX\JsonQL\Validation;
  */
 interface FieldInterface
 {
+    /**
+     * Validates one fields value using this validator.
+     *
+     * @param string $field Name of the field to be validated.
+     * @param mixed $value Value to be validated.
+     * @return array List of failed validations for this field.
+     */
+    public function validate(string $field, $value);
 }

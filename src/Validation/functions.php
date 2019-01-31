@@ -9,6 +9,7 @@ namespace ArekX\JsonQL\Validation;
 
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
+use ArekX\JsonQL\Validation\Fields\AnyOfField;
 
 if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
 
@@ -22,6 +23,24 @@ if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
     function allOf(FieldInterface ...$fields): AllOfField
     {
         return DI::make(AllOfField::class, [
+            'fields' => $fields
+        ]);
+    }
+}
+
+
+if (!function_exists('ArekX\JsonQL\Validation\anyOf')) {
+
+    /**
+     * Creates new AnyOfField instance to validate for any of specified fields
+     *
+     * @see AnyOfField
+     * @param FieldInterface ...$fields Fields to be added in AnyOfField instance.
+     * @return AnyOfField New instance of AnyOfField
+     */
+    function anyOf(FieldInterface ...$fields): AnyOfField
+    {
+        return DI::make(AnyOfField::class, [
             'fields' => $fields
         ]);
     }
