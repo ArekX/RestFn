@@ -158,6 +158,14 @@ class StringFieldTest extends \tests\TestCase
         $this->assertEquals('8bit', $field->encoding);
     }
 
+    public function testUseEncodingForLengthValidation()
+    {
+        $field = $this->createField()->min(10);
+        $this->assertNull($field->encoding);
+        $this->assertSame($field, $field->encoding('8bit'));
+        $this->assertEquals([], $field->validate('fieldName', 'stringof10'));
+    }
+
     public function testCanSetPattern()
     {
         $field = $this->createField();
