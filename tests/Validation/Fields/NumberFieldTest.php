@@ -5,6 +5,7 @@ namespace tests\Validation\Fields;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
+use tests\Validation\Mocks\MockField;
 
 /**
  * by Aleksandar Panic
@@ -76,6 +77,16 @@ class NumberFieldTest extends \tests\TestCase
         $field = $this->createField()->required();
         $this->assertEquals([], $field->validate('fieldName', 0));
         $this->assertEquals([], $field->validate('fieldName', 0.00));
+    }
+
+    public function testFailsIfNotANumber()
+    {
+        $field = $this->createField()->required();
+        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', null));
+        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', false));
+        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', []));
+        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', 'String'));
+        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', new MockField()));
     }
 
     public function testCanSetIntegerOnly()

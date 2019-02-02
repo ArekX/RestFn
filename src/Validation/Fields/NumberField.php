@@ -8,10 +8,9 @@
 namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
- * Class AnyOfField
+ * Class NumberField
  * @package ArekX\JsonQL\Validation\Fields
  *
  * Field representing a number type.
@@ -95,20 +94,18 @@ class NumberField extends BaseField
         return $this;
     }
 
+
     /**
-     * Returns name of this field.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function name(): string
     {
         return 'number';
     }
 
+
     /**
-     * Returns field definition.
-     *
-     * @return array
+     * @inheritdoc
      */
     protected function fieldDefinition(): array
     {
@@ -120,14 +117,7 @@ class NumberField extends BaseField
     }
 
     /**
-     * Performs actual fields validation.
-     *
-     * If a field if not required and has an empty value. This validation is not exectued.
-     *
-     * @param string $field Field name to be validated.
-     * @param mixed $value Value to be validated.
-     * @param mixed $parentValue Parent value this field and value is in if applicable.
-     * @return array List of errors if not valid or an empty array if it is valid.
+     * @inheritdoc
      */
     protected function doValidate(string $field, $value, $parentValue = null): array
     {

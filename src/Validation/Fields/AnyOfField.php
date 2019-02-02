@@ -25,9 +25,21 @@ class AnyOfField extends BaseField
      */
     public $fields;
 
+    /**
+     * AnyOfField constructor.
+     * @param array $fields Fields to be validated.
+     */
     public function __construct(array $fields = [])
     {
         $this->fields = $fields;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function name(): string
+    {
+        return 'anyOf';
     }
 
     /**
@@ -57,6 +69,22 @@ class AnyOfField extends BaseField
     /**
      * @inheritdoc
      */
+    protected function fieldDefinition(): array
+    {
+        $fields = [];
+
+        foreach ($this->fields as $field) {
+            $fields[] = $field->definition();
+        }
+
+        return [
+            'fields' => $fields
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function doValidate(string $field, $value, $parentValue = null): array
     {
         $errors = [];
@@ -72,31 +100,5 @@ class AnyOfField extends BaseField
         }
 
         return $errors;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function fieldDefinition(): array
-    {
-        $fields = [];
-
-        foreach ($this->fields as $field) {
-            $fields[] = $field->definition();
-        }
-
-        return [
-            'fields' => $fields
-        ];
-    }
-
-    /**
-     * Returns name of this field.
-     *
-     * @return string
-     */
-    public function name(): string
-    {
-        return 'anyOf';
     }
 }

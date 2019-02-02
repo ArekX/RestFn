@@ -1,0 +1,176 @@
+<?php
+/**
+ * by Aleksandar Panic
+ * LICENSE: Apache 2.0
+ *
+ **/
+
+namespace ArekX\JsonQL\Validation\Fields;
+
+use ArekX\JsonQL\Validation\BaseField;
+use ArekX\JsonQL\Validation\FieldInterface;
+
+/**
+ * Class StringField
+ * @package ArekX\JsonQL\Validation\Fields
+ *
+ * Field representing a number type.
+ *
+ */
+class StringField extends BaseField
+{
+    const ERROR_NOT_A_STRING = 'not_a_string';
+    const ERROR_LESS_THAN_MIN_LENGTH = 'less_than_min_length';
+    const ERROR_GREATER_THAN_MAX_LENGTH = 'greater_than_max_length';
+    const ERROR_NOT_A_MATCH = 'not_a_match';
+
+    /**
+     * Minimum value set.
+     *
+     * Defaults to null - means no value is set.
+     *
+     * @var null
+     */
+    public $min = null;
+
+    /**
+     * Maximum value set.
+     *
+     * Defaults to null - means no value is set.
+     *
+     * @var null
+     */
+    public $max = null;
+
+    /**
+     * Encoding used for getting character length.
+     *
+     * Defaults to null - mb_internal_encoding() is used.
+     *
+     * @var null
+     */
+    public $encoding = null;
+
+    /**
+     * Pattern which will be used to match a string against.
+     *
+     * Defaults to null - no pattern is used.
+     *
+     * @var null
+     */
+    public $match = null;
+
+    /**
+     * Sets minimum length to validate against.
+     *
+     * @param int $minimum Minimum length
+     * @return static
+     */
+    public function min(int $minimum)
+    {
+        $this->min = $minimum;
+
+        if ($this->max !== null && $this->min > $this->max) {
+            $this->max = $this->min;
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Sets maximum length to validate against.
+     *
+     * @param int $maximum Maximum length
+     * @return static
+     */
+    public function max(int $maximum)
+    {
+        $this->max = $maximum;
+
+        if ($this->min !== null && $this->min > $this->max) {
+            $this->min = $this->max;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets encoding used for string length.
+     *
+     * @param string $encoding Encoding used for string length.
+     * @return static
+     */
+    public function encoding(?string $encoding = null)
+    {
+        $this->encoding = $encoding;
+        return $this;
+    }
+
+    /**
+     * Match string against a pattern.
+     *
+     * @param string $match Pattern which will be used.
+     * @return static
+     */
+    public function match(string $match)
+    {
+        $this->match = $match;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function name(): string
+    {
+        return 'string';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function fieldDefinition(): array
+    {
+        return [
+            'minLength' => $this->min,
+            'maxLength' => $this->max,
+            'encoding' => $this->encoding,
+            'match' => $this->match
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doValidate(string $field, $value, $parentValue = null): array
+    {
+        if (!is_string($value)) {
+            return [['type' => self::ERROR_NOT_A_STRING]];
+        }
+
+        $errors = [];
+        if ($this->min !== null && $this->getLength($value) < $this->min) {
+            $errors[] = ['type' => self::ERROR_LESS_THAN_MIN_LENGTH, 'minLength' => $this->min];
+        }
+
+        if ($this->max !== null && $this->getLength($value) > $this->max) {
+            $errors[] = ['type' => self::ERROR_GREATER_THAN_MAX_LENGTH, 'maxLength' => $this->max];
+        }
+
+        if ($this->match !== null && !preg_match($this->match, $value)) {
+            $errors[] = ['type' => self::ERROR_NOT_A_MATCH, 'match' => $this->match];
+        }
+
+        return $errors;
+    }
+
+    protected function getLength($string)
+    {
+        if ($this->encoding !== null) {
+            return mb_strlen($string, $this->encoding);
+        }
+
+        return mb_strlen($string);
+    }
+}

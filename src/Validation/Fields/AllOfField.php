@@ -36,6 +36,14 @@ class AllOfField extends BaseField
     }
 
     /**
+     * @inheritdoc
+     */
+    public function name(): string
+    {
+        return 'allOf';
+    }
+
+    /**
      * Adds another field to the validation list.
      *
      * @param FieldInterface $field Field to be added.
@@ -62,22 +70,6 @@ class AllOfField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
-    {
-        foreach ($this->fields as $fieldValidator) {
-            $results = $fieldValidator->validate($field, $value, $parentValue);
-
-            if (!empty($results)) {
-                return $results;
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function fieldDefinition(): array
     {
         $fields = [];
@@ -92,12 +84,18 @@ class AllOfField extends BaseField
     }
 
     /**
-     * Returns name of this field.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function name(): string
+    protected function doValidate(string $field, $value, $parentValue = null): array
     {
-        return 'allOf';
+        foreach ($this->fields as $fieldValidator) {
+            $results = $fieldValidator->validate($field, $value, $parentValue);
+
+            if (!empty($results)) {
+                return $results;
+            }
+        }
+
+        return [];
     }
 }
