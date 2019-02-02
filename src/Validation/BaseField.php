@@ -32,7 +32,7 @@ abstract class BaseField implements FieldInterface
     /**
      * @inheritdoc
      */
-    public function required($isRequired = true)
+    public function required(bool $isRequired = true)
     {
         $this->isRequired = $isRequired;
         return $this;

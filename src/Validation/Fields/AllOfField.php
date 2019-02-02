@@ -39,9 +39,9 @@ class AllOfField extends BaseField
      * Adds another field to the validation list.
      *
      * @param FieldInterface $field Field to be added.
-     * @return AllOfField
+     * @return static
      */
-    public function andField(FieldInterface $field): AllOfField
+    public function andField(FieldInterface $field)
     {
         $this->fields[] = $field;
         return $this;
@@ -51,9 +51,9 @@ class AllOfField extends BaseField
      * Adds list of fields to be validated.
      *
      * @param array $fields Fields to be validated.
-     * @return AllOfField
+     * @return static
      */
-    public function withFields(array $fields): AllOfField
+    public function withFields(array $fields)
     {
         $this->fields = array_merge($this->fields, $fields);
         return $this;

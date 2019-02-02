@@ -10,6 +10,7 @@ namespace ArekX\JsonQL\Validation;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
+use ArekX\JsonQL\Validation\Fields\NumberField;
 
 if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
 
@@ -43,5 +44,19 @@ if (!function_exists('ArekX\JsonQL\Validation\anyOf')) {
         return DI::make(AnyOfField::class, [
             'fields' => $fields
         ]);
+    }
+}
+
+if (!function_exists('ArekX\JsonQL\Validation\numberField')) {
+
+    /**
+     * Creates new NumberField instance to validate for any of specified fields
+     *
+     * @see NumberField
+     * @return NumberField New instance of AnyOfField
+     */
+    function numberField(): NumberField
+    {
+        return DI::make(NumberField::class);
     }
 }

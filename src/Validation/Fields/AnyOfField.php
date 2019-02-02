@@ -34,9 +34,9 @@ class AnyOfField extends BaseField
      * Adds another field to the validation list.
      *
      * @param FieldInterface $field Field to be added.
-     * @return AnyOfField
+     * @return static
      */
-    public function andField(FieldInterface $field): AnyOfField
+    public function andField(FieldInterface $field)
     {
         $this->fields[] = $field;
         return $this;
@@ -46,9 +46,9 @@ class AnyOfField extends BaseField
      * Adds list of fields to be validated.
      *
      * @param array $fields Fields to be validated.
-     * @return AnyOfField
+     * @return static
      */
-    public function withFields(array $fields): AnyOfField
+    public function withFields(array $fields)
     {
         $this->fields = array_merge($this->fields, $fields);
         return $this;

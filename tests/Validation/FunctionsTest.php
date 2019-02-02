@@ -10,6 +10,7 @@ namespace tests\Validation;
 use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
+use ArekX\JsonQL\Validation\Fields\NumberField;
 
 class FunctionsTest extends \tests\TestCase
 {
@@ -23,5 +24,12 @@ class FunctionsTest extends \tests\TestCase
     {
         $this->assertInstanceOf(AnyOfField::class, \ArekX\JsonQL\Validation\anyOf());
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\anyOf());
+    }
+
+
+    public function testNumberField()
+    {
+        $this->assertInstanceOf(NumberField::class, \ArekX\JsonQL\Validation\numberField());
+        $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\numberField());
     }
 }

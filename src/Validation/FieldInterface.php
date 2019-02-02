@@ -31,7 +31,7 @@ interface FieldInterface
      * @param bool $isRequired
      * @return static
      */
-    public function required($isRequired = true);
+    public function required(bool $isRequired = true);
 
     /**
      * Sets empty value for required checking.
