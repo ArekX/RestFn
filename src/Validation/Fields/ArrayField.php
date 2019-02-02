@@ -1,0 +1,93 @@
+<?php
+/**
+ * by Aleksandar Panic
+ * LICENSE: Apache 2.0
+ *
+ **/
+
+namespace ArekX\JsonQL\Validation\Fields;
+
+use ArekX\JsonQL\Validation\BaseField;
+use ArekX\JsonQL\Validation\FieldInterface;
+
+/**
+ * Class ArrayField
+ * @package ArekX\JsonQL\Validation\Fields
+ *
+ * Field representing a array type.
+ *
+ */
+class ArrayField extends BaseField
+{
+    const ERROR_NOT_AN_ARRAY = 'not_an_array';
+    const ERROR_ITEM_NOT_VALID = 'item_not_valid';
+
+    /**
+     * Item type which will be checked.
+     *
+     * Defaults to null - any item type is allowed.
+     *
+     * @var null|FieldInterface
+     */
+    public $of = null;
+
+    /**
+     * Sets item type which will be checked
+     *
+     * @param FieldInterface $field
+     */
+    public function of(?FieldInterface $field = null)
+    {
+        $this->of = $field;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function name(): string
+    {
+        return 'array';
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    protected function fieldDefinition(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doValidate(string $field, $value, $parentValue = null): array
+    {
+        if (!is_array($value)) {
+            return [['type' => self::ERROR_NOT_AN_ARRAY]];
+        }
+
+        if ($this->of === null) {
+            return [];
+        }
+
+        $errorItems  = [];
+
+        foreach ($value as $key => $item) {
+            $errors = $this->of->validate($key, $item, $value);
+
+            if (!empty($errors)) {
+                $errorItems[$key] = $errors;
+            }
+        }
+
+        if (!empty($errorItems)) {
+            return [
+                ['type' => self::ERROR_ITEM_NOT_VALID, 'items' => $errorItems]
+            ];
+        }
+
+        return [];
+    }
+}

@@ -199,8 +199,15 @@ class StringFieldTest extends \tests\TestCase
         ], $field->validate('fieldName', 'another Value'));
     }
 
-    protected function createField(): StringField
+    public function testCanBeCreatedWithLength()
     {
-        return DI::make(StringField::class);
+        $field = $this->createField(100);
+        $this->assertEquals(100, $field->min);
+        $this->assertEquals(100, $field->max);
+    }
+
+    protected function createField($length = null): StringField
+    {
+        return DI::make(StringField::class, ['length' => $length]);
     }
 }

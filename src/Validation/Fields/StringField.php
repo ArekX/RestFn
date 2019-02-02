@@ -14,7 +14,7 @@ use ArekX\JsonQL\Validation\FieldInterface;
  * Class StringField
  * @package ArekX\JsonQL\Validation\Fields
  *
- * Field representing a number type.
+ * Field representing a string type.
  *
  */
 class StringField extends BaseField
@@ -23,6 +23,16 @@ class StringField extends BaseField
     const ERROR_LESS_THAN_MIN_LENGTH = 'less_than_min_length';
     const ERROR_GREATER_THAN_MAX_LENGTH = 'greater_than_max_length';
     const ERROR_NOT_A_MATCH = 'not_a_match';
+
+    /**
+     * StringField constructor.
+     * @param int|null $length
+     */
+    public function __construct(?int $length = null)
+    {
+        $this->min = $length;
+        $this->max = $length;
+    }
 
     /**
      * Minimum value set.
