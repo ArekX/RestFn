@@ -34,6 +34,22 @@ interface FieldInterface
     public function required(bool $isRequired = true);
 
     /**
+     * Set information about this field.
+     *
+     * @param string $info
+     * @return static
+     */
+    public function info(string $info);
+
+    /**
+     * Sets example of this field.
+     *
+     * @param mixed $example
+     * @return static
+     */
+    public function example($example);
+
+    /**
      * Sets empty value for required checking.
      *
      * @param mixed $emptyValue Empty value to be set.

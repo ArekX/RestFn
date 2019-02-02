@@ -24,8 +24,8 @@ trait ConstructorFunction
     {
         $config = new TestConfig();
 
-        $this->assertEquals($config->getConfigItem(Config::SERVICES), []);
-        $this->assertEquals($config->getConfigItem(Config::CORE), []);
+        $this->assertEquals([], $config->getConfigItem(Config::SERVICES));
+        $this->assertEquals([], $config->getConfigItem(Config::CORE));
         $this->assertEmpty($config->getParams());
     }
 
@@ -37,6 +37,6 @@ trait ConstructorFunction
             ]
         ]);
 
-        $this->assertEquals($config->getConfigItem(Config::SERVICES), ['name' => 'value']);
+        $this->assertEquals(['name' => 'value'], $config->getConfigItem(Config::SERVICES));
     }
 }

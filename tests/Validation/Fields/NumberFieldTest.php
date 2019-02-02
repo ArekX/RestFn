@@ -3,6 +3,7 @@
 namespace tests\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\DI;
+use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 
 /**
@@ -12,11 +13,18 @@ use ArekX\JsonQL\Validation\Fields\NumberField;
  **/
 class NumberFieldTest extends \tests\TestCase
 {
+    public function testInstanceOfBaseField()
+    {
+        $this->assertInstanceOf(BaseField::class, $this->createField());
+    }
+
     public function testHasValidDefinition()
     {
         $field = $this->createField();
         $this->assertEquals([
             'type' => 'number',
+            'info' => null,
+            'example' => null,
             'required' => false,
             'integerOnly' => false,
             'minimum' => null,
@@ -35,30 +43,14 @@ class NumberFieldTest extends \tests\TestCase
             ->integerOnly();
         $this->assertEquals([
             'type' => 'number',
+            'info' => null,
+            'example' => null,
             'required' => true,
             'integerOnly' => true,
             'minimum' => 10,
             'maximum' => 15,
             'emptyValue' => 0
         ], $field->definition());
-    }
-
-    public function testSettingRequired()
-    {
-        $field = $this->createField();
-        $this->assertFalse($field->isRequired);
-        $this->assertSame($field, $field->required());
-        $this->assertTrue($field->isRequired);
-        $this->assertSame($field, $field->required(false));
-        $this->assertFalse($field->isRequired);
-    }
-
-    public function testCanSetEmptyValue()
-    {
-        $field = $this->createField();
-        $this->assertNull($field->emptyValue);
-        $this->assertSame($field, $field->emptyValue(""));
-        $this->assertEquals("", $field->emptyValue);
     }
 
     public function testDoesNotRunIfNotRequiredAndEmptyValue()

@@ -30,6 +30,24 @@ abstract class BaseField implements FieldInterface
     public $emptyValue = null;
 
     /**
+     * Example for this field.
+     *
+     * Defaults to null - no example set
+     *
+     * @var mixed
+     */
+    public $example = null;
+
+    /**
+     * Information about this field.
+     *
+     * Defaults to null - no information set set
+     *
+     * @var mixed
+     */
+    public $info = null;
+
+    /**
      * @inheritdoc
      */
     public function required(bool $isRequired = true)
@@ -66,9 +84,29 @@ abstract class BaseField implements FieldInterface
     {
         return Value::merge([
             'type' => $this->name(),
+            'info' => $this->info,
+            'example' => $this->example,
             'required' => $this->isRequired,
             'emptyValue' => $this->emptyValue
         ], $this->fieldDefinition());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function info(string $info)
+    {
+        $this->info = $info;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function example($example)
+    {
+        $this->example = $example;
+        return $this;
     }
 
     /**

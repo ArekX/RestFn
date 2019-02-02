@@ -12,19 +12,19 @@ class DefinerTest extends \tests\Rest\TestCase
 {
     public function testIsValidRequestType()
     {
-        $this->assertEquals(Definer::requestType(), 'define');
+        $this->assertEquals('define', Definer::requestType());
     }
 
     public function testIsValidResponseType()
     {
         $writer = $this->getDefiner();
-        $this->assertEquals($writer->responseType(), 'defined');
+        $this->assertEquals('defined', $writer->responseType());
     }
 
     public function testHandleEmptyData()
     {
         $writer = $this->getDefiner();
-        $this->assertEquals($writer->handle([]), []);
+        $this->assertEquals([], $writer->handle([]));
     }
 
     protected function getDefiner(): Definer

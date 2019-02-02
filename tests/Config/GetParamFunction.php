@@ -16,24 +16,24 @@ trait GetParamFunction
     public function testParamsArePassed()
     {
         $config = new MockConfig([], ['param' => 'value']);
-        $this->assertEquals($config->getParams(), ['param' => 'value']);
+        $this->assertEquals(['param' => 'value'], $config->getParams());
     }
 
     public function testParamIsReturned()
     {
         $config = new MockConfig([], ['param' => 'value']);
-        $this->assertEquals($config->getParam('param'), 'value');
+        $this->assertEquals('value', $config->getParam('param'));
     }
 
     public function testDefaultValueForParamIsReturned()
     {
         $config = new MockConfig([], ['param' => 'value']);
-        $this->assertEquals($config->getParam('param.value', 'default value'), 'default value');
+        $this->assertEquals('default value', $config->getParam('param.value', 'default value'));
     }
 
     public function testDefaultValueIsReturnedForEmptyParams()
     {
         $config = new MockConfig([], []);
-        $this->assertEquals($config->getParam('param.value', 'default value'), 'default value');
+        $this->assertEquals('default value', $config->getParam('param.value', 'default value'));
     }
 }

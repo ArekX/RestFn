@@ -12,19 +12,19 @@ class SequencerTest extends \tests\Rest\TestCase
 {
     public function testIsValidRequestType()
     {
-        $this->assertEquals(Sequencer::requestType(), 'sequence');
+        $this->assertEquals('sequence', Sequencer::requestType());
     }
 
     public function testIsValidResponseType()
     {
         $writer = $this->getSequencer();
-        $this->assertEquals($writer->responseType(), 'sequenced');
+        $this->assertEquals('sequenced', $writer->responseType());
     }
 
     public function testHandleEmptyData()
     {
         $writer = $this->getSequencer();
-        $this->assertEquals($writer->handle([]), []);
+        $this->assertEquals([], $writer->handle([]));
     }
 
     protected function getSequencer(): Sequencer

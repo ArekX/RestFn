@@ -3,6 +3,7 @@
 namespace tests\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\DI;
+use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use tests\Validation\Mocks\MockField;
 
@@ -13,6 +14,11 @@ use tests\Validation\Mocks\MockField;
  **/
 class AllOfFieldTest extends \tests\TestCase
 {
+    public function testInstanceOfBaseField()
+    {
+        $this->assertInstanceOf(BaseField::class, $this->createField());
+    }
+
     public function testAllOfFieldAcceptsInterfaces()
     {
         $dummyFields = [
@@ -140,66 +146,14 @@ class AllOfFieldTest extends \tests\TestCase
         $this->assertEquals($allOfField->validate($fieldName, $fieldValue, $parentFieldValue), []);
     }
 
-    public function testSettingRequired()
-    {
-        $field = $this->createField();
-        $this->assertFalse($field->isRequired);
-        $this->assertSame($field->required(), $field);
-        $this->assertTrue($field->isRequired);
-    }
-
-    public function testSettingRequiredToNonRequired()
-    {
-        $field = $this->createField();
-        $this->assertSame($field->required(), $field);
-        $this->assertTrue($field->isRequired);
-        $this->assertSame($field->required(false), $field);
-        $this->assertFalse($field->isRequired);
-    }
-
-    public function testDoesNotRunIfNotRequiredAndEmptyValue()
-    {
-        $field1 = $this->createMock(MockField::class);
-        $field2 = $this->createMock(MockField::class);
-
-        $field1->method('validate')->willReturn(['error1']);
-        $field2->method('validate')->willReturn(['error2']);
-
-        $field = $this->createField([$field1, $field2]);
-        $field->required(false);
-        $this->assertEquals($field->validate('fieldName', null), []);
-    }
-
-
-    public function testCanSetEmptyValue()
-    {
-        $field = $this->createField();
-        $this->assertNull($field->emptyValue);
-        $this->assertSame($field->emptyValue(""), $field);
-        $this->assertEquals($field->emptyValue, "");
-    }
-
-    public function testSetEmptyValueIsChecked()
-    {
-        $field1 = $this->createMock(MockField::class);
-        $field2 = $this->createMock(MockField::class);
-
-        $field1->method('validate')->willReturn(['error1']);
-
-        $field = $this->createField([$field1, $field2]);
-
-        $field->required(false);
-        $this->assertEquals($field->validate('fieldName', []), ['error1']);
-        $field->emptyValue([]);
-        $this->assertEquals($field->validate('fieldName', []), []);
-    }
-
     public function testDefinitionIsReturned()
     {
         $field = $this->createField();
 
         $this->assertEquals([
             'type' => 'allOf',
+            'info' => null,
+            'example' => null,
             'emptyValue' => null,
             'required' => false,
             'fields' => []
@@ -216,16 +170,22 @@ class AllOfFieldTest extends \tests\TestCase
         $this->assertEquals([
             'type' => 'allOf',
             'emptyValue' => null,
+            'info' => null,
+            'example' => null,
             'required' => false,
             'fields' => [
                 [
                     'type' => 'mock1',
                     'emptyValue' => null,
+                    'info' => null,
+                    'example' => null,
                     'required' => false,
                 ],
                 [
                     'type' => 'mock2',
                     'emptyValue' => null,
+                    'info' => null,
+                    'example' => null,
                     'required' => false,
                 ]
             ]

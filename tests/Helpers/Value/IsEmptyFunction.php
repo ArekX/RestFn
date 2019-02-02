@@ -27,7 +27,7 @@ trait IsEmptyFunction
         foreach ($values as $value) {
             [$valueType, $expected] = $value;
 
-            $this->assertEquals(Value::isEmpty($valueType, true), $expected);
+            $this->assertEquals($expected, Value::isEmpty($valueType, true));
         }
     }
 
@@ -46,7 +46,7 @@ trait IsEmptyFunction
         foreach ($values as $value) {
             [$valueType, $expected] = $value;
 
-            $this->assertEquals(Value::isEmpty($valueType, false), $expected);
+            $this->assertEquals($expected, Value::isEmpty($valueType, false));
         }
     }
 }

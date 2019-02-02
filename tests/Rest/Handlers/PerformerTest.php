@@ -13,19 +13,19 @@ class PerformerTest extends \tests\Rest\TestCase
 {
     public function testIsValidRequestType()
     {
-        $this->assertEquals(Performer::requestType(), 'perform');
+        $this->assertEquals('perform', Performer::requestType());
     }
 
     public function testIsValidResponseType()
     {
         $writer = $this->getPerformer();
-        $this->assertEquals($writer->responseType(), 'performed');
+        $this->assertEquals('performed', $writer->responseType());
     }
 
     public function testHandleEmptyData()
     {
         $writer = $this->getPerformer();
-        $this->assertEquals($writer->handle([]), []);
+        $this->assertEquals([], $writer->handle([]));
     }
 
     protected function getPerformer(): Performer

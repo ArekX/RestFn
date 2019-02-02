@@ -20,7 +20,7 @@ trait SetupFunction
             'test' => 'default'
         ]);
 
-        $this->assertEquals($ob->test, 'default');
+        $this->assertEquals('default', $ob->test);
     }
 
     public function testSetupValuesWithExistingConfig()
@@ -31,6 +31,6 @@ trait SetupFunction
             'test' => 'default'
         ]);
 
-        $this->assertEquals($ob->test, 'existing');
+        $this->assertEquals('existing', $ob->test);
     }
 }

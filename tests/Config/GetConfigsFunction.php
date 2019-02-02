@@ -20,7 +20,7 @@ trait GetConfigsFunction
             ]
         ]);
 
-        $this->assertEquals($config->getConfig(), [
+        $this->assertEquals([
             Config::APP => null,
             Config::DI => [
                 'compile' => false
@@ -30,7 +30,7 @@ trait GetConfigsFunction
             'test' => [
                 'value' => 1
             ]
-        ]);
+        ], $config->getConfig());
     }
 
 }
