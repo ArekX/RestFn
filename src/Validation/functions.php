@@ -14,6 +14,7 @@ use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
 use ArekX\JsonQL\Validation\Fields\BoolField;
+use ArekX\JsonQL\Validation\Fields\CompareField;
 use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
@@ -55,6 +56,23 @@ if (!function_exists('ArekX\JsonQL\Validation\anyOf')) {
         return DI::make(AnyOfField::class, [
             'fields' => $fields
         ]);
+    }
+}
+
+
+if (!function_exists('ArekX\JsonQL\Validation\compare')) {
+
+    /**
+     * Creates new CompareField instance
+     *
+     * @see CompareField
+     * @return CompareField New instance of CompareField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function compare(): CompareField
+    {
+        return DI::make(CompareField::class);
     }
 }
 

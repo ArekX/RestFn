@@ -14,6 +14,7 @@ use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
 use ArekX\JsonQL\Validation\Fields\BoolField;
+use ArekX\JsonQL\Validation\Fields\CompareField;
 use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
@@ -77,5 +78,13 @@ class FunctionsTest extends \tests\TestCase
     {
         $this->assertInstanceOf(EnumField::class, \ArekX\JsonQL\Validation\enumField([]));
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\enumField([]));
+    }
+
+
+
+    public function testCompareField()
+    {
+        $this->assertInstanceOf(CompareField::class, \ArekX\JsonQL\Validation\compare());
+        $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\compare());
     }
 }
