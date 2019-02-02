@@ -12,6 +12,8 @@ use ArekX\JsonQL\Helpers\Value;
 
 abstract class BaseField implements FieldInterface
 {
+    const ERROR_VALUE_IS_REQUIRED = 'value_is_required';
+
     /**
      * Whether or not this field is required.
      * Defaults to false.
@@ -72,6 +74,10 @@ abstract class BaseField implements FieldInterface
     {
         if (!$this->isRequired && $value === $this->emptyValue) {
             return [];
+        }
+
+        if ($this->isRequired && $value === $this->emptyValue) {
+            return [['type' => self::ERROR_VALUE_IS_REQUIRED]];
         }
 
         return $this->doValidate($field, $value, $parentValue);

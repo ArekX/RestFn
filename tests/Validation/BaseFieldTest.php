@@ -9,6 +9,7 @@ namespace tests\Validation;
 
 
 use ArekX\JsonQL\Helpers\DI;
+use ArekX\JsonQL\Validation\BaseField;
 use tests\TestCase;
 use tests\Validation\Mocks\MockField;
 
@@ -110,6 +111,18 @@ class BaseFieldTest extends TestCase
         ], $field->definition());
     }
 
+
+    public function testRequiredIsChecked()
+    {
+        $field = $this->createField()->required(true);
+        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate('fieldName', null));
+    }
+
+    public function testRequiredIsCheckedWithEmptyValue()
+    {
+        $field = $this->createField()->required(true)->emptyValue('');
+        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate('fieldName', ''));
+    }
 
     protected function createField($validation = [], $definition = []): MockField
     {

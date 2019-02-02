@@ -50,6 +50,18 @@ class AnyFieldTest extends \tests\TestCase
         ], $field->definition());
     }
 
+    public function testAlwaysValidatesWhenNotRequired()
+    {
+        $field = $this->createField();
+
+        $this->assertEquals([], $field->validate('fieldName', null));
+        $this->assertEquals([], $field->validate('fieldName', false));
+        $this->assertEquals([], $field->validate('fieldName', 'string'));
+        $this->assertEquals([], $field->validate('fieldName', 1));
+        $this->assertEquals([], $field->validate('fieldName', 1.5));
+        $this->assertEquals([], $field->validate('fieldName', new MockField()));
+    }
+
     protected function createField(): AnyField
     {
         return DI::make(AnyField::class);

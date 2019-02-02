@@ -81,7 +81,7 @@ class NumberFieldTest extends \tests\TestCase
 
     public function testFailsIfNotANumber()
     {
-        $field = $this->createField()->required();
+        $field = $this->createField()->required()->emptyValue(0);
         $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', null));
         $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', false));
         $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('fieldName', []));

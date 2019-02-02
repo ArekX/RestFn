@@ -69,7 +69,7 @@ class StringFieldTest extends \tests\TestCase
 
     public function testFailsIfNotAString()
     {
-        $field = $this->createField()->required();
+        $field = $this->createField()->required()->emptyValue('');
         $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate('fieldName', null));
         $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate('fieldName', false));
         $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate('fieldName', []));

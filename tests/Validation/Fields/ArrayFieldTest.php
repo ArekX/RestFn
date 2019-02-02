@@ -59,7 +59,7 @@ class ArrayFieldTest extends \tests\TestCase
 
     public function testFailsOnNonArrayType()
     {
-        $field = $this->createField()->required();
+        $field = $this->createField()->required()->emptyValue([]);
         $error = [['type' => ArrayField::ERROR_NOT_AN_ARRAY]];
         $this->assertEquals($error, $field->validate('fieldName', null));
         $this->assertEquals($error, $field->validate('fieldName', ''));
@@ -113,6 +113,13 @@ class ArrayFieldTest extends \tests\TestCase
                     1 => [['type' => StringField::ERROR_NOT_A_STRING]],
                 ]]
         ], $field->validate('fieldName', ['1', 2, '3']));
+    }
+
+    public function testAllItemAreValidated()
+    {
+        $mock = new StringField();
+        $field = $this->createField()->required()->of($mock);
+        $this->assertEquals([], $field->validate('fieldName', ['1', '2', '3']));
     }
 
     protected function createField(): ArrayField
