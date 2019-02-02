@@ -1,19 +1,20 @@
 <?php
 /**
- * by Aleksandar Panic
- * LICENSE: Apache 2.0
- *
+  * @author Aleksandar Panic
+  * @link https://jsonql.readthedocs.io/
+  * @license: http://www.apache.org/licenses/LICENSE-2.0
+  * @since 1.0.0
  **/
 
 namespace ArekX\JsonQL\Traits;
 
 /**
  * Trait Memoize
- * @package ArekX\JsonQL\Traits
  *
  * Trait to support memoization functions in classes.
  * Memoization is used to execute expensive operations only once.
  *
+ * @package ArekX\JsonQL\Traits
  */
 trait Memoize
 {

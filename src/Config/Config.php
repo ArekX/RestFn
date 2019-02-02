@@ -1,8 +1,9 @@
 <?php
 /**
- * by Aleksandar Panic
- * LICENSE: Apache 2.0
- *
+  * @author Aleksandar Panic
+  * @link https://jsonql.readthedocs.io/
+  * @license: http://www.apache.org/licenses/LICENSE-2.0
+  * @since 1.0.0
  **/
 
 namespace ArekX\JsonQL\Config;
@@ -17,18 +18,19 @@ use DI\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
 /**
- * Class Config
- * @package ArekX\JsonQL\Config
- *
- * Contains all of the configuration for the application.
+ * Class Config Contains all of the configuration for the application.
  *
  * Configuration is separated into segments:
+ * ```php
  * [
  *    'app' => [] // Application class DI configuration.
  *    'di' => [] // Dependency injection container configuration.
  *    'services' => [] // App services configuration
  *    'core' => [] // Core services configuration
  * ]
+ * ```
+ *
+ * @package ArekX\JsonQL\Config
  */
 abstract class Config implements ConfigInterface, ContainerInterface, FactoryInterface
 {
@@ -168,6 +170,7 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * This should be used internally for specific logic of wiring your classes in DI way.
      * Do not make this a service locator and get classes directly.
      *
+     * @internal
      * @return ContainerInterface
      */
     public function getDI(): ContainerInterface
@@ -179,6 +182,7 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * Returns one config value from configuration. Name can be accessed recursively using dot notation.
      *
      * Example:
+     * ```php
      * [
      *    'param' => [
      *       'name' => [
@@ -186,6 +190,7 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      *       ]
      *    ]
      * ]
+     * ```
      *
      * Can be accessed as: param.name.subname.
      *

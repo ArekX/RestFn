@@ -1,8 +1,9 @@
 <?php
 /**
- * by Aleksandar Panic
- * LICENSE: Apache 2.0
- *
+  * @author Aleksandar Panic
+  * @link https://jsonql.readthedocs.io/
+  * @license: http://www.apache.org/licenses/LICENSE-2.0
+  * @since 1.0.0
  **/
 
 namespace ArekX\JsonQL\Config;
@@ -10,8 +11,17 @@ namespace ArekX\JsonQL\Config;
 
 use Psr\Container\ContainerInterface;
 
+/**
+ * Interface ConfigInterface Interface for all configuration classes.
+ * @package ArekX\JsonQL\Config
+ */
 interface ConfigInterface
 {
+    /**
+     * ConfigInterface constructor.
+     * @param array $config Configuration used.
+     * @param array $params Parameters used.
+     */
     public function __construct(array $config = [], array $params = []);
 
     /**
@@ -35,6 +45,7 @@ interface ConfigInterface
      * Returns one config value from configuration. Name can be accessed recursively using dot notation.
      *
      * Example:
+     * ```php
      * [
      *    'param' => [
      *       'name' => [
@@ -42,6 +53,7 @@ interface ConfigInterface
      *       ]
      *    ]
      * ]
+     * ```
      *
      * Can be accessed as: param.name.subname.
      *
@@ -63,6 +75,7 @@ interface ConfigInterface
      * Returns one parameter from params. Name can be accessed recursively using dot notation.
      *
      * Example:
+     * ```php
      * [
      *    'param' => [
      *       'name' => [
@@ -70,6 +83,7 @@ interface ConfigInterface
      *       ]
      *    ]
      * ]
+     * ```
      *
      * Can be accessed as: param.name.subname.
      *
