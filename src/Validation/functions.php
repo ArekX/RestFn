@@ -1,9 +1,9 @@
 <?php
 /**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
  **/
 
 namespace ArekX\JsonQL\Validation;
@@ -14,6 +14,7 @@ use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
 use ArekX\JsonQL\Validation\Fields\BoolField;
+use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\StringField;
@@ -150,5 +151,22 @@ if (!function_exists('ArekX\JsonQL\Validation\nullField')) {
     function nullField(): NullField
     {
         return DI::make(NullField::class);
+    }
+}
+
+
+if (!function_exists('ArekX\JsonQL\Validation\enumField')) {
+
+    /**
+     * Creates new EnumField instance
+     *
+     * @see EnumField
+     * @return EnumField New instance of EnumField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function enumField(array $values): EnumField
+    {
+        return DI::make(EnumField::class, ['values' => $values]);
     }
 }

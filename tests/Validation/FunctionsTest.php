@@ -14,6 +14,7 @@ use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
 use ArekX\JsonQL\Validation\Fields\BoolField;
+use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\StringField;
@@ -69,5 +70,12 @@ class FunctionsTest extends \tests\TestCase
     {
         $this->assertInstanceOf(NullField::class, \ArekX\JsonQL\Validation\nullField());
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\nullField());
+    }
+
+
+    public function testEnumField()
+    {
+        $this->assertInstanceOf(EnumField::class, \ArekX\JsonQL\Validation\enumField([]));
+        $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\enumField([]));
     }
 }
