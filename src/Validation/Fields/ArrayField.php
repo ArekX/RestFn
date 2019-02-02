@@ -12,11 +12,8 @@ use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
- * Class ArrayField
+ * Class ArrayField Field representing a array type.
  * @package ArekX\JsonQL\Validation\Fields
- *
- * Field representing a array type.
- *
  */
 class ArrayField extends BaseField
 {
@@ -57,7 +54,9 @@ class ArrayField extends BaseField
      */
     protected function fieldDefinition(): array
     {
-        return [];
+        return [
+            'itemType' => $this->of ? $this->of->definition() : null
+        ];
     }
 
     /**

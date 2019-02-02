@@ -11,11 +11,8 @@ namespace ArekX\JsonQL\Validation\Fields;
 use ArekX\JsonQL\Validation\BaseField;
 
 /**
- * Class NumberField
+ * Class NumberField Field representing a number type.
  * @package ArekX\JsonQL\Validation\Fields
- *
- * Field representing a number type.
- *
  */
 class NumberField extends BaseField
 {

@@ -12,11 +12,8 @@ use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
- * Class StringField
+ * Class StringField Field representing a string type.
  * @package ArekX\JsonQL\Validation\Fields
- *
- * Field representing a string type.
- *
  */
 class StringField extends BaseField
 {

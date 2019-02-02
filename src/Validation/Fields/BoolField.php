@@ -9,19 +9,22 @@
 namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\BaseField;
+use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
- * Class AnyField Field representing a any type.
+ * Class BoolField Field representing a boolean type.
  * @package ArekX\JsonQL\Validation\Fields
  */
-class AnyField extends BaseField
+class BoolField extends BaseField
 {
+    const ERROR_NOT_A_BOOL = 'not_a_bool';
+
     /**
      * @inheritdoc
      */
     public function name(): string
     {
-        return 'any';
+        return 'bool';
     }
 
 
@@ -38,6 +41,10 @@ class AnyField extends BaseField
      */
     protected function doValidate(string $field, $value, $parentValue = null): array
     {
+        if (!is_bool($value)) {
+            return [['type' => self::ERROR_NOT_A_BOOL]];
+        }
+
         return [];
     }
 }

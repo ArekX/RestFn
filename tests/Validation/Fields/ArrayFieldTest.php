@@ -31,6 +31,7 @@ class ArrayFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'required' => false,
+            'itemType' => null,
             'emptyValue' => null
         ], $field->definition());
     }
@@ -41,6 +42,7 @@ class ArrayFieldTest extends \tests\TestCase
             ->required()
             ->info('Info')
             ->example('Example')
+            ->of(new MockField())
             ->emptyValue('');
 
         $this->assertEquals([
@@ -48,6 +50,13 @@ class ArrayFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'required' => true,
+            'itemType' => [
+                'type' => 'mock',
+                'required' => false,
+                'emptyValue' => null,
+                'info' => null,
+                'example' => null
+            ],
             'emptyValue' => ''
         ], $field->definition());
     }

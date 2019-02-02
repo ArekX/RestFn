@@ -13,6 +13,8 @@ use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
+use ArekX\JsonQL\Validation\Fields\BoolField;
+use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\StringField;
 
@@ -24,6 +26,8 @@ if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
      * @see AllOfField
      * @param FieldInterface ...$fields Fields to be added in AllOfField instance.
      * @return AllOfField New instance of AllOfField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     function allOf(FieldInterface ...$fields): AllOfField
     {
@@ -42,6 +46,8 @@ if (!function_exists('ArekX\JsonQL\Validation\anyOf')) {
      * @see AnyOfField
      * @param FieldInterface ...$fields Fields to be added in AnyOfField instance.
      * @return AnyOfField New instance of AnyOfField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     function anyOf(FieldInterface ...$fields): AnyOfField
     {
@@ -54,7 +60,7 @@ if (!function_exists('ArekX\JsonQL\Validation\anyOf')) {
 if (!function_exists('ArekX\JsonQL\Validation\numberField')) {
 
     /**
-     * Creates new NumberField instance to validate for any of specified fields
+     * Creates new NumberField instance
      *
      * @see NumberField
      * @return NumberField New instance of NumberField
@@ -68,10 +74,13 @@ if (!function_exists('ArekX\JsonQL\Validation\numberField')) {
 if (!function_exists('ArekX\JsonQL\Validation\stringField')) {
 
     /**
-     * Creates new StringField instance to validate for any of specified fields
+     * Creates new StringField instance
      *
      * @see StringField
+     * @param int|null $length
      * @return StringField New instance of StringField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     function stringField(?int $length = null): StringField
     {
@@ -83,10 +92,12 @@ if (!function_exists('ArekX\JsonQL\Validation\stringField')) {
 if (!function_exists('ArekX\JsonQL\Validation\anyField')) {
 
     /**
-     * Creates new AnyField instance to validate for any of specified fields
+     * Creates new AnyField instance
      *
      * @see AnyField
      * @return AnyField New instance of AnyField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     function anyField(): AnyField
     {
@@ -97,13 +108,47 @@ if (!function_exists('ArekX\JsonQL\Validation\anyField')) {
 if (!function_exists('ArekX\JsonQL\Validation\arrayField')) {
 
     /**
-     * Creates new ArrayField instance to validate for any of specified fields
+     * Creates new ArrayField instance
      *
      * @see ArrayField
      * @return ArrayField New instance of ArrayField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     function arrayField(): ArrayField
     {
         return DI::make(ArrayField::class);
+    }
+}
+
+if (!function_exists('ArekX\JsonQL\Validation\boolField')) {
+
+    /**
+     * Creates new BoolField instance
+     *
+     * @see BoolField
+     * @return BoolField New instance of BoolField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function boolField(): BoolField
+    {
+        return DI::make(BoolField::class);
+    }
+}
+
+if (!function_exists('ArekX\JsonQL\Validation\nullField')) {
+
+    /**
+     * Creates new NullField instance
+     *
+     * @see NullField
+     * @return NullField New instance of NullField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function nullField(): NullField
+    {
+        return DI::make(NullField::class);
     }
 }

@@ -13,11 +13,12 @@ use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
  * Class AllOfField
- * @package ArekX\JsonQL\Validation\Fields
  *
  * Field representing multiple fields which all must be true.
  *
  * This field is equivalent to the AND operator.
+ *
+ * @package ArekX\JsonQL\Validation\Fields
  */
 class AllOfField extends BaseField
 {
