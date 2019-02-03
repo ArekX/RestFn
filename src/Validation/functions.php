@@ -18,6 +18,7 @@ use ArekX\JsonQL\Validation\Fields\CompareField;
 use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
+use ArekX\JsonQL\Validation\Fields\ObjectField;
 use ArekX\JsonQL\Validation\Fields\StringField;
 
 if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
@@ -83,6 +84,8 @@ if (!function_exists('ArekX\JsonQL\Validation\numberField')) {
      *
      * @see NumberField
      * @return NumberField New instance of NumberField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     function numberField(): NumberField
     {
@@ -179,6 +182,7 @@ if (!function_exists('ArekX\JsonQL\Validation\enumField')) {
      * Creates new EnumField instance
      *
      * @see EnumField
+     * @param array $values
      * @return EnumField New instance of EnumField
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
@@ -186,5 +190,22 @@ if (!function_exists('ArekX\JsonQL\Validation\enumField')) {
     function enumField(array $values): EnumField
     {
         return DI::make(EnumField::class, ['values' => $values]);
+    }
+}
+
+if (!function_exists('ArekX\JsonQL\Validation\objectField')) {
+
+    /**
+     * Creates new ObjectField instance
+     *
+     * @see ObjectField
+     * @param array $fields Fields to be passed to constructor.
+     * @return ObjectField New instance of ObjectField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function objectField(array $fields = []): ObjectField
+    {
+        return DI::make(ObjectField::class, ['fields' => $fields]);
     }
 }

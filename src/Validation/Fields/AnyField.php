@@ -36,7 +36,7 @@ class AnyField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         return [];
     }

@@ -117,7 +117,7 @@ class NumberField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         if ($this->integerOnly && !is_int($value)) {
             return [['type' => self::ERROR_NOT_AN_INT]];

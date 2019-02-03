@@ -1,20 +1,17 @@
 <?php
+/**
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
+ **/
 
 namespace tests\Validation\Fields;
 
-use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\Fields\AnyField;
-use ArekX\JsonQL\Validation\Fields\NumberField;
-use ArekX\JsonQL\Validation\Fields\StringField;
 use tests\Validation\Mocks\MockField;
 
-/**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
- **/
 class AnyFieldTest extends \tests\TestCase
 {
     public function testInstanceOfBaseField()
@@ -55,16 +52,16 @@ class AnyFieldTest extends \tests\TestCase
     {
         $field = $this->createField();
 
-        $this->assertEquals([], $field->validate('fieldName', null));
-        $this->assertEquals([], $field->validate('fieldName', false));
-        $this->assertEquals([], $field->validate('fieldName', 'string'));
-        $this->assertEquals([], $field->validate('fieldName', 1));
-        $this->assertEquals([], $field->validate('fieldName', 1.5));
-        $this->assertEquals([], $field->validate('fieldName', new MockField()));
+        $this->assertEquals([], $field->validate(null));
+        $this->assertEquals([], $field->validate(false));
+        $this->assertEquals([], $field->validate('string'));
+        $this->assertEquals([], $field->validate(1));
+        $this->assertEquals([], $field->validate(1.5));
+        $this->assertEquals([], $field->validate(new MockField()));
     }
 
     protected function createField(): AnyField
     {
-        return DI::make(AnyField::class);
+        return \ArekX\JsonQL\Validation\anyField();
     }
 }

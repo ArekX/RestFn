@@ -18,6 +18,7 @@ use ArekX\JsonQL\Validation\Fields\CompareField;
 use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
+use ArekX\JsonQL\Validation\Fields\ObjectField;
 use ArekX\JsonQL\Validation\Fields\StringField;
 
 class FunctionsTest extends \tests\TestCase
@@ -34,7 +35,6 @@ class FunctionsTest extends \tests\TestCase
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\anyOf());
     }
 
-
     public function testNumberField()
     {
         $this->assertInstanceOf(NumberField::class, \ArekX\JsonQL\Validation\numberField());
@@ -47,13 +47,11 @@ class FunctionsTest extends \tests\TestCase
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\stringField());
     }
 
-
     public function testAnyField()
     {
         $this->assertInstanceOf(AnyField::class, \ArekX\JsonQL\Validation\anyField());
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\anyField());
     }
-
 
     public function testArrayField()
     {
@@ -73,7 +71,6 @@ class FunctionsTest extends \tests\TestCase
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\nullField());
     }
 
-
     public function testEnumField()
     {
         $this->assertInstanceOf(EnumField::class, \ArekX\JsonQL\Validation\enumField([]));
@@ -81,10 +78,15 @@ class FunctionsTest extends \tests\TestCase
     }
 
 
-
     public function testCompareField()
     {
         $this->assertInstanceOf(CompareField::class, \ArekX\JsonQL\Validation\compare());
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\compare());
+    }
+
+    public function testObjectField()
+    {
+        $this->assertInstanceOf(ObjectField::class, \ArekX\JsonQL\Validation\objectField([]));
+        $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\objectField([]));
     }
 }

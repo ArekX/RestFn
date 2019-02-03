@@ -1,18 +1,17 @@
 <?php
+/**
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
+ **/
 
 namespace tests\Validation\Fields;
 
-use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use tests\Validation\Mocks\MockField;
 
-/**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
- **/
 class AllOfFieldTest extends \tests\TestCase
 {
     public function testInstanceOfBaseField()
@@ -81,17 +80,17 @@ class AllOfFieldTest extends \tests\TestCase
     public function testCallingValidateOneDummyField()
     {
         $allOfField = $this->createField([new MockField()]);
-        $result = $allOfField->validate('fieldName', 'value');
+        $result = $allOfField->validate('value');
         $this->assertEmpty($result);
     }
 
     public function testCallingValidateOnZeroFields()
     {
         $allOfField = $this->createField([]);
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
     }
 
     public function testAllOfCallsValidateOfOtherFields()
@@ -104,7 +103,7 @@ class AllOfFieldTest extends \tests\TestCase
             ->willReturn([]);
 
         $allOfField = $this->createField([$field]);
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
     }
 
     public function testErrorsAreReturned()
@@ -116,7 +115,7 @@ class AllOfFieldTest extends \tests\TestCase
         $field2->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error2']);
+        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error2']);
     }
 
     public function testFirstFailWontRunOtherValidators()
@@ -128,7 +127,7 @@ class AllOfFieldTest extends \tests\TestCase
         $field2->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error1']);
+        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error1']);
     }
 
     public function testValueIsPassedToAllFields()
@@ -136,15 +135,14 @@ class AllOfFieldTest extends \tests\TestCase
         $field1 = $this->createMock(MockField::class);
         $field2 = $this->createMock(MockField::class);
 
-        $fieldName = 'fieldName';
         $fieldValue = ['fieldValue'];
         $parentFieldValue = ['parentFieldValue'];
 
-        $field1->method('validate')->with($fieldName, $fieldValue, $parentFieldValue)->willReturn([]);
-        $field2->method('validate')->with($fieldName, $fieldValue, $parentFieldValue)->willReturn([]);
+        $field2->method('validate')->with($fieldValue, $parentFieldValue)->willReturn([]);
+        $field1->method('validate')->with($fieldValue, $parentFieldValue)->willReturn([]);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate($fieldName, $fieldValue, $parentFieldValue), []);
+        $this->assertEquals($allOfField->validate($fieldValue, $parentFieldValue), []);
     }
 
     public function testDefinitionIsReturned()
@@ -195,8 +193,6 @@ class AllOfFieldTest extends \tests\TestCase
 
     protected function createField(array $dummyFields = []): AllOfField
     {
-        return DI::make(\ArekX\JsonQL\Validation\Fields\AllOfField::class, [
-            'fields' => $dummyFields
-        ]);
+        return \ArekX\JsonQL\Validation\allOf(...$dummyFields);
     }
 }

@@ -10,7 +10,6 @@ namespace ArekX\JsonQL\Rest;
 
 
 use ArekX\JsonQL\Helpers\DI;
-use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Rest\Handlers\Definer;
 use ArekX\JsonQL\Rest\Handlers\Performer;
 use ArekX\JsonQL\Rest\Handlers\Reader;

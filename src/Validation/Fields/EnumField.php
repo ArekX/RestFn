@@ -9,10 +9,9 @@
 namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
- * Class EnumField Field representing a boolean type.
+ * Class EnumField Field representing a enumeration type.
  * @package ArekX\JsonQL\Validation\Fields
  */
 class EnumField extends BaseField
@@ -48,7 +47,7 @@ class EnumField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         if (!in_array($value, $this->values, true)) {
             return [['type' => self::ERROR_NOT_VALID_VALUE, 'valid' => $this->values]];

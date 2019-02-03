@@ -15,6 +15,7 @@ interface ResponseInterface
 {
     /**
      * Sets response data array.
+     * @param HandlerInterface $handler
      * @param array $data
      */
     public function write(HandlerInterface $handler, array $data): void;

@@ -10,12 +10,27 @@ namespace tests\Validation\Mocks;
 
 use ArekX\JsonQL\Validation\BaseField;
 
+/**
+ * Class MockField
+ * @package tests\Validation\Mocks
+ */
 class MockField extends BaseField
 {
+    /**
+     * @var array
+     */
     public $definition = [];
 
+    /**
+     * @var array
+     */
     public $validation = [];
 
+    /**
+     * MockField constructor.
+     * @param array $validation
+     * @param array $definition
+     */
     public function __construct($validation = [], $definition = [])
     {
         $this->definition = $definition;
@@ -25,7 +40,7 @@ class MockField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         return $this->validation;
     }

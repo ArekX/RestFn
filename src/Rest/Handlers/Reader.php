@@ -9,11 +9,8 @@
 namespace ArekX\JsonQL\Rest\Handlers;
 
 
-use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Config;
-use ArekX\JsonQL\Interfaces\ReaderInterface;
-use ArekX\JsonQL\Validation\InvalidTypeException;
 
 class Reader implements HandlerInterface
 {

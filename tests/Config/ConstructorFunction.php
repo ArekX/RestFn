@@ -11,13 +11,16 @@ namespace tests\Config;
 
 use ArekX\JsonQL\Config\Config;
 use ArekX\JsonQL\Config\ConfigInterface;
+use DI\Container;
 use tests\Mock\MockConfig;
 
 trait ConstructorFunction
 {
     public function testConfigGetsResolvedOnce()
     {
-        $config = $this->di->get(ConfigInterface::class);
+        /** @var Container $di */
+        $di = $this->di;
+        $config = $di->get(ConfigInterface::class);
         $this->assertEquals($config, $this->config);
     }
 

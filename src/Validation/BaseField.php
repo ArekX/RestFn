@@ -77,7 +77,7 @@ abstract class BaseField implements FieldInterface
     /**
      * @inheritdoc
      */
-    public function validate(string $field, $value, $parentValue = null): array
+    public function validate($value, $parentValue = null): array
     {
         if (!$this->isRequired && $value === $this->emptyValue) {
             return [];
@@ -87,7 +87,7 @@ abstract class BaseField implements FieldInterface
             return [['type' => self::ERROR_VALUE_IS_REQUIRED]];
         }
 
-        return $this->doValidate($field, $value, $parentValue);
+        return $this->doValidate($value, $parentValue);
     }
 
     /**
@@ -139,12 +139,11 @@ abstract class BaseField implements FieldInterface
     /**
      * Performs actual fields validation.
      *
-     * If a field if not required and has an empty value. This validation is not exectued.
+     * If a field if not required and has an empty value. This validation is not executed.
      *
-     * @param string $field Field name to be validated.
      * @param mixed $value Value to be validated.
      * @param mixed $parentValue Parent value this field and value is in if applicable.
      * @return array List of errors if not valid or an empty array if it is valid.
      */
-    protected abstract function doValidate(string $field, $value, $parentValue = null): array;
+    protected abstract function doValidate($value, $parentValue = null): array;
 }

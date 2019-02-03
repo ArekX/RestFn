@@ -9,7 +9,6 @@
 namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
  * Class StringField Field representing a string type.
@@ -151,7 +150,7 @@ class StringField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         if (!is_string($value)) {
             return [['type' => self::ERROR_NOT_A_STRING]];

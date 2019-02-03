@@ -51,13 +51,13 @@ class Value
      * [
      *    'param' => [
      *       'name' => [
-     *          'subname' => 'value'
+     *          'name' => 'value'
      *       ]
      *    ]
      * ]
      * ```
      *
-     * Can be accessed as: `param.name.subname`.
+     * Can be accessed as: `param.name.name`
      *
      *
      * @param mixed $object Object to get a value from.

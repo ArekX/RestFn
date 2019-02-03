@@ -9,7 +9,6 @@
 namespace tests\Config;
 
 
-use ArekX\JsonQL\Config\Config;
 use tests\Mock\MockConfig;
 
 trait GetParamFunction

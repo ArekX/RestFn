@@ -33,6 +33,7 @@ class ArrayField extends BaseField
      * Sets item type which will be checked
      *
      * @param FieldInterface $field
+     * @return ArrayField
      */
     public function of(?FieldInterface $field = null)
     {
@@ -62,7 +63,7 @@ class ArrayField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         if (!is_array($value)) {
             return [['type' => self::ERROR_NOT_AN_ARRAY]];
@@ -75,7 +76,7 @@ class ArrayField extends BaseField
         $errorItems  = [];
 
         foreach ($value as $key => $item) {
-            $errors = $this->of->validate($key, $item, $value);
+            $errors = $this->of->validate($item, $value);
 
             if (!empty($errors)) {
                 $errorItems[$key] = $errors;

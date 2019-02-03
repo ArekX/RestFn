@@ -87,12 +87,12 @@ class AnyOfField extends BaseField
     /**
      * @inheritdoc
      */
-    public function doValidate(string $field, $value, $parentValue = null): array
+    public function doValidate($value, $parentValue = null): array
     {
         $errors = [];
 
         foreach ($this->fields as $fieldValidator) {
-            $results = $fieldValidator->validate($field, $value, $parentValue);
+            $results = $fieldValidator->validate($value, $parentValue);
 
             if (empty($results)) {
                 return [];

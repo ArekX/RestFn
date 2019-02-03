@@ -1,13 +1,12 @@
 <?php
 /**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
  **/
 
 namespace tests\Validation;
-
 
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
@@ -46,7 +45,7 @@ class BaseFieldTest extends TestCase
     {
         $field = $this->createField(['error1']);
         $field->required(false);
-        $this->assertEquals([], $field->validate('fieldName', null));
+        $this->assertEquals([], $field->validate(null));
     }
 
     public function testCanSetEmptyValue()
@@ -62,9 +61,9 @@ class BaseFieldTest extends TestCase
         $field = $this->createField(['error1']);
 
         $field->required(false);
-        $this->assertEquals(['error1'], $field->validate('fieldName', []));
+        $this->assertEquals(['error1'], $field->validate([]));
         $field->emptyValue([]);
-        $this->assertEquals([], $field->validate('fieldName', []));
+        $this->assertEquals([], $field->validate([]));
     }
 
     public function testDefinitionIsReturned()
@@ -86,13 +85,13 @@ class BaseFieldTest extends TestCase
 
         $field
             ->required(true)
-            ->emptyValue('testvalue')
+            ->emptyValue('test value')
             ->info('Info')
             ->example('Example');
 
         $this->assertEquals([
             'type' => 'mock',
-            'emptyValue' => 'testvalue',
+            'emptyValue' => 'test value',
             'info' => 'Info',
             'example' => 'Example',
             'required' => true,
@@ -116,13 +115,13 @@ class BaseFieldTest extends TestCase
     public function testRequiredIsChecked()
     {
         $field = $this->createField()->required(true);
-        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate('fieldName', null));
+        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate(null));
     }
 
     public function testRequiredIsCheckedWithEmptyValue()
     {
         $field = $this->createField()->required(true)->emptyValue('');
-        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate('fieldName', ''));
+        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate(''));
     }
 
     protected function createField($validation = [], $definition = []): MockField

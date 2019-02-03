@@ -1,19 +1,17 @@
 <?php
+/**
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
+ **/
 
 namespace tests\Validation\Fields;
 
-use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
 use tests\Validation\Mocks\MockField;
 
-/**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
- **/
 class AnyOfFieldTest extends \tests\TestCase
 {
     public function testInstanceOfBaseField()
@@ -82,17 +80,17 @@ class AnyOfFieldTest extends \tests\TestCase
     public function testCallingValidateOneDummyField()
     {
         $allOfField = $this->createField([new MockField()]);
-        $result = $allOfField->validate('fieldName', 'value');
+        $result = $allOfField->validate('value');
         $this->assertEmpty($result);
     }
 
     public function testCallingValidateOnZeroFields()
     {
         $allOfField = $this->createField([]);
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
     }
 
     public function testAllOfCallsValidateOfOtherFields()
@@ -105,7 +103,7 @@ class AnyOfFieldTest extends \tests\TestCase
             ->willReturn([]);
 
         $allOfField = $this->createField([$field]);
-        $this->assertEmpty($allOfField->validate('fieldName', rand(1, 500)));
+        $this->assertEmpty($allOfField->validate(rand(1, 500)));
     }
 
     public function testFirstSuccessWontValidateSecond()
@@ -117,7 +115,7 @@ class AnyOfFieldTest extends \tests\TestCase
         $field2->expects($this->never())->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), []);
+        $this->assertEquals($allOfField->validate(rand(1, 500)), []);
     }
 
     public function testWillRunUntilItSucceeds()
@@ -129,7 +127,7 @@ class AnyOfFieldTest extends \tests\TestCase
         $field2->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate('fieldName', rand(1, 500)), ['error1', 'error2']);
+        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error1', 'error2']);
     }
 
     public function testDefinitionIsReturned()
@@ -180,8 +178,6 @@ class AnyOfFieldTest extends \tests\TestCase
 
     protected function createField(array $dummyFields = []): AnyOfField
     {
-        return DI::make(\ArekX\JsonQL\Validation\Fields\AnyOfField::class, [
-            'fields' => $dummyFields
-        ]);
+        return \ArekX\JsonQL\Validation\anyOf(...$dummyFields);
     }
 }

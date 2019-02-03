@@ -88,10 +88,10 @@ class AllOfField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         foreach ($this->fields as $fieldValidator) {
-            $results = $fieldValidator->validate($field, $value, $parentValue);
+            $results = $fieldValidator->validate($value, $parentValue);
 
             if (!empty($results)) {
                 return $results;

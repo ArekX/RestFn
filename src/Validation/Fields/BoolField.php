@@ -9,7 +9,6 @@
 namespace ArekX\JsonQL\Validation\Fields;
 
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\FieldInterface;
 
 /**
  * Class BoolField Field representing a boolean type.
@@ -39,7 +38,7 @@ class BoolField extends BaseField
     /**
      * @inheritdoc
      */
-    protected function doValidate(string $field, $value, $parentValue = null): array
+    protected function doValidate($value, $parentValue = null): array
     {
         if (!is_bool($value)) {
             return [['type' => self::ERROR_NOT_A_BOOL]];

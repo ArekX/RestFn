@@ -17,12 +17,11 @@ interface FieldInterface
     /**
      * Validates one fields value using this validator.
      *
-     * @param string $field Name of the field to be validated.
      * @param mixed $value Value to be validated.
      * @param mixed $parentValue Parent value to be used in further validation.
      * @return array List of failed validations for this field or empty array if it is valid.
      */
-    public function validate(string $field, $value, $parentValue = null): array;
+    public function validate($value, $parentValue = null): array;
 
     /**
      * Sets whether or not this field is required.

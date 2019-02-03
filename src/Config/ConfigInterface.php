@@ -49,13 +49,13 @@ interface ConfigInterface
      * [
      *    'param' => [
      *       'name' => [
-     *          'subname' => 'value'
+     *          'sub' => 'value'
      *       ]
      *    ]
      * ]
      * ```
      *
-     * Can be accessed as: param.name.subname.
+     * Can be accessed as: `param.name.sub`
      *
      * @param $name string Name of the value to be retrieved, can be dot notation.
      * @param $default mixed Default value to be returned if parameter is missing.
@@ -79,13 +79,13 @@ interface ConfigInterface
      * [
      *    'param' => [
      *       'name' => [
-     *          'subname' => 'value'
+     *          'sub' => 'value'
      *       ]
      *    ]
      * ]
      * ```
      *
-     * Can be accessed as: param.name.subname.
+     * Can be accessed as: `param.name.sub`
      *
      * @param $name string Name of the parameter to be retrieved, can be dot notation.
      * @param $default mixed Default value to be returned if parameter is missing.

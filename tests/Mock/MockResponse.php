@@ -39,8 +39,9 @@ class MockResponse implements ResponseInterface
         $this->outputCalled = true;
     }
 
+
     /**
-     * Sets response data array.
+     * @param HandlerInterface $handler
      * @param array $data
      */
     public function write(HandlerInterface $handler, array $data): void

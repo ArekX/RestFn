@@ -10,6 +10,7 @@ namespace tests\Helpers\DI;
 
 
 use ArekX\JsonQL\Helpers\DI;
+use DI\Container;
 
 trait WireClassFunction
 {
@@ -19,7 +20,9 @@ trait WireClassFunction
             'key' => 'value',
             'key2' => true
         ];
-        $this->di->set(CustomClass::class, DI::wireSetup(CustomClassSetup::class, $setup));
+        /** @var Container $di */
+        $di = $this->di;
+        $di->set(CustomClass::class, DI::wireSetup(CustomClassSetup::class, $setup));
         $instance = DI::make(CustomClass::class);
         $this->assertInstanceOf(CustomClassSetup::class, $instance);
         $this->assertEquals($setup, $instance->setup);

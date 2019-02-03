@@ -9,7 +9,6 @@
 namespace tests\Mock;
 
 use ArekX\JsonQL\Config\Config;
-use ArekX\JsonQL\MainApplication;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Rest\Handlers\Reader;
 use ArekX\JsonQL\Interfaces\RequestInterface;

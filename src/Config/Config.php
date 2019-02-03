@@ -52,6 +52,7 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * Config constructor.
      * @param array $config Configuration array for classes.
      * @param array $params Configuration parameters for the app.
+     * @throws \Exception
      */
     public function __construct(array $config = [], array $params = [])
     {
@@ -146,12 +147,12 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * [
      *    'param' => [
      *       'name' => [
-     *          'subname' => 'value'
+     *          'sub' => 'value'
      *       ]
      *    ]
      * ]
      *
-     * Can be accessed as: param.name.subname.
+     * Can be accessed as: param.name.sub.
      *
      * @param $name string Name of the parameter to be retrieved, can be dot notation.
      * @param $default mixed Default value to be returned if parameter is missing.
@@ -170,7 +171,6 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * This should be used internally for specific logic of wiring your classes in DI way.
      * Do not make this a service locator and get classes directly.
      *
-     * @internal
      * @return ContainerInterface
      */
     public function getDI(): ContainerInterface
@@ -186,13 +186,13 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * [
      *    'param' => [
      *       'name' => [
-     *          'subname' => 'value'
+     *          'sub' => 'value'
      *       ]
      *    ]
      * ]
      * ```
      *
-     * Can be accessed as: param.name.subname.
+     * Can be accessed as: `param.name.sub`
      *
      * @param $name string Name of the value to be retrieved, can be dot notation.
      * @param $default mixed Default value to be returned if parameter is missing.

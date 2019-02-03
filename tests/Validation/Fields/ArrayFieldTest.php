@@ -1,21 +1,18 @@
 <?php
+/**
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
+ **/
 
 namespace tests\Validation\Fields;
 
-use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
-use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\StringField;
 use tests\Validation\Mocks\MockField;
 
-/**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
- **/
 class ArrayFieldTest extends \tests\TestCase
 {
     public function testInstanceOfBaseField()
@@ -61,28 +58,28 @@ class ArrayFieldTest extends \tests\TestCase
         ], $field->definition());
     }
 
-    public function stestValidatesArrayType()
+    public function testValidatesArrayType()
     {
         $field = $this->createField();
-        $this->assertEquals([], $field->validate('fieldName', []));
+        $this->assertEquals([], $field->validate([]));
     }
 
     public function testFailsOnNonArrayType()
     {
         $field = $this->createField()->required()->emptyValue([]);
         $error = [['type' => ArrayField::ERROR_NOT_AN_ARRAY]];
-        $this->assertEquals($error, $field->validate('fieldName', null));
-        $this->assertEquals($error, $field->validate('fieldName', ''));
-        $this->assertEquals($error, $field->validate('fieldName', 0));
-        $this->assertEquals($error, $field->validate('fieldName', 0.00));
-        $this->assertEquals($error, $field->validate('fieldName', false));
-        $this->assertEquals($error, $field->validate('fieldName', new MockField()));
+        $this->assertEquals($error, $field->validate(null));
+        $this->assertEquals($error, $field->validate(''));
+        $this->assertEquals($error, $field->validate(0));
+        $this->assertEquals($error, $field->validate(0.00));
+        $this->assertEquals($error, $field->validate(false));
+        $this->assertEquals($error, $field->validate(new MockField()));
     }
 
     public function testAnyItemIsValidIfTypeIsNotSet()
     {
         $field = $this->createField()->required();
-        $this->assertEquals([], $field->validate('fieldName', ['1', 2, '3', true, null]));
+        $this->assertEquals([], $field->validate(['1', 2, '3', true, null]));
     }
 
     public function testCanSetItemType()
@@ -108,7 +105,7 @@ class ArrayFieldTest extends \tests\TestCase
                     1 => ['error1'],
                     2 => ['error1']
                 ]]
-        ], $field->validate('fieldName', [1, 2, 3]));
+        ], $field->validate([1, 2, 3]));
     }
 
     public function testSelectiveItemIsValidated()
@@ -122,18 +119,18 @@ class ArrayFieldTest extends \tests\TestCase
                 'items' => [
                     1 => [['type' => StringField::ERROR_NOT_A_STRING]],
                 ]]
-        ], $field->validate('fieldName', ['1', 2, '3']));
+        ], $field->validate(['1', 2, '3']));
     }
 
     public function testAllItemAreValidated()
     {
         $mock = new StringField();
         $field = $this->createField()->required()->of($mock);
-        $this->assertEquals([], $field->validate('fieldName', ['1', '2', '3']));
+        $this->assertEquals([], $field->validate(['1', '2', '3']));
     }
 
     protected function createField(): ArrayField
     {
-        return DI::make(ArrayField::class);
+        return \ArekX\JsonQL\Validation\arrayField();
     }
 }

@@ -1,19 +1,18 @@
 <?php
+/**
+ * @author Aleksandar Panic
+ * @link https://jsonql.readthedocs.io/
+ * @license: http://www.apache.org/licenses/LICENSE-2.0
+ * @since 1.0.0
+ **/
 
 namespace tests\Validation\Fields;
 
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\Fields\BoolField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use tests\Validation\Mocks\MockField;
 
-/**
-  * @author Aleksandar Panic
-  * @link https://jsonql.readthedocs.io/
-  * @license: http://www.apache.org/licenses/LICENSE-2.0
-  * @since 1.0.0
- **/
 class NullFieldTest extends \tests\TestCase
 {
     public function testInstanceOfBaseField()
@@ -50,20 +49,20 @@ class NullFieldTest extends \tests\TestCase
         ], $field->definition());
     }
 
-    public function testValidatesBoolType()
+    public function testValidates()
     {
         $field = $this->createField()->required();
-        $this->assertEquals([], $field->validate('fieldName', null));
+        $this->assertEquals([], $field->validate(null));
     }
 
     public function testFailsToValidateOtherTypes()
     {
         $field = $this->createField()->emptyValue(false);
         $error = [['type' => NullField::ERROR_NOT_A_NULL]];
-        $this->assertEquals($error, $field->validate('fieldName', 1));
-        $this->assertEquals($error, $field->validate('fieldName', 1.5));
-        $this->assertEquals($error, $field->validate('fieldName', 'string'));
-        $this->assertEquals($error, $field->validate('fieldName', new MockField()));
+        $this->assertEquals($error, $field->validate(1));
+        $this->assertEquals($error, $field->validate(1.5));
+        $this->assertEquals($error, $field->validate('string'));
+        $this->assertEquals($error, $field->validate(new MockField()));
     }
 
     protected function createField(): NullField

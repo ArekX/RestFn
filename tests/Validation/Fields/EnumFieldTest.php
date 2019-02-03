@@ -1,20 +1,17 @@
 <?php
-
-namespace tests\Validation\Fields;
-
-use ArekX\JsonQL\Helpers\DI;
-use ArekX\JsonQL\Validation\BaseField;
-use ArekX\JsonQL\Validation\Fields\BoolField;
-use ArekX\JsonQL\Validation\Fields\EnumField;
-use ArekX\JsonQL\Validation\Fields\NullField;
-use tests\Validation\Mocks\MockField;
-
 /**
  * @author Aleksandar Panic
  * @link https://jsonql.readthedocs.io/
  * @license: http://www.apache.org/licenses/LICENSE-2.0
  * @since 1.0.0
  **/
+
+namespace tests\Validation\Fields;
+
+use ArekX\JsonQL\Helpers\DI;
+use ArekX\JsonQL\Validation\BaseField;
+use ArekX\JsonQL\Validation\Fields\EnumField;
+
 class EnumFieldTest extends \tests\TestCase
 {
     public function testInstanceOfBaseField()
@@ -56,19 +53,19 @@ class EnumFieldTest extends \tests\TestCase
     public function testValidatesIfInEnum()
     {
         $field = $this->createField([1, 2, '3']);
-        $this->assertEquals([], $field->validate('fieldName', 1));
-        $this->assertEquals([], $field->validate('fieldName', 2));
-        $this->assertEquals([], $field->validate('fieldName', '3'));
+        $this->assertEquals([], $field->validate(1));
+        $this->assertEquals([], $field->validate(2));
+        $this->assertEquals([], $field->validate('3'));
     }
 
     public function testFailsValidationIfNotInEnum()
     {
         $field = $this->createField([1, 2, '3']);
         $error = [['type' => EnumField::ERROR_NOT_VALID_VALUE, 'valid' => [1, 2, '3']]];
-        $this->assertEquals($error, $field->validate('fieldName', 4));
-        $this->assertEquals($error, $field->validate('fieldName', true));
-        $this->assertEquals($error, $field->validate('fieldName', '2'));
-        $this->assertEquals($error, $field->validate('fieldName', '1'));
+        $this->assertEquals($error, $field->validate(4));
+        $this->assertEquals($error, $field->validate(true));
+        $this->assertEquals($error, $field->validate('2'));
+        $this->assertEquals($error, $field->validate('1'));
     }
 
     protected function createField(array $values): EnumField
