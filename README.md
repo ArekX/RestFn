@@ -1,5 +1,8 @@
 # JsonQL
 
+<p><img src="https://readthedocs.org/projects/jsonql/badge/?version=latest" alt="Manual build status" /></p>
+
+
 JsonQL is a REST framework providing different and more effective access to the rest and faster and more cleaner development by using just one endpoint.
 
 Requests can be aggregated to provide "one-trip request" to the server to get all of the necessary data.
