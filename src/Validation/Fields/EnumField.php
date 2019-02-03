@@ -16,10 +16,19 @@ use ArekX\JsonQL\Validation\BaseField;
  */
 class EnumField extends BaseField
 {
-    const ERROR_NOT_VALID_VALUE = 'not_valid_value';
+    const ERROR_NOT_IN_ENUM = 'not_in_enum';
 
+    /**
+     * Values which are used for enumeration validation
+     *
+     * @var array
+     */
     public $values = [];
 
+    /**
+     * EnumField constructor.
+     * @param array $values Values which will be enumerated.
+     */
     public function __construct(array $values)
     {
         $this->values = $values;
@@ -32,7 +41,6 @@ class EnumField extends BaseField
     {
         return 'enum';
     }
-
 
     /**
      * @inheritdoc
@@ -50,7 +58,7 @@ class EnumField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!in_array($value, $this->values, true)) {
-            return [['type' => self::ERROR_NOT_VALID_VALUE, 'valid' => $this->values]];
+            return [['type' => self::ERROR_NOT_IN_ENUM, 'valid' => $this->values]];
         }
 
         return [];

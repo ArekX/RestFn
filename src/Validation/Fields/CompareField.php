@@ -119,6 +119,13 @@ class CompareField extends BaseField
         return [];
     }
 
+    /**
+     * Compares two values using an operator.
+     *
+     * @param mixed $value First value to be checked
+     * @param mixed $vsValue Second value to be checked
+     * @return bool Returns true if values satisfy the operator or false if they dont.
+     */
     protected function compareValue($value, $vsValue)
     {
         $inverted = false;

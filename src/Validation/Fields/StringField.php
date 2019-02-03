@@ -71,7 +71,7 @@ class StringField extends BaseField
      * Sets minimum length to validate against.
      *
      * @param int $minimum Minimum length
-     * @return static
+     * @return $this
      */
     public function min(int $minimum)
     {
@@ -89,7 +89,7 @@ class StringField extends BaseField
      * Sets maximum length to validate against.
      *
      * @param int $maximum Maximum length
-     * @return static
+     * @return $this
      */
     public function max(int $maximum)
     {
@@ -106,7 +106,7 @@ class StringField extends BaseField
      * Sets encoding used for string length.
      *
      * @param string $encoding Encoding used for string length.
-     * @return static
+     * @return $this
      */
     public function encoding(?string $encoding = null)
     {
@@ -118,7 +118,7 @@ class StringField extends BaseField
      * Match string against a pattern.
      *
      * @param string $match Pattern which will be used.
-     * @return static
+     * @return $this
      */
     public function match(string $match)
     {

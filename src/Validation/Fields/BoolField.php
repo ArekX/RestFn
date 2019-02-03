@@ -26,7 +26,6 @@ class BoolField extends BaseField
         return 'bool';
     }
 
-
     /**
      * @inheritdoc
      */

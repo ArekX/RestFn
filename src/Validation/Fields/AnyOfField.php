@@ -48,7 +48,7 @@ class AnyOfField extends BaseField
      * Adds another field to the validation list.
      *
      * @param FieldInterface $field Field to be added.
-     * @return static
+     * @return $this
      */
     public function andField(FieldInterface $field)
     {
@@ -60,7 +60,7 @@ class AnyOfField extends BaseField
      * Adds list of fields to be validated.
      *
      * @param array $fields Fields to be validated.
-     * @return static
+     * @return $this
      */
     public function withFields(array $fields)
     {

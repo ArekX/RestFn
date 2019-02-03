@@ -32,8 +32,8 @@ class ArrayField extends BaseField
     /**
      * Sets item type which will be checked
      *
-     * @param FieldInterface $field
-     * @return ArrayField
+     * @param FieldInterface $field Field which will be used for array.
+     * @return $this
      */
     public function of(?FieldInterface $field = null)
     {

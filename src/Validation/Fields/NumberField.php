@@ -50,7 +50,7 @@ class NumberField extends BaseField
      * Sets whether or not field must be integer only.
      *
      * @param bool $integerOnly
-     * @return static
+     * @return $this
      */
     public function integerOnly(bool $integerOnly = true)
     {
@@ -62,7 +62,7 @@ class NumberField extends BaseField
      * Sets minimum value to validate against.
      *
      * @param $minimum
-     * @return static
+     * @return $this
      */
     public function min(int $minimum)
     {
@@ -79,7 +79,7 @@ class NumberField extends BaseField
      * Sets maximum value to validate against.
      *
      * @param $maximum
-     * @return static
+     * @return $this
      */
     public function max(int $maximum)
     {

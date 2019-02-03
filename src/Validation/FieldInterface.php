@@ -27,7 +27,7 @@ interface FieldInterface
      * Sets whether or not this field is required.
      *
      * @param bool $isRequired
-     * @return static
+     * @return $this
      */
     public function required(bool $isRequired = true);
 
@@ -35,7 +35,7 @@ interface FieldInterface
      * Set information about this field.
      *
      * @param string $info
-     * @return static
+     * @return $this
      */
     public function info(string $info);
 
@@ -43,7 +43,7 @@ interface FieldInterface
      * Sets example of this field.
      *
      * @param mixed $example
-     * @return static
+     * @return $this
      */
     public function example($example);
 
@@ -51,7 +51,7 @@ interface FieldInterface
      * Sets empty value for required checking.
      *
      * @param mixed $emptyValue Empty value to be set.
-     * @return static
+     * @return $this
      */
     public function emptyValue($emptyValue = null);
 

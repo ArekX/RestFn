@@ -61,7 +61,7 @@ class EnumFieldTest extends \tests\TestCase
     public function testFailsValidationIfNotInEnum()
     {
         $field = $this->createField([1, 2, '3']);
-        $error = [['type' => EnumField::ERROR_NOT_VALID_VALUE, 'valid' => [1, 2, '3']]];
+        $error = [['type' => EnumField::ERROR_NOT_IN_ENUM, 'valid' => [1, 2, '3']]];
         $this->assertEquals($error, $field->validate(4));
         $this->assertEquals($error, $field->validate(true));
         $this->assertEquals($error, $field->validate('2'));

@@ -19,9 +19,45 @@ use ArekX\JsonQL\Validation\FieldInterface;
 class ObjectField extends BaseField
 {
     const ERROR_INVALID_FIELDS = 'invalid_fields';
+    const ERROR_MISSING_KEYS = 'missing_keys';
+    const ERROR_NOT_AN_ASSOCIATIVE = 'not_an_associative';
+    const ERROR_INVALID_FIELD_KEYS = 'invalid_field_keys';
 
-    /** @var FieldInterface[] */
+    /**
+     * Validator for fields.
+     *
+     * Key of the field is the field name,
+     * Value of the field is the instance of FieldInterface.
+     *
+     * @var FieldInterface[]
+     */
     public $fields;
+
+    /**
+     * Validator for any key in the value.
+     *
+     * @var null|FieldInterface
+     */
+    public $anyKey;
+
+    /**
+     * Whether or not to allow missing keys
+     *
+     * Defaults to false - Missing keys are not allowed.
+     *
+     * @var bool
+     */
+    public $allowMissing = false;
+
+    /**
+     * Whether or not to force strict keys.
+     *
+     * If strict keys are true validation will fail if there are more
+     * fields in the value than which are validated.
+     *
+     * @var bool
+     */
+    public $strictKeys = false;
 
     /**
      * ObjectField constructor.
@@ -49,6 +85,42 @@ class ObjectField extends BaseField
         return $this;
     }
 
+    /**
+     * Sets field validator for any key which is not specified in fields.
+     *
+     * @param FieldInterface|null $field Field to be set.
+     * @return $this
+     */
+    public function anyKey(?FieldInterface $field = null)
+    {
+        $this->anyKey = $field;
+        return $this;
+    }
+
+    /**
+     * Sets whether or not to allow missing keys.
+     *
+     * @param bool $allowMissing
+     * @return $this
+     */
+    public function allowMissing(bool $allowMissing = true)
+    {
+        $this->allowMissing = $allowMissing;
+        return $this;
+    }
+
+    /**
+     * Sets whether or not to force that value must only have
+     * keys which are validated by this field.
+     *
+     * @param bool $strictKeys
+     * @return $this
+     */
+    public function strictKeys(bool $strictKeys = true)
+    {
+        $this->strictKeys = $strictKeys;
+        return $this;
+    }
 
     /**
      * @inheritdoc
@@ -71,6 +143,8 @@ class ObjectField extends BaseField
         }
 
         return [
+            'anyKey' => $this->anyKey ? $this->anyKey->definition() : null,
+            'allowMissing' => $this->allowMissing,
             'fields' => $defs
         ];
     }
@@ -80,8 +154,22 @@ class ObjectField extends BaseField
      */
     protected function doValidate($value, $parentValue = null): array
     {
+        if (!is_array($value)) {
+            return [['type' => self::ERROR_NOT_AN_ASSOCIATIVE]];
+        }
+
+        $errors = [];
+
         $fieldErrors = [];
-        foreach ($this->fields as $fieldName => $field) {
+        foreach ($value as $fieldName => $fieldValue) {
+
+            /** @var FieldInterface $field */
+            $field = $this->fields[$fieldName] ?? $this->anyKey;
+
+            if ($field === null) {
+                continue;
+            }
+
             $result = $field->validate($value[$fieldName], $value);
 
             if (!empty($result)) {
@@ -89,10 +177,27 @@ class ObjectField extends BaseField
             }
         }
 
+
         if (!empty($fieldErrors)) {
-            return [['type' => self::ERROR_INVALID_FIELDS, 'fields' => $fieldErrors]];
+            $errors[] = ['type' => self::ERROR_INVALID_FIELDS, 'fields' => $fieldErrors];
         }
 
-        return [];
+        if ($this->allowMissing === false) {
+            $missingKeys = array_keys(array_diff_key($this->fields, $value));
+
+            if (!empty($missingKeys)) {
+                $errors[] = ['type' => self::ERROR_MISSING_KEYS, 'keys' => $missingKeys];
+            }
+        }
+
+        if ($this->strictKeys) {
+            $invalidKeys = array_keys(array_diff_key($value, $this->fields));
+
+            if (!empty($invalidKeys)) {
+                $errors[] = ['type' => self::ERROR_INVALID_FIELD_KEYS, 'keys' => $invalidKeys];
+            }
+        }
+
+        return $errors;
     }
 }
