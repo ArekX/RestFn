@@ -20,6 +20,7 @@ use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\ObjectField;
 use ArekX\JsonQL\Validation\Fields\StringField;
+use tests\Validation\Mocks\MockType;
 
 class FunctionsTest extends \tests\TestCase
 {
@@ -88,5 +89,11 @@ class FunctionsTest extends \tests\TestCase
     {
         $this->assertInstanceOf(ObjectField::class, \ArekX\JsonQL\Validation\objectField([]));
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\objectField([]));
+    }
+
+    public function testFromType()
+    {
+        $this->assertInstanceOf(ObjectField::class, \ArekX\JsonQL\Validation\fromType(MockType::class));
+        $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\fromType(MockType::class));
     }
 }

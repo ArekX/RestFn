@@ -32,6 +32,7 @@ class ObjectFieldTest extends \tests\TestCase
 
         $this->assertEquals([
             'type' => 'object',
+            'typeName' => null,
             'info' => null,
             'example' => null,
             'required' => false,
@@ -65,11 +66,13 @@ class ObjectFieldTest extends \tests\TestCase
             ->info('Info')
             ->example('Example')
             ->emptyValue('null')
+            ->typeName('Test Type')
             ->allowMissing(true)
             ->anyKey(new MockField([], ['anyKey' => true]));
 
         $this->assertEquals([
             'type' => 'object',
+            'typeName' => 'Test Type',
             'info' => 'Info',
             'example' => 'Example',
             'required' => true,
@@ -236,6 +239,26 @@ class ObjectFieldTest extends \tests\TestCase
             'key2' => 3,
             'unknownKey' => true
         ]));
+    }
+
+    public function testCanSetOverride()
+    {
+        $field = $this->createField();
+        $this->assertEquals([], $field->fields);
+
+        $override = ['key' => stringField()];
+        $field->merge($override);
+
+        $this->assertEquals($override, $field->fields);
+    }
+
+
+    public function testCanSetTypeName()
+    {
+        $field = $this->createField();
+        $this->assertEquals(null, $field->typeName);
+        $field->typeName('typeName');
+        $this->assertEquals('typeName', $field->typeName);
     }
 
     protected function createField(array $fields = []): ObjectField

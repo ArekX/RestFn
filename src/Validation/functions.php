@@ -209,3 +209,23 @@ if (!function_exists('ArekX\JsonQL\Validation\objectField')) {
         return DI::make(ObjectField::class, ['fields' => $fields]);
     }
 }
+
+if (!function_exists('ArekX\JsonQL\Validation\fromType')) {
+
+    /**
+     * Creates ObjectField from TypeInterface.
+     *
+     * @param string $className Class implementing TypeInterface from which the fields will be taken.
+     * @param array $mergeFields Fields which will be merged with type fields. Existing fields will be overridden.
+     * @return ObjectField Object field created from type.
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function fromType($className, $mergeFields = []): ObjectField
+    {
+        /** @var $className TypeInterface */
+        return objectField($className::fields())
+            ->typeName($className::typeName())
+            ->merge($mergeFields);
+    }
+}

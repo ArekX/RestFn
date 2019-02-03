@@ -8,6 +8,7 @@
 
 namespace ArekX\JsonQL\Validation\Fields;
 
+use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Validation\BaseField;
 use ArekX\JsonQL\Validation\FieldInterface;
 
@@ -58,6 +59,17 @@ class ObjectField extends BaseField
      * @var bool
      */
     public $strictKeys = false;
+
+    /**
+     * Sets type name of this object.
+     *
+     * Type names are used for naming an object field for custom types.
+     *
+     * Defaults to null, no type name is set.
+     *
+     * @var null|string
+     */
+    public $typeName = null;
 
     /**
      * ObjectField constructor.
@@ -123,13 +135,40 @@ class ObjectField extends BaseField
     }
 
     /**
+     * Adds field to override current fields.
+     *
+     * @param array $fields
+     * @return $this
+     */
+    public function merge(array $fields)
+    {
+        if ($fields === []) {
+            return $this;
+        }
+
+        $this->fields = Value::merge($this->fields, $fields);
+        return $this;
+    }
+
+    /**
+     * Sets type name for object field.
+     *
+     * @param string $typeName Name of the type which will be set.
+     * @return $this
+     */
+    public function typeName(string $typeName)
+    {
+        $this->typeName = $typeName;
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function name(): string
     {
         return 'object';
     }
-
 
     /**
      * @inheritdoc
@@ -143,6 +182,7 @@ class ObjectField extends BaseField
         }
 
         return [
+            'typeName' => $this->typeName,
             'anyKey' => $this->anyKey ? $this->anyKey->definition() : null,
             'allowMissing' => $this->allowMissing,
             'fields' => $defs
