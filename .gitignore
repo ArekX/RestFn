@@ -1,6 +1,8 @@
 vendor
 .idea
 phpDocumentor.phar
-doc
+phpDocumentor.phar.pubkey
+api
+build
 site
 prototype
