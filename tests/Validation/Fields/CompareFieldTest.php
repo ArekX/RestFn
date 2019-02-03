@@ -89,21 +89,49 @@ class CompareFieldTest extends \tests\TestCase
     public function testCompareValueIsValidated()
     {
         $field = $this->createField();
-        $this->assertEquals([], $field->withValue('>', 10)->validate(11));
-        $this->assertEquals([], $field->withValue('>=', 10)->validate(10));
-        $this->assertEquals([], $field->withValue('<=', 10)->validate(10));
-        $this->assertEquals([], $field->withValue('!>', 10)->validate(10));
-        $this->assertEquals([], $field->withValue('=', 10)->validate(10));
-        $this->assertEquals([], $field->withValue('!=', 10)->validate(9));
+
+        $operators = [
+            [11, '>', 10],
+            [6, '<', 7],
+            [10, '>=', 10],
+            [9, '!>=', 10],
+            [10, '!>', 10],
+            [10, '!<', 10],
+            [11, '!<=', 10],
+            [9, '!=', 10],
+            [10, '=', 10],
+        ];
+
+        foreach ($operators as $operator) {
+            [$value, $op, $withValue] = $operator;
+            $this->assertEquals([], $field->withValue($op, $withValue)->validate($value));
+        }
     }
 
-
-    public function testCompareValueFails()
+    public function testCompareValueIsFails()
     {
-        $field = $this->createField()->withValue('>', 10);
-        $this->assertEquals([
-            ['type' => CompareField::ERROR_COMPARE_VALUE_FAILED, 'withValue' => 10, 'operator' => '>']
-        ], $field->validate(9));
+        $field = $this->createField();
+
+        $operators = [
+            [9, '>', 10],
+            [8, '<', 7],
+            [9, '>=', 10],
+            [10, '!>=', 10],
+            [11, '!>', 10],
+            [9, '!<', 10],
+            [10, '!<=', 10],
+            [10, '!=', 10],
+            [9, '=', 10],
+        ];
+
+        foreach ($operators as $operator) {
+            [$value, $op, $withValue] = $operator;
+            $error = [
+                ['type' => CompareField::ERROR_COMPARE_VALUE_FAILED, 'withValue' => $withValue, 'operator' => $op]
+            ];
+
+            $this->assertEquals($error, $field->withValue($op, $withValue)->validate($value));
+        }
     }
 
     public function testCompareFieldIsValidated()
