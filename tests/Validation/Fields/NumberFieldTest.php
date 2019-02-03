@@ -27,7 +27,7 @@ class NumberFieldTest extends \tests\TestCase
             'type' => 'number',
             'info' => null,
             'example' => null,
-            'required' => false,
+            'notEmpty' => false,
             'integerOnly' => false,
             'minimum' => null,
             'maximum' => null,
@@ -38,7 +38,7 @@ class NumberFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->required()
+            ->notEmpty()
             ->emptyValue(0)
             ->min(10)
             ->max(15)
@@ -47,7 +47,7 @@ class NumberFieldTest extends \tests\TestCase
             'type' => 'number',
             'info' => null,
             'example' => null,
-            'required' => true,
+            'notEmpty' => true,
             'integerOnly' => true,
             'minimum' => 10,
             'maximum' => 15,
@@ -57,7 +57,7 @@ class NumberFieldTest extends \tests\TestCase
 
     public function testDoesNotRunIfNotRequiredAndEmptyValue()
     {
-        $field = $this->createField()->required(false);
+        $field = $this->createField()->notEmpty(false);
         $this->assertEquals([], $field->validate(null));
     }
 
@@ -65,7 +65,7 @@ class NumberFieldTest extends \tests\TestCase
     {
         $field = $this->createField();
 
-        $field->required(false);
+        $field->notEmpty(false);
         $this->assertEquals([
             ['type' => NumberField::ERROR_NOT_A_NUMBER]
         ], $field->validate([]));
@@ -75,14 +75,14 @@ class NumberFieldTest extends \tests\TestCase
 
     public function testValidatesANumber()
     {
-        $field = $this->createField()->required();
+        $field = $this->createField()->notEmpty();
         $this->assertEquals([], $field->validate(0));
         $this->assertEquals([], $field->validate(0.00));
     }
 
     public function testFailsIfNotANumber()
     {
-        $field = $this->createField()->required()->emptyValue(0);
+        $field = $this->createField()->notEmpty()->emptyValue(0);
         $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate(null));
         $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate(false));
         $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate([]));
@@ -104,7 +104,7 @@ class NumberFieldTest extends \tests\TestCase
 
     public function testValidatesIntegerOnly()
     {
-        $field = $this->createField()->required()->integerOnly();
+        $field = $this->createField()->notEmpty()->integerOnly();
         $this->assertEquals([], $field->validate(0));
         $this->assertEquals([
             ['type' => NumberField::ERROR_NOT_AN_INT]
@@ -122,7 +122,7 @@ class NumberFieldTest extends \tests\TestCase
 
     public function testValidatesMinimum()
     {
-        $field = $this->createField()->required()->min(10);
+        $field = $this->createField()->notEmpty()->min(10);
         $this->assertEquals([
             ['type' => NumberField::ERROR_LESS_THAN_MIN, 'min' => 10]
         ], $field->validate(0));
@@ -141,7 +141,7 @@ class NumberFieldTest extends \tests\TestCase
 
     public function testValidatesMaximum()
     {
-        $field = $this->createField()->required()->max(10);
+        $field = $this->createField()->notEmpty()->max(10);
         $this->assertEquals([
             ['type' => NumberField::ERROR_GREATER_THAN_MAX, 'max' => 10]
         ], $field->validate(11));

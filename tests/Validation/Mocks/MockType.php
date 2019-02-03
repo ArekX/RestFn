@@ -8,8 +8,7 @@
 
 namespace tests\Validation\Mocks;
 
-
-use ArekX\JsonQL\Validation\FieldInterface;
+use ArekX\JsonQL\Validation\Fields\ObjectField;
 use function ArekX\JsonQL\Validation\fromType;
 use ArekX\JsonQL\Validation\TypeInterface;
 
@@ -31,8 +30,17 @@ class MockType implements TypeInterface
         return [];
     }
 
-    public static function validator(): FieldInterface
+    public static function validator(): ObjectField
     {
         return fromType(static::class);
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public static function definition(): array
+    {
+        return static::validator()->definition();
     }
 }

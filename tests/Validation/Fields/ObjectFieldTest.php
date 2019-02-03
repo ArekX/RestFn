@@ -35,23 +35,23 @@ class ObjectFieldTest extends \tests\TestCase
             'typeName' => null,
             'info' => null,
             'example' => null,
-            'required' => false,
+            'notEmpty' => false,
             'emptyValue' => null,
             'anyKey' => null,
-            'allowMissing' => false,
+            'requiredKeys' => null,
             'fields' => [
                 'test' => [
                     'type' => 'mock',
                     'info' => null,
                     'example' => null,
-                    'required' => false,
+                    'notEmpty' => false,
                     'emptyValue' => null
                 ],
                 'test2' => [
                     'type' => 'mock',
                     'info' => null,
                     'example' => null,
-                    'required' => false,
+                    'notEmpty' => false,
                     'emptyValue' => null,
                     'test' => 1
                 ]
@@ -62,12 +62,12 @@ class ObjectFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField([])
-            ->required()
+            ->notEmpty()
             ->info('Info')
             ->example('Example')
             ->emptyValue('null')
             ->typeName('Test Type')
-            ->allowMissing(true)
+            ->requiredKeys([])
             ->anyKey(new MockField([], ['anyKey' => true]));
 
         $this->assertEquals([
@@ -75,14 +75,14 @@ class ObjectFieldTest extends \tests\TestCase
             'typeName' => 'Test Type',
             'info' => 'Info',
             'example' => 'Example',
-            'required' => true,
+            'notEmpty' => true,
             'emptyValue' => 'null',
-            'allowMissing' => true,
+            'requiredKeys' => [],
             'anyKey' => [
                 'type' => 'mock',
                 'info' => null,
                 'example' => null,
-                'required' => false,
+                'notEmpty' => false,
                 'emptyValue' => null,
                 'anyKey' => true
             ],
@@ -175,14 +175,16 @@ class ObjectFieldTest extends \tests\TestCase
     }
 
 
-    public function testCanSetAllowMissing()
+    public function testCanSetRequiredKeys()
     {
         $field = $this->createField();
-        $this->assertFalse($field->allowMissing);
-        $this->assertEquals($field, $field->allowMissing());
-        $this->assertTrue($field->allowMissing);
-        $this->assertEquals($field, $field->allowMissing(false));
-        $this->assertFalse($field->allowMissing);
+        $this->assertNull($field->requiredKeys);
+        $this->assertEquals($field, $field->requiredKeys());
+        $this->assertNull($field->requiredKeys);
+        $this->assertEquals($field, $field->requiredKeys([]));
+        $this->assertEquals([], $field->requiredKeys);
+        $this->assertEquals($field, $field->requiredKeys(['key1', 'key2', 'key3']));
+        $this->assertEquals(['key1', 'key2', 'key3'], $field->requiredKeys);
     }
 
     public function testMissingKeysNotAllowed()
@@ -195,6 +197,23 @@ class ObjectFieldTest extends \tests\TestCase
             [
                 'type' => ObjectField::ERROR_MISSING_KEYS,
                 'keys' => ['key1']
+            ]
+        ], $field->validate([
+            'key2' => 3
+        ]));
+    }
+
+    public function testSpecificMissingKeys()
+    {
+        $field = $this->createField([
+            'key1' => stringField(),
+            'key2' => numberField(),
+            'key3' => numberField()
+        ])->requiredKeys(['key3']);
+        $this->assertEquals([
+            [
+                'type' => ObjectField::ERROR_MISSING_KEYS,
+                'keys' => ['key3']
             ]
         ], $field->validate([
             'key2' => 3

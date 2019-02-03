@@ -44,11 +44,13 @@ class ObjectField extends BaseField
     /**
      * Whether or not to allow missing keys
      *
-     * Defaults to false - Missing keys are not allowed.
+     * Defaults to null - all keys are required.
      *
-     * @var bool
+     * IF array is passed, only specific keys in the array are required.
+     *
+     * @var null|array
      */
-    public $allowMissing = false;
+    public $requiredKeys = null;
 
     /**
      * Whether or not to force strict keys.
@@ -70,6 +72,13 @@ class ObjectField extends BaseField
      * @var null|string
      */
     public $typeName = null;
+
+    /**
+     * Cache variable for required keys.
+     *
+     * @var null|array
+     */
+    protected $requiredKeysCache = null;
 
     /**
      * ObjectField constructor.
@@ -110,14 +119,15 @@ class ObjectField extends BaseField
     }
 
     /**
-     * Sets whether or not to allow missing keys.
+     * Sets required keys.
      *
-     * @param bool $allowMissing
+     * @param null|array $requiredKeys Keys to be set.
+     * @see ObjectField::$requiredKeys
      * @return $this
      */
-    public function allowMissing(bool $allowMissing = true)
+    public function requiredKeys(?array $requiredKeys = null)
     {
-        $this->allowMissing = $allowMissing;
+        $this->requiredKeys = $requiredKeys;
         return $this;
     }
 
@@ -184,7 +194,7 @@ class ObjectField extends BaseField
         return [
             'typeName' => $this->typeName,
             'anyKey' => $this->anyKey ? $this->anyKey->definition() : null,
-            'allowMissing' => $this->allowMissing,
+            'requiredKeys' => $this->requiredKeys,
             'fields' => $defs
         ];
     }
@@ -222,8 +232,8 @@ class ObjectField extends BaseField
             $errors[] = ['type' => self::ERROR_INVALID_FIELDS, 'fields' => $fieldErrors];
         }
 
-        if ($this->allowMissing === false) {
-            $missingKeys = array_keys(array_diff_key($this->fields, $value));
+        if ($this->requiredKeys !== []) {
+            $missingKeys = array_diff($this->getRequiredKeys(), array_keys($value));
 
             if (!empty($missingKeys)) {
                 $errors[] = ['type' => self::ERROR_MISSING_KEYS, 'keys' => $missingKeys];
@@ -239,5 +249,15 @@ class ObjectField extends BaseField
         }
 
         return $errors;
+    }
+
+
+    protected function getRequiredKeys()
+    {
+        if ($this->requiredKeysCache === null) {
+            $this->requiredKeysCache = $this->requiredKeys === null ? array_keys($this->fields) : $this->requiredKeys;
+        }
+
+        return $this->requiredKeysCache;
     }
 }

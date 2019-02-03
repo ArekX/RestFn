@@ -139,7 +139,7 @@ class AnyOfFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'emptyValue' => null,
-            'required' => false,
+            'notEmpty' => false,
             'fields' => []
         ], $field->definition());
     }
@@ -156,21 +156,21 @@ class AnyOfFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'emptyValue' => null,
-            'required' => false,
+            'notEmpty' => false,
             'fields' => [
                 [
                     'type' => 'mock1',
                     'emptyValue' => null,
                     'info' => null,
                     'example' => null,
-                    'required' => false,
+                    'notEmpty' => false,
                 ],
                 [
                     'type' => 'mock2',
                     'emptyValue' => null,
                     'info' => null,
                     'example' => null,
-                    'required' => false,
+                    'notEmpty' => false,
                 ]
             ]
         ], $field->definition());

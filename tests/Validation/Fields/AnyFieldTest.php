@@ -26,7 +26,7 @@ class AnyFieldTest extends \tests\TestCase
             'type' => 'any',
             'info' => null,
             'example' => null,
-            'required' => false,
+            'notEmpty' => false,
             'emptyValue' => null
         ], $field->definition());
     }
@@ -34,7 +34,7 @@ class AnyFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->required()
+            ->notEmpty()
             ->info('Info')
             ->example('Example')
             ->emptyValue('');
@@ -43,7 +43,7 @@ class AnyFieldTest extends \tests\TestCase
             'type' => 'any',
             'info' => 'Info',
             'example' => 'Example',
-            'required' => true,
+            'notEmpty' => true,
             'emptyValue' => ''
         ], $field->definition());
     }

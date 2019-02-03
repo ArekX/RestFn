@@ -8,7 +8,6 @@
 
 namespace ArekX\JsonQL\Validation;
 
-
 use ArekX\JsonQL\Helpers\Value;
 
 /**
@@ -19,7 +18,7 @@ use ArekX\JsonQL\Helpers\Value;
  */
 abstract class BaseField implements FieldInterface
 {
-    const ERROR_VALUE_IS_REQUIRED = 'value_is_required';
+    const ERROR_VALUE_IS_EMPTY = 'value_is_empty';
 
     /**
      * Whether or not this field is required.
@@ -27,7 +26,7 @@ abstract class BaseField implements FieldInterface
      *
      * @var bool
      */
-    public $isRequired = false;
+    public $notEmpty = false;
 
     /**
      * Value which will be treated as an empty value for required check.
@@ -59,9 +58,9 @@ abstract class BaseField implements FieldInterface
     /**
      * @inheritdoc
      */
-    public function required(bool $isRequired = true)
+    public function notEmpty(bool $notEmpty = true)
     {
-        $this->isRequired = $isRequired;
+        $this->notEmpty = $notEmpty;
         return $this;
     }
 
@@ -79,12 +78,12 @@ abstract class BaseField implements FieldInterface
      */
     public function validate($value, $parentValue = null): array
     {
-        if (!$this->isRequired && $value === $this->emptyValue) {
+        if (!$this->notEmpty && $value === $this->emptyValue) {
             return [];
         }
 
-        if ($this->isRequired && $value === $this->emptyValue) {
-            return [['type' => self::ERROR_VALUE_IS_REQUIRED]];
+        if ($this->notEmpty && $value === $this->emptyValue) {
+            return [['type' => self::ERROR_VALUE_IS_EMPTY]];
         }
 
         return $this->doValidate($value, $parentValue);
@@ -99,7 +98,7 @@ abstract class BaseField implements FieldInterface
             'type' => $this->name(),
             'info' => $this->info,
             'example' => $this->example,
-            'required' => $this->isRequired,
+            'notEmpty' => $this->notEmpty,
             'emptyValue' => $this->emptyValue
         ], $this->fieldDefinition());
     }

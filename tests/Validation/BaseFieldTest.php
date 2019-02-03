@@ -18,11 +18,11 @@ class BaseFieldTest extends TestCase
     public function testSettingRequired()
     {
         $field = $this->createField();
-        $this->assertFalse($field->isRequired);
-        $this->assertSame($field, $field->required());
-        $this->assertTrue($field->isRequired);
-        $this->assertSame($field, $field->required(false));
-        $this->assertFalse($field->isRequired);
+        $this->assertFalse($field->notEmpty);
+        $this->assertSame($field, $field->notEmpty());
+        $this->assertTrue($field->notEmpty);
+        $this->assertSame($field, $field->notEmpty(false));
+        $this->assertFalse($field->notEmpty);
     }
 
     public function testCanSetInfo()
@@ -44,7 +44,7 @@ class BaseFieldTest extends TestCase
     public function testDoesNotRunIfNotRequiredAndEmptyValue()
     {
         $field = $this->createField(['error1']);
-        $field->required(false);
+        $field->notEmpty(false);
         $this->assertEquals([], $field->validate(null));
     }
 
@@ -60,7 +60,7 @@ class BaseFieldTest extends TestCase
     {
         $field = $this->createField(['error1']);
 
-        $field->required(false);
+        $field->notEmpty(false);
         $this->assertEquals(['error1'], $field->validate([]));
         $field->emptyValue([]);
         $this->assertEquals([], $field->validate([]));
@@ -75,7 +75,7 @@ class BaseFieldTest extends TestCase
             'emptyValue' => null,
             'info' => null,
             'example' => null,
-            'required' => false,
+            'notEmpty' => false,
         ], $field->definition());
     }
 
@@ -84,7 +84,7 @@ class BaseFieldTest extends TestCase
         $field = $this->createField();
 
         $field
-            ->required(true)
+            ->notEmpty(true)
             ->emptyValue('test value')
             ->info('Info')
             ->example('Example');
@@ -94,7 +94,7 @@ class BaseFieldTest extends TestCase
             'emptyValue' => 'test value',
             'info' => 'Info',
             'example' => 'Example',
-            'required' => true,
+            'notEmpty' => true,
         ], $field->definition());
     }
 
@@ -107,21 +107,21 @@ class BaseFieldTest extends TestCase
             'emptyValue' => null,
             'info' => null,
             'example' => null,
-            'required' => false,
+            'notEmpty' => false,
         ], $field->definition());
     }
 
 
     public function testRequiredIsChecked()
     {
-        $field = $this->createField()->required(true);
-        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate(null));
+        $field = $this->createField()->notEmpty(true);
+        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_EMPTY]], $field->validate(null));
     }
 
     public function testRequiredIsCheckedWithEmptyValue()
     {
-        $field = $this->createField()->required(true)->emptyValue('');
-        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_REQUIRED]], $field->validate(''));
+        $field = $this->createField()->notEmpty(true)->emptyValue('');
+        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_EMPTY]], $field->validate(''));
     }
 
     protected function createField($validation = [], $definition = []): MockField

@@ -24,12 +24,12 @@ interface FieldInterface
     public function validate($value, $parentValue = null): array;
 
     /**
-     * Sets whether or not this field is required.
+     * Sets whether or not this field cannot have empty value..
      *
-     * @param bool $isRequired
+     * @param bool $notEmpty
      * @return $this
      */
-    public function required(bool $isRequired = true);
+    public function notEmpty(bool $notEmpty = true);
 
     /**
      * Set information about this field.
