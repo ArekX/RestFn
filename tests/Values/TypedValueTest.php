@@ -5,6 +5,7 @@ use ArekX\JsonQL\Validation\Fields\StringField;
 use function ArekX\JsonQL\Validation\stringField;
 use ArekX\JsonQL\Values\InvalidValueException;
 use ArekX\JsonQL\Values\TypedValue;
+use tests\Values\Mock\MockStaticTypeValue;
 use tests\Values\Mock\MockType;
 use tests\Values\Mock\MockTypeValue;
 
@@ -98,6 +99,12 @@ class TypedValueTest extends \tests\TestCase
         ]);
 
         $this->assertEquals('string2', $value->get('key2'));
+    }
+
+    public function testValidatorIsReturnedOnce()
+    {
+        $parentValidator = MockTypeValue::getParentValidator();
+        $this->assertSame($parentValidator, MockTypeValue::getParentValidator());
     }
 
     public function testValidationFails()

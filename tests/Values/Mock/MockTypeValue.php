@@ -26,4 +26,9 @@ class MockTypeValue extends TypedValue
     {
         return static::type()::validator();
     }
+
+    public static function getParentValidator(): ObjectField
+    {
+        return parent::getValidator();
+    }
 }
