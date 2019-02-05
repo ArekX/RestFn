@@ -26,6 +26,7 @@ class AnyFieldTest extends \tests\TestCase
             'type' => 'any',
             'info' => null,
             'example' => null,
+            'identifier' => null,
             'notEmpty' => false,
             'emptyValue' => null
         ], $field->definition());
@@ -36,6 +37,7 @@ class AnyFieldTest extends \tests\TestCase
         $field = $this->createField()
             ->notEmpty()
             ->info('Info')
+            ->identifier('Custom name')
             ->example('Example')
             ->emptyValue('');
 
@@ -43,6 +45,7 @@ class AnyFieldTest extends \tests\TestCase
             'type' => 'any',
             'info' => 'Info',
             'example' => 'Example',
+            'identifier' => 'Custom name',
             'notEmpty' => true,
             'emptyValue' => ''
         ], $field->definition());

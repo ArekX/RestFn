@@ -153,6 +153,7 @@ class AllOfFieldTest extends \tests\TestCase
             'type' => 'allOf',
             'info' => null,
             'example' => null,
+            'identifier' => null,
             'emptyValue' => null,
             'notEmpty' => false,
             'fields' => []
@@ -170,12 +171,14 @@ class AllOfFieldTest extends \tests\TestCase
             'type' => 'allOf',
             'emptyValue' => null,
             'info' => null,
+            'identifier' => null,
             'example' => null,
             'notEmpty' => false,
             'fields' => [
                 [
                     'type' => 'mock1',
                     'emptyValue' => null,
+                    'identifier' => null,
                     'info' => null,
                     'example' => null,
                     'notEmpty' => false,
@@ -183,6 +186,7 @@ class AllOfFieldTest extends \tests\TestCase
                 [
                     'type' => 'mock2',
                     'emptyValue' => null,
+                    'identifier' => null,
                     'info' => null,
                     'example' => null,
                     'notEmpty' => false,

@@ -19,6 +19,7 @@ use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\ObjectField;
+use ArekX\JsonQL\Validation\Fields\RecursiveField;
 use ArekX\JsonQL\Validation\Fields\StringField;
 
 if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
@@ -99,14 +100,14 @@ if (!function_exists('ArekX\JsonQL\Validation\stringField')) {
      * Creates new StringField instance
      *
      * @see StringField
-     * @param int|null $length
+     * @param int|null $length Maximum length of the string.
      * @return StringField New instance of StringField
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
     function stringField(?int $length = null): StringField
     {
-        return DI::make(StringField::class, ['length' => $length]);
+        return DI::make(StringField::class, ['maxLength' => $length]);
     }
 }
 
@@ -227,5 +228,26 @@ if (!function_exists('ArekX\JsonQL\Validation\fromType')) {
         return objectField($className::fields())
             ->typeName($className::typeName())
             ->merge($mergeFields);
+    }
+}
+
+if (!function_exists('ArekX\JsonQL\Validation\recursiveField')) {
+
+    /**
+     * Creates RecursiveField for marking fields as recursive.
+     *
+     * This field will behave same as the original field in terms of validation,
+     * but it will return recursive definition to prevent infinite loops.
+     *
+     * @param FieldInterface $field Field which is wrapped as recursive.
+     * @return RecursiveField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    function recursiveField(FieldInterface $field): RecursiveField
+    {
+        return DI::make(RecursiveField::class, [
+            'field' => $field
+        ]);
     }
 }

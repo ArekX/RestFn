@@ -73,6 +73,7 @@ class BaseFieldTest extends TestCase
         $this->assertEquals([
             'type' => 'mock',
             'emptyValue' => null,
+            'identifier' => null,
             'info' => null,
             'example' => null,
             'notEmpty' => false,
@@ -94,6 +95,7 @@ class BaseFieldTest extends TestCase
             'emptyValue' => 'test value',
             'info' => 'Info',
             'example' => 'Example',
+            'identifier' => null,
             'notEmpty' => true,
         ], $field->definition());
     }
@@ -105,6 +107,7 @@ class BaseFieldTest extends TestCase
         $this->assertEquals([
             'type' => 'test',
             'emptyValue' => null,
+            'identifier' => null,
             'info' => null,
             'example' => null,
             'notEmpty' => false,
@@ -122,6 +125,15 @@ class BaseFieldTest extends TestCase
     {
         $field = $this->createField()->notEmpty(true)->emptyValue('');
         $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_EMPTY]], $field->validate(''));
+    }
+
+
+    public function testIdentifierIsSet()
+    {
+        $field = $this->createField();
+        $this->assertNull($field->identifier);
+        $this->assertSame($field, $field->identifier(""));
+        $this->assertEquals("", $field->identifier);
     }
 
     protected function createField($validation = [], $definition = []): MockField

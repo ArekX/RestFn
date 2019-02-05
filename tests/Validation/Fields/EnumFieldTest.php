@@ -26,6 +26,7 @@ class EnumFieldTest extends \tests\TestCase
             'type' => 'enum',
             'info' => null,
             'example' => null,
+            'identifier' => null,
             'notEmpty' => false,
             'emptyValue' => null,
             'values' => []
@@ -45,6 +46,7 @@ class EnumFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'notEmpty' => true,
+            'identifier' => null,
             'emptyValue' => 'null',
             'values' => [1, 2, 3]
         ], $field->definition());

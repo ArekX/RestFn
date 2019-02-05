@@ -138,6 +138,7 @@ class AnyOfFieldTest extends \tests\TestCase
             'type' => 'anyOf',
             'info' => null,
             'example' => null,
+            'identifier' => null,
             'emptyValue' => null,
             'notEmpty' => false,
             'fields' => []
@@ -156,12 +157,14 @@ class AnyOfFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'emptyValue' => null,
+            'identifier' => null,
             'notEmpty' => false,
             'fields' => [
                 [
                     'type' => 'mock1',
                     'emptyValue' => null,
                     'info' => null,
+                    'identifier' => null,
                     'example' => null,
                     'notEmpty' => false,
                 ],
@@ -170,6 +173,7 @@ class AnyOfFieldTest extends \tests\TestCase
                     'emptyValue' => null,
                     'info' => null,
                     'example' => null,
+                    'identifier' => null,
                     'notEmpty' => false,
                 ]
             ]

@@ -103,6 +103,7 @@ class ObjectField extends BaseField
     public function fields(array $fields)
     {
         $this->fields = $fields;
+        $this->requiredKeysCache = null;
         return $this;
     }
 
@@ -128,6 +129,7 @@ class ObjectField extends BaseField
     public function requiredKeys(?array $requiredKeys = null)
     {
         $this->requiredKeys = $requiredKeys;
+        $this->requiredKeysCache = null;
         return $this;
     }
 
@@ -157,6 +159,7 @@ class ObjectField extends BaseField
         }
 
         $this->fields = Value::merge($this->fields, $fields);
+        $this->requiredKeysCache = null;
         return $this;
     }
 
@@ -254,8 +257,12 @@ class ObjectField extends BaseField
 
     protected function getRequiredKeys()
     {
+        if ($this->requiredKeys !== null) {
+            return $this->requiredKeys;
+        }
+
         if ($this->requiredKeysCache === null) {
-            $this->requiredKeysCache = $this->requiredKeys === null ? array_keys($this->fields) : $this->requiredKeys;
+            $this->requiredKeysCache = array_keys($this->fields);
         }
 
         return $this->requiredKeysCache;

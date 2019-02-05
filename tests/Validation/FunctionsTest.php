@@ -19,7 +19,9 @@ use ArekX\JsonQL\Validation\Fields\EnumField;
 use ArekX\JsonQL\Validation\Fields\NullField;
 use ArekX\JsonQL\Validation\Fields\NumberField;
 use ArekX\JsonQL\Validation\Fields\ObjectField;
+use ArekX\JsonQL\Validation\Fields\RecursiveField;
 use ArekX\JsonQL\Validation\Fields\StringField;
+use function ArekX\JsonQL\Validation\objectField;
 use tests\Validation\Mocks\MockType;
 
 class FunctionsTest extends \tests\TestCase
@@ -95,5 +97,12 @@ class FunctionsTest extends \tests\TestCase
     {
         $this->assertInstanceOf(ObjectField::class, \ArekX\JsonQL\Validation\fromType(MockType::class));
         $this->assertInstanceOf(FieldInterface::class, \ArekX\JsonQL\Validation\fromType(MockType::class));
+    }
+
+    public function testRecursiveField()
+    {
+        $field = \ArekX\JsonQL\Validation\recursiveField(objectField()->identifier('object'));
+        $this->assertInstanceOf(RecursiveField::class, $field);
+        $this->assertInstanceOf(FieldInterface::class, $field);
     }
 }

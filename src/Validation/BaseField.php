@@ -16,7 +16,7 @@ use ArekX\JsonQL\Helpers\Value;
  *
  * Base abstract field for all of the fields.
  */
-abstract class BaseField implements FieldInterface
+abstract class BaseField implements FieldInterface, DefineFieldInterface
 {
     const ERROR_VALUE_IS_EMPTY = 'value_is_empty';
 
@@ -56,6 +56,15 @@ abstract class BaseField implements FieldInterface
     public $info = null;
 
     /**
+     * Custom identifier set.
+     *
+     * Defaults to null - no identifier set.
+     *
+     * @var null|string
+     */
+    public $identifier = null;
+
+    /**
      * @inheritdoc
      */
     public function notEmpty(bool $notEmpty = true)
@@ -92,10 +101,29 @@ abstract class BaseField implements FieldInterface
     /**
      * @inheritdoc
      */
+    public function identifier(string $identifier)
+    {
+        $this->identifier = $identifier;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
     public function definition(): array
     {
         return Value::merge([
             'type' => $this->name(),
+            'identifier' => $this->identifier,
             'info' => $this->info,
             'example' => $this->example,
             'notEmpty' => $this->notEmpty,

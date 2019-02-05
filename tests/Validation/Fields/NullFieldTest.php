@@ -27,6 +27,7 @@ class NullFieldTest extends \tests\TestCase
             'type' => 'null',
             'info' => null,
             'example' => null,
+            'identifier' => null,
             'notEmpty' => false,
             'emptyValue' => 0
         ], $field->definition());
@@ -45,6 +46,7 @@ class NullFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'notEmpty' => true,
+            'identifier' => null,
             'emptyValue' => 'null'
         ], $field->definition());
     }

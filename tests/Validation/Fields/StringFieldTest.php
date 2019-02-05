@@ -32,6 +32,7 @@ class StringFieldTest extends \tests\TestCase
             'match' => null,
             'maxLength' => null,
             'encoding' => null,
+            'identifier' => null,
             'emptyValue' => null
         ], $field->definition());
     }
@@ -53,6 +54,7 @@ class StringFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'notEmpty' => true,
+            'identifier' => null,
             'minLength' => 10,
             'maxLength' => 30,
             'encoding' => 'UTF-8',
@@ -202,12 +204,12 @@ class StringFieldTest extends \tests\TestCase
     public function testCanBeCreatedWithLength()
     {
         $field = $this->createField(100);
-        $this->assertEquals(100, $field->min);
+        $this->assertEquals(null, $field->min);
         $this->assertEquals(100, $field->max);
     }
 
     protected function createField($length = null): StringField
     {
-        return DI::make(StringField::class, ['length' => $length]);
+        return \ArekX\JsonQL\Validation\stringField($length);
     }
 }

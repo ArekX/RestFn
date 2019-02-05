@@ -27,6 +27,7 @@ class BoolFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'notEmpty' => false,
+            'identifier' => null,
             'emptyValue' => null
         ], $field->definition());
     }
@@ -43,6 +44,7 @@ class BoolFieldTest extends \tests\TestCase
             'type' => 'bool',
             'info' => 'Info',
             'example' => 'Example',
+            'identifier' => null,
             'notEmpty' => true,
             'emptyValue' => false
         ], $field->definition());

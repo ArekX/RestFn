@@ -28,6 +28,7 @@ class ArrayFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'notEmpty' => false,
+            'identifier' => null,
             'itemType' => null,
             'emptyValue' => null
         ], $field->definition());
@@ -39,6 +40,7 @@ class ArrayFieldTest extends \tests\TestCase
             ->notEmpty()
             ->info('Info')
             ->example('Example')
+            ->identifier('custom name')
             ->of(new MockField())
             ->emptyValue('');
 
@@ -46,12 +48,14 @@ class ArrayFieldTest extends \tests\TestCase
             'type' => 'array',
             'info' => 'Info',
             'example' => 'Example',
+            'identifier' => 'custom name',
             'notEmpty' => true,
             'itemType' => [
                 'type' => 'mock',
                 'notEmpty' => false,
                 'emptyValue' => null,
                 'info' => null,
+                'identifier' => null,
                 'example' => null
             ],
             'emptyValue' => ''

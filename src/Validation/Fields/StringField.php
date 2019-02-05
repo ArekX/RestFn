@@ -23,12 +23,14 @@ class StringField extends BaseField
 
     /**
      * StringField constructor.
-     * @param int|null $length
+     * @param int|null $maxLength Maximum length of the string
      */
-    public function __construct(?int $length = null)
+    public function __construct(?int $maxLength = null)
     {
-        $this->min = $length;
-        $this->max = $length;
+
+        if ($maxLength !== null) {
+            $this->max($maxLength);
+        }
     }
 
     /**

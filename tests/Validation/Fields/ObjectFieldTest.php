@@ -37,12 +37,14 @@ class ObjectFieldTest extends \tests\TestCase
             'example' => null,
             'notEmpty' => false,
             'emptyValue' => null,
+            'identifier' => null,
             'anyKey' => null,
             'requiredKeys' => null,
             'fields' => [
                 'test' => [
                     'type' => 'mock',
                     'info' => null,
+                    'identifier' => null,
                     'example' => null,
                     'notEmpty' => false,
                     'emptyValue' => null
@@ -50,6 +52,7 @@ class ObjectFieldTest extends \tests\TestCase
                 'test2' => [
                     'type' => 'mock',
                     'info' => null,
+                    'identifier' => null,
                     'example' => null,
                     'notEmpty' => false,
                     'emptyValue' => null,
@@ -76,6 +79,7 @@ class ObjectFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'notEmpty' => true,
+            'identifier' => null,
             'emptyValue' => 'null',
             'requiredKeys' => [],
             'anyKey' => [
@@ -84,6 +88,7 @@ class ObjectFieldTest extends \tests\TestCase
                 'example' => null,
                 'notEmpty' => false,
                 'emptyValue' => null,
+                'identifier' => null,
                 'anyKey' => true
             ],
             'fields' => []

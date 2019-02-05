@@ -24,41 +24,23 @@ interface FieldInterface
     public function validate($value, $parentValue = null): array;
 
     /**
-     * Sets whether or not this field cannot have empty value..
-     *
-     * @param bool $notEmpty
-     * @return $this
-     */
-    public function notEmpty(bool $notEmpty = true);
-
-    /**
-     * Set information about this field.
-     *
-     * @param string $info
-     * @return $this
-     */
-    public function info(string $info);
-
-    /**
-     * Sets example of this field.
-     *
-     * @param mixed $example
-     * @return $this
-     */
-    public function example($example);
-
-    /**
-     * Sets empty value for required checking.
-     *
-     * @param mixed $emptyValue Empty value to be set.
-     * @return $this
-     */
-    public function emptyValue($emptyValue = null);
-
-    /**
      * Returns this fields definition.
      *
      * @return array
      */
     public function definition(): array;
+
+    /**
+     * Custom identifier of the field.
+     *
+     * @param string $identifier Identifier name
+     * @return $this
+     */
+    public function identifier(string $identifier);
+
+    /**
+     * Set identifier to be returned.
+     * @return null|string
+     */
+    public function getIdentifier(): ?string;
 }

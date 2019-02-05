@@ -28,6 +28,7 @@ class NumberFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'notEmpty' => false,
+            'identifier' => null,
             'integerOnly' => false,
             'minimum' => null,
             'maximum' => null,
@@ -49,6 +50,7 @@ class NumberFieldTest extends \tests\TestCase
             'example' => null,
             'notEmpty' => true,
             'integerOnly' => true,
+            'identifier' => null,
             'minimum' => 10,
             'maximum' => 15,
             'emptyValue' => 0
