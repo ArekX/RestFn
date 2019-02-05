@@ -12,7 +12,7 @@ use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\MissingIdentifierException;
 
 /**
- * Class AnyField Field representing a any type.
+ * Class RecursiveField Field representing a any type.
  * @package ArekX\JsonQL\Validation\Fields
  */
 class RecursiveField implements FieldInterface
@@ -29,6 +29,12 @@ class RecursiveField implements FieldInterface
      */
     public $field;
 
+    /**
+     * RecursiveField constructor.
+     *
+     * @param FieldInterface $field Field to be wrapped.
+     * @throws MissingIdentifierException Exception thrown when passed field does not have an identifier.
+     */
     public function __construct(FieldInterface $field)
     {
         $this->field = $field;
