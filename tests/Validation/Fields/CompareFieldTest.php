@@ -26,7 +26,7 @@ class CompareFieldTest extends \tests\TestCase
             'type' => 'compare',
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'emptyValue' => null,
             'identifier' => null,
             'withField' => null,

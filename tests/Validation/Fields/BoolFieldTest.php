@@ -26,7 +26,7 @@ class BoolFieldTest extends \tests\TestCase
             'type' => 'bool',
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'identifier' => null,
             'emptyValue' => null
         ], $field->definition());

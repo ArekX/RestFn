@@ -26,7 +26,7 @@ abstract class BaseField implements FieldInterface, DefineFieldInterface
      *
      * @var bool
      */
-    public $allowEmpty = true;
+    public $allowEmpty = false;
 
     /**
      * Value which will be treated as an empty value for required check.

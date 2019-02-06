@@ -18,7 +18,7 @@ class BaseFieldTest extends TestCase
     public function testSettingRequired()
     {
         $field = $this->createField();
-        $this->assertTrue($field->allowEmpty);
+        $this->assertFalse($field->allowEmpty);
         $this->assertSame($field, $field->allowEmpty());
         $this->assertTrue($field->allowEmpty);
         $this->assertSame($field, $field->allowEmpty(false));
@@ -76,7 +76,7 @@ class BaseFieldTest extends TestCase
             'identifier' => null,
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
         ], $field->definition());
     }
 
@@ -110,7 +110,7 @@ class BaseFieldTest extends TestCase
             'identifier' => null,
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
         ], $field->definition());
     }
 

@@ -27,7 +27,7 @@ class NumberFieldTest extends \tests\TestCase
             'type' => 'number',
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'identifier' => null,
             'integerOnly' => false,
             'minimum' => null,

@@ -47,12 +47,4 @@ class FieldItems extends BaseType
                 'fields' => recursiveField($fieldsType)
             ])->requiredKeys(['for'])->info('Name of the field with child fields.')));
     }
-
-    /**
-     * @inheritdoc
-     */
-    public static function typeName(): string
-    {
-        return 'field-items';
-    }
 }

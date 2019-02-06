@@ -27,7 +27,7 @@ class StringFieldTest extends \tests\TestCase
             'type' => 'string',
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'minLength' => null,
             'match' => null,
             'maxLength' => null,

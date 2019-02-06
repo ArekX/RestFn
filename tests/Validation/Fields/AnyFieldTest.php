@@ -27,7 +27,7 @@ class AnyFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'identifier' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'emptyValue' => null
         ], $field->definition());
     }
@@ -53,7 +53,7 @@ class AnyFieldTest extends \tests\TestCase
 
     public function testAlwaysValidatesWhenNotRequired()
     {
-        $field = $this->createField();
+        $field = $this->createField()->allowEmpty();
 
         $this->assertEquals([], $field->validate(null));
         $this->assertEquals([], $field->validate(false));

@@ -29,7 +29,7 @@ class RecursiveFieldTest extends \tests\TestCase
         $arrayField = arrayField()->identifier('array_field');
         $oneOf = anyOf(
             stringField(100),
-            $this->createField($arrayField)
+            $this->createField($arrayField)->identifier('Test Identifier')
         );
 
         $arrayField->of($oneOf);
@@ -39,14 +39,14 @@ class RecursiveFieldTest extends \tests\TestCase
             'identifier' => 'array_field',
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'emptyValue' => null,
             'itemType' => [
                 'type' => 'anyOf',
                 'identifier' => null,
                 'info' => null,
                 'example' => null,
-                'allowEmpty' => true,
+                'allowEmpty' => false,
                 'emptyValue' => null,
                 'fields' => [
                     [
@@ -54,7 +54,7 @@ class RecursiveFieldTest extends \tests\TestCase
                         'identifier' => null,
                         'info' => null,
                         'example' => null,
-                        'allowEmpty' => true,
+                        'allowEmpty' => false,
                         'emptyValue' => null,
                         'maxLength' => 100,
                         'minLength' => null,
@@ -64,7 +64,7 @@ class RecursiveFieldTest extends \tests\TestCase
                     [
                         'type' => 'recursive',
                         'of' => 'array_field',
-                        'identifier' => null
+                        'identifier' => 'Test Identifier'
                     ]
                 ]
             ]

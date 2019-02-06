@@ -60,7 +60,7 @@ class RecursiveField implements FieldInterface
     {
         return [
             'type' => 'recursive',
-            'identifier' => $this->identifier,
+            'identifier' => $this->getIdentifier(),
             'of' => $this->field->getIdentifier()
         ];
     }
@@ -72,6 +72,7 @@ class RecursiveField implements FieldInterface
     public function identifier(string $identifier)
     {
         $this->identifier = $identifier;
+        return $this;
     }
 
 

@@ -12,7 +12,7 @@ use function ArekX\JsonQL\Validation\fromType;
 use function ArekX\JsonQL\Validation\objectField;
 use function ArekX\JsonQL\Validation\stringField;
 
-class RequestSingleItem extends BaseType
+class RequestSingleItem extends ObjectType
 {
     /**
      * @inheritdoc
@@ -34,7 +34,7 @@ class RequestSingleItem extends BaseType
         ];
     }
 
-    protected static function requiredKeys()
+    public static function requiredKeys()
     {
         return [];
     }

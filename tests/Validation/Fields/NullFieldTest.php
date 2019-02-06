@@ -28,7 +28,7 @@ class NullFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'identifier' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'emptyValue' => 0
         ], $field->definition());
     }

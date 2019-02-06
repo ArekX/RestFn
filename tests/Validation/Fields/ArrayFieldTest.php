@@ -27,7 +27,7 @@ class ArrayFieldTest extends \tests\TestCase
             'type' => 'array',
             'info' => null,
             'example' => null,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'identifier' => null,
             'itemType' => null,
             'emptyValue' => null
@@ -52,7 +52,7 @@ class ArrayFieldTest extends \tests\TestCase
             'allowEmpty' =>true,
             'itemType' => [
                 'type' => 'mock',
-                'allowEmpty' => true,
+                'allowEmpty' => false,
                 'emptyValue' => null,
                 'info' => null,
                 'identifier' => null,

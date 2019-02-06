@@ -10,6 +10,7 @@ namespace ArekX\JsonQL\Validation;
 
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Types\BaseType;
+use ArekX\JsonQL\Types\ObjectType;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
@@ -225,7 +226,7 @@ if (!function_exists('ArekX\JsonQL\Validation\fromType')) {
      */
     function fromType($className, $mergeFields = [])
     {
-        /** @var $className BaseType */
+        /** @var $className BaseType|ObjectType */
         $fields = $className::fields();
 
         if ($fields instanceof FieldInterface) {

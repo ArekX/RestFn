@@ -15,7 +15,7 @@ use function ArekX\JsonQL\Validation\numberField;
 use function ArekX\JsonQL\Validation\objectField;
 use function ArekX\JsonQL\Validation\stringField;
 
-class RequestPagedItems extends BaseType
+class RequestPagedItems extends ObjectType
 {
     /**
      * @inheritdoc
@@ -31,23 +31,21 @@ class RequestPagedItems extends BaseType
     public static function fields(): array
     {
         return [
-            'as' => stringField()
-                ->allowEmpty(),
-            'filter' => objectField()
-                ->allowEmpty(),
+            'as' => stringField(),
+            'filter' => objectField(),
             'pagination' => objectField([
                 'page' => numberField()->min(0),
                 'size' => numberField()->min(1)->max(50)
-            ])->allowEmpty()->requiredKeys(['page']),
+            ])->requiredKeys(['page']),
             'sort' => arrayField()->of(objectField([
                 'by' => stringField(),
                 'direction' => enumField(['ascending', 'descending'])
-            ])->allowEmpty()->requiredKeys(['by', 'direction'])),
-            'fields' => fromType(FieldItems::class)->allowEmpty() // Transform notEmpty into allowEmpty
+            ])->requiredKeys(['by', 'direction'])),
+            'fields' => fromType(FieldItems::class)
         ];
     }
 
-    protected static function requiredKeys()
+    public static function requiredKeys()
     {
         return [];
     }
