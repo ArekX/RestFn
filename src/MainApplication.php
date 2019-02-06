@@ -12,17 +12,44 @@ use ArekX\JsonQL\Config\ConfigInterface;
 use ArekX\JsonQL\Interfaces\RequestInterface;
 use ArekX\JsonQL\Interfaces\ResponseInterface;
 
+/**
+ * Class MainApplication
+ *
+ * Abstract class representing any type of JsonQL application.
+ *
+ * @package ArekX\JsonQL
+ */
 abstract class MainApplication
 {
-    /** @var ConfigInterface */
+    /**
+     * Config interface containing configuration for the app.
+     *
+     * @var ConfigInterface
+     */
     protected $config;
 
-    /** @var RequestInterface  */
+    /**
+     * Request instance for handing one request.
+     *
+     * @var RequestInterface
+     */
     protected $request;
 
-    /** @var ResponseInterface  */
+    /**
+     * Response instance for writing responses.
+     *
+     * @var ResponseInterface
+     */
     protected $response;
 
+    /**
+     * MainApplication constructor.
+     *
+     * @param ConfigInterface $config
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $setup
+     */
     public function __construct(
         ConfigInterface $config,
         RequestInterface $request,
@@ -37,7 +64,15 @@ abstract class MainApplication
         $this->setup($setup);
     }
 
+    /**
+     * Setup public values to provide additional configuration for the app.
+     *
+     * @param $values
+     */
     public abstract function setup($values): void;
 
+    /**
+     * Executes the app.
+     */
     public abstract function run(): void;
 }
