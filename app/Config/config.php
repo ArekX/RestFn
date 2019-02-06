@@ -12,8 +12,8 @@ use ArekX\JsonQL\Rest\Handlers\Reader;
 
 return [
     Config::SERVICES => [
-        Reader::class => DI::wireSetup(Reader::class, [
-            'namespace' => '\App\Readers'
-        ])
+        Reader::class => [
+            'namespace' => 'App\Readers'
+        ]
     ]
 ];

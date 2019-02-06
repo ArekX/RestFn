@@ -24,9 +24,10 @@ class MockConfig extends Config
         return [
             RequestInterface::class => DI::wireClass(MockRequest::class),
             ResponseInterface::class => DI::wireClass(MockResponse::class),
-            Reader::class => DI::wireSetup(Reader::class, [
+            Reader::class => [
+                '@class' => Reader::class,
                 'namespace' => ''
-            ])
+            ]
         ];
     }
 

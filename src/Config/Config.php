@@ -223,14 +223,38 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
             // @codeCoverageIgnoreEnd
         }
 
-        $builder->addDefinitions($this->config[self::SERVICES]);
-        $builder->addDefinitions($this->config[self::CORE]);
+        $builder->addDefinitions($this->resolveDefinitions(self::SERVICES));
+        $builder->addDefinitions($this->resolveDefinitions(self::CORE));
         $builder->addDefinitions([
             MainApplication::class => DI::wireSetup($this->getApplicationClass(), $this->config[self::APP]),
             ConfigInterface::class => $this
         ]);
 
         return $builder->build();
+    }
+
+    /**
+     * Resolves class definitions to handle array
+     *
+     * @param string $configKey Config key which is used to get the configuration section.
+     * @return array Item definitions
+     */
+    protected function resolveDefinitions(string $configKey)
+    {
+        $items = $this->config[$configKey];
+
+        foreach ($items as $class => $resolver) {
+            if (is_array($resolver)) {
+                if (!empty($resolver['@class'])) {
+                    $class = $resolver['@class'];
+                    unset($resolver['@class']);
+                }
+
+                $items[$class] = DI::wireSetup($class, $resolver);
+            }
+        }
+
+        return $items;
     }
 
 
