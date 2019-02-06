@@ -28,7 +28,7 @@ class NullFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'identifier' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'emptyValue' => 0
         ], $field->definition());
     }
@@ -36,7 +36,7 @@ class NullFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->emptyValue('null');
@@ -45,7 +45,7 @@ class NullFieldTest extends \tests\TestCase
             'type' => 'null',
             'info' => 'Info',
             'example' => 'Example',
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'identifier' => null,
             'emptyValue' => 'null'
         ], $field->definition());
@@ -53,7 +53,7 @@ class NullFieldTest extends \tests\TestCase
 
     public function testValidates()
     {
-        $field = $this->createField()->notEmpty();
+        $field = $this->createField()->allowEmpty();
         $this->assertEquals([], $field->validate(null));
     }
 

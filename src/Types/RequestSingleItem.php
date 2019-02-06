@@ -8,10 +8,8 @@
 
 namespace ArekX\JsonQL\Types;
 
-use function ArekX\JsonQL\Validation\anyOf;
-use function ArekX\JsonQL\Validation\arrayField;
+use function ArekX\JsonQL\Validation\fromType;
 use function ArekX\JsonQL\Validation\objectField;
-use function ArekX\JsonQL\Validation\recursiveField;
 use function ArekX\JsonQL\Validation\stringField;
 
 class RequestSingleItem extends BaseType
@@ -29,28 +27,10 @@ class RequestSingleItem extends BaseType
      */
     public static function fields(): array
     {
-        $fieldsType = arrayField()
-            ->identifier('array_fields')
-            ->info('Fields which will be returned')
-            ->example([
-                'field1',
-                ['for' => 'field2', 'as' => 'newFieldName', 'fields' => [
-                    'subField1',
-                    'subField2',
-                ]]
-            ]);
-
         return [
             'as' => stringField()->info('Name of the result set. Will be returned in response.'),
             'at' => objectField()->info('Request parameters.'),
-            'fields' => $fieldsType->of(anyOf(
-                stringField()->info('Name of the field.'),
-                objectField([
-                    'for' => stringField()->info('Name of the parent field which will be returned.'),
-                    'as' => stringField()->info('New name of the field.'),
-                    'fields' => recursiveField($fieldsType)
-                ])->requiredKeys(['for'])->info('Name of the field with child fields.')
-            ))
+            'fields' => fromType(FieldItems::class)
         ];
     }
 

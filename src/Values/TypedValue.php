@@ -9,6 +9,7 @@
 namespace ArekX\JsonQL\Values;
 
 use ArekX\JsonQL\Traits\Memoize;
+use ArekX\JsonQL\Types\BaseType;
 use ArekX\JsonQL\Validation\Fields\ObjectField;
 use ArekX\JsonQL\Validation\TypeInterface;
 
@@ -121,8 +122,9 @@ abstract class TypedValue
      *
      * Returned class must implement TypeInterface.
      *
+     * @see BaseType
      * @see TypeInterface
-     * @return string|TypeInterface Class type.
+     * @return string|BaseType Class type.
      */
     public abstract static function type(): string;
 

@@ -26,7 +26,7 @@ class BoolFieldTest extends \tests\TestCase
             'type' => 'bool',
             'info' => null,
             'example' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'identifier' => null,
             'emptyValue' => null
         ], $field->definition());
@@ -35,7 +35,7 @@ class BoolFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->emptyValue(false);
@@ -45,7 +45,7 @@ class BoolFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'identifier' => null,
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'emptyValue' => false
         ], $field->definition());
     }

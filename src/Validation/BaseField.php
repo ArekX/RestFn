@@ -26,7 +26,7 @@ abstract class BaseField implements FieldInterface, DefineFieldInterface
      *
      * @var bool
      */
-    public $notEmpty = false;
+    public $allowEmpty = true;
 
     /**
      * Value which will be treated as an empty value for required check.
@@ -67,9 +67,9 @@ abstract class BaseField implements FieldInterface, DefineFieldInterface
     /**
      * @inheritdoc
      */
-    public function notEmpty(bool $notEmpty = true)
+    public function allowEmpty(bool $allowEmpty = true)
     {
-        $this->notEmpty = $notEmpty;
+        $this->allowEmpty = $allowEmpty;
         return $this;
     }
 
@@ -87,11 +87,11 @@ abstract class BaseField implements FieldInterface, DefineFieldInterface
      */
     public function validate($value, $parentValue = null): array
     {
-        if (!$this->notEmpty && $value === $this->emptyValue) {
+        if ($this->allowEmpty && $value === $this->emptyValue) {
             return [];
         }
 
-        if ($this->notEmpty && $value === $this->emptyValue) {
+        if (!$this->allowEmpty && $value === $this->emptyValue) {
             return [['type' => self::ERROR_VALUE_IS_EMPTY]];
         }
 
@@ -126,7 +126,7 @@ abstract class BaseField implements FieldInterface, DefineFieldInterface
             'identifier' => $this->identifier,
             'info' => $this->info,
             'example' => $this->example,
-            'notEmpty' => $this->notEmpty,
+            'allowEmpty' =>$this->allowEmpty,
             'emptyValue' => $this->emptyValue
         ], $this->fieldDefinition());
     }

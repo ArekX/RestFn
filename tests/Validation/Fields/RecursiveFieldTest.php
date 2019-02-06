@@ -16,6 +16,7 @@ use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\Fields\ArrayField;
 use ArekX\JsonQL\Validation\Fields\RecursiveField;
 use ArekX\JsonQL\Validation\Fields\StringField;
+use ArekX\JsonQL\Validation\MissingIdentifierException;
 use function ArekX\JsonQL\Validation\objectField;
 use function ArekX\JsonQL\Validation\recursiveField;
 use function ArekX\JsonQL\Validation\stringField;
@@ -28,7 +29,7 @@ class RecursiveFieldTest extends \tests\TestCase
         $arrayField = arrayField()->identifier('array_field');
         $oneOf = anyOf(
             stringField(100),
-            recursiveField($arrayField)
+            $this->createField($arrayField)
         );
 
         $arrayField->of($oneOf);
@@ -38,14 +39,14 @@ class RecursiveFieldTest extends \tests\TestCase
             'identifier' => 'array_field',
             'info' => null,
             'example' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'emptyValue' => null,
             'itemType' => [
                 'type' => 'anyOf',
                 'identifier' => null,
                 'info' => null,
                 'example' => null,
-                'notEmpty' => false,
+                'allowEmpty' => true,
                 'emptyValue' => null,
                 'fields' => [
                     [
@@ -53,7 +54,7 @@ class RecursiveFieldTest extends \tests\TestCase
                         'identifier' => null,
                         'info' => null,
                         'example' => null,
-                        'notEmpty' => false,
+                        'allowEmpty' => true,
                         'emptyValue' => null,
                         'maxLength' => 100,
                         'minLength' => null,
@@ -75,11 +76,18 @@ class RecursiveFieldTest extends \tests\TestCase
         $field = arrayField()->identifier('array_field');
         $oneOf = anyOf(
             stringField(100),
-            recursiveField($field)
+            $this->createField($field)
         );
         $field->of($oneOf);
 
         $this->assertEquals([], $field->validate(['string']));
+    }
+
+    public function testMissingIdentifierException()
+    {
+        $field = arrayField();
+        $this->expectException(MissingIdentifierException::class);
+        $this->createField($field);
     }
 
     public function testRecursiveFieldCanValidateRecursively()
@@ -87,7 +95,7 @@ class RecursiveFieldTest extends \tests\TestCase
         $field = arrayField()->identifier('array_field');
         $oneOf = anyOf(
             stringField(100),
-            recursiveField($field)
+            $this->createField($field)
         );
         $field->of($oneOf);
 
@@ -113,7 +121,7 @@ class RecursiveFieldTest extends \tests\TestCase
         $field = arrayField()->identifier('array_field');
         $oneOf = anyOf(
             stringField(100),
-            recursiveField($field)
+            $this->createField($field)
         );
         $field->of($oneOf);
 

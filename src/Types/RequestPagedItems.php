@@ -8,6 +8,9 @@
 
 namespace ArekX\JsonQL\Types;
 
+use function ArekX\JsonQL\Validation\arrayField;
+use function ArekX\JsonQL\Validation\enumField;
+use function ArekX\JsonQL\Validation\fromType;
 use function ArekX\JsonQL\Validation\numberField;
 use function ArekX\JsonQL\Validation\objectField;
 use function ArekX\JsonQL\Validation\stringField;
@@ -28,13 +31,19 @@ class RequestPagedItems extends BaseType
     public static function fields(): array
     {
         return [
-            'as' => stringField(),
-            'filter' => objectField(),
+            'as' => stringField()
+                ->allowEmpty(),
+            'filter' => objectField()
+                ->allowEmpty(),
             'pagination' => objectField([
-                'page' => numberField(),
+                'page' => numberField()->min(0),
                 'size' => numberField()->min(1)->max(50)
-            ]),
-            'fields' => objectField()
+            ])->allowEmpty()->requiredKeys(['page']),
+            'sort' => arrayField()->of(objectField([
+                'by' => stringField(),
+                'direction' => enumField(['ascending', 'descending'])
+            ])->allowEmpty()->requiredKeys(['by', 'direction'])),
+            'fields' => fromType(FieldItems::class)->allowEmpty() // Transform notEmpty into allowEmpty
         ];
     }
 

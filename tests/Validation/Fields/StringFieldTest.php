@@ -27,7 +27,7 @@ class StringFieldTest extends \tests\TestCase
             'type' => 'string',
             'info' => null,
             'example' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'minLength' => null,
             'match' => null,
             'maxLength' => null,
@@ -40,7 +40,7 @@ class StringFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->min(10)
@@ -53,7 +53,7 @@ class StringFieldTest extends \tests\TestCase
             'type' => 'string',
             'info' => 'Info',
             'example' => 'Example',
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'identifier' => null,
             'minLength' => 10,
             'maxLength' => 30,
@@ -71,7 +71,7 @@ class StringFieldTest extends \tests\TestCase
 
     public function testFailsIfNotAString()
     {
-        $field = $this->createField()->notEmpty()->emptyValue('');
+        $field = $this->createField()->allowEmpty()->emptyValue('');
         $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(null));
         $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(false));
         $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate([]));
@@ -91,7 +91,7 @@ class StringFieldTest extends \tests\TestCase
 
     public function testValidatesMinimum()
     {
-        $field = $this->createField()->notEmpty()->min(10);
+        $field = $this->createField()->allowEmpty()->min(10);
         $this->assertEquals([
             ['type' => StringField::ERROR_LESS_THAN_MIN_LENGTH, 'minLength' => 10]
         ], $field->validate('stringof9'));
@@ -109,7 +109,7 @@ class StringFieldTest extends \tests\TestCase
 
     public function testValidatesMaximum()
     {
-        $field = $this->createField()->notEmpty()->max(10);
+        $field = $this->createField()->allowEmpty()->max(10);
         $this->assertEquals([
             ['type' => StringField::ERROR_GREATER_THAN_MAX_LENGTH, 'maxLength' => 10]
         ], $field->validate('very long string above 10 characters'));

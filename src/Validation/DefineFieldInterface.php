@@ -17,10 +17,10 @@ interface DefineFieldInterface
     /**
      * Sets whether or not this field cannot have empty value..
      *
-     * @param bool $notEmpty
+     * @param bool $allowEmpty
      * @return $this
      */
-    public function notEmpty(bool $notEmpty = true);
+    public function allowEmpty(bool $allowEmpty = true);
 
     /**
      * Set information about this field.

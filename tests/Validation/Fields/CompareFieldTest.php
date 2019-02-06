@@ -26,7 +26,7 @@ class CompareFieldTest extends \tests\TestCase
             'type' => 'compare',
             'info' => null,
             'example' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'emptyValue' => null,
             'identifier' => null,
             'withField' => null,
@@ -38,7 +38,7 @@ class CompareFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->withField('>=', 'fieldName')
@@ -48,7 +48,7 @@ class CompareFieldTest extends \tests\TestCase
             'type' => 'compare',
             'info' => 'Info',
             'example' => 'Example',
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'identifier' => null,
             'emptyValue' => 'null',
             'withField' => 'fieldName',

@@ -35,7 +35,7 @@ class ObjectFieldTest extends \tests\TestCase
             'typeName' => null,
             'info' => null,
             'example' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'emptyValue' => null,
             'identifier' => null,
             'anyKey' => null,
@@ -46,7 +46,7 @@ class ObjectFieldTest extends \tests\TestCase
                     'info' => null,
                     'identifier' => null,
                     'example' => null,
-                    'notEmpty' => false,
+                    'allowEmpty' => true,
                     'emptyValue' => null
                 ],
                 'test2' => [
@@ -54,7 +54,7 @@ class ObjectFieldTest extends \tests\TestCase
                     'info' => null,
                     'identifier' => null,
                     'example' => null,
-                    'notEmpty' => false,
+                    'allowEmpty' => true,
                     'emptyValue' => null,
                     'test' => 1
                 ]
@@ -65,7 +65,7 @@ class ObjectFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField([])
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->emptyValue('null')
@@ -78,7 +78,7 @@ class ObjectFieldTest extends \tests\TestCase
             'typeName' => 'Test Type',
             'info' => 'Info',
             'example' => 'Example',
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'identifier' => null,
             'emptyValue' => 'null',
             'requiredKeys' => [],
@@ -86,7 +86,7 @@ class ObjectFieldTest extends \tests\TestCase
                 'type' => 'mock',
                 'info' => null,
                 'example' => null,
-                'notEmpty' => false,
+                'allowEmpty' => true,
                 'emptyValue' => null,
                 'identifier' => null,
                 'anyKey' => true

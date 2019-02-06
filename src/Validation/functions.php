@@ -9,6 +9,7 @@
 namespace ArekX\JsonQL\Validation;
 
 use ArekX\JsonQL\Helpers\DI;
+use ArekX\JsonQL\Types\BaseType;
 use ArekX\JsonQL\Validation\Fields\AllOfField;
 use ArekX\JsonQL\Validation\Fields\AnyField;
 use ArekX\JsonQL\Validation\Fields\AnyOfField;
@@ -218,14 +219,20 @@ if (!function_exists('ArekX\JsonQL\Validation\fromType')) {
      *
      * @param string $className Class implementing TypeInterface from which the fields will be taken.
      * @param array $mergeFields Fields which will be merged with type fields. Existing fields will be overridden.
-     * @return ObjectField Object field created from type.
+     * @return ObjectField|FieldInterface Object field created from type.
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    function fromType($className, $mergeFields = []): ObjectField
+    function fromType($className, $mergeFields = [])
     {
-        /** @var $className TypeInterface */
-        return objectField($className::fields())
+        /** @var $className BaseType */
+        $fields = $className::fields();
+
+        if ($fields instanceof FieldInterface) {
+            return $fields;
+        }
+
+        return objectField($fields)
             ->typeName($className::typeName())
             ->merge($mergeFields);
     }
@@ -246,8 +253,6 @@ if (!function_exists('ArekX\JsonQL\Validation\recursiveField')) {
      */
     function recursiveField(FieldInterface $field): RecursiveField
     {
-        return DI::make(RecursiveField::class, [
-            'field' => $field
-        ]);
+        return DI::make(RecursiveField::class, ['field' => $field]);
     }
 }

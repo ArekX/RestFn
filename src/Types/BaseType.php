@@ -9,6 +9,7 @@
 namespace ArekX\JsonQL\Types;
 
 
+use ArekX\JsonQL\Validation\FieldInterface;
 use ArekX\JsonQL\Validation\Fields\ObjectField;
 use function ArekX\JsonQL\Validation\fromType;
 use ArekX\JsonQL\Validation\TypeInterface;
@@ -16,7 +17,18 @@ use ArekX\JsonQL\Validation\TypeInterface;
 abstract class BaseType implements TypeInterface
 {
     /**
-     * @inheritdoc
+     * Returns name of the type.
+     *
+     * @return string
+     */
+    public abstract static function typeName(): string;
+
+    /**
+     * Returns definition of the type.
+     *
+     * @return array
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public static function definition(): array
     {
@@ -24,9 +36,13 @@ abstract class BaseType implements TypeInterface
     }
 
     /**
-     * @inheritdoc
+     * Returns validator for the type.
+     *
+     * @return ObjectField
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    public static function validator(): ObjectField
+    public static function validator(): FieldInterface
     {
         return fromType(static::class)->requiredKeys(static::requiredKeys());
     }

@@ -27,7 +27,7 @@ class EnumFieldTest extends \tests\TestCase
             'info' => null,
             'example' => null,
             'identifier' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'emptyValue' => null,
             'values' => []
         ], $field->definition());
@@ -36,7 +36,7 @@ class EnumFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField([1, 2, 3])
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->emptyValue('null');
@@ -45,7 +45,7 @@ class EnumFieldTest extends \tests\TestCase
             'type' => 'enum',
             'info' => 'Info',
             'example' => 'Example',
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'identifier' => null,
             'emptyValue' => 'null',
             'values' => [1, 2, 3]

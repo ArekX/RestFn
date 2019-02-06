@@ -27,7 +27,7 @@ class ArrayFieldTest extends \tests\TestCase
             'type' => 'array',
             'info' => null,
             'example' => null,
-            'notEmpty' => false,
+            'allowEmpty' => true,
             'identifier' => null,
             'itemType' => null,
             'emptyValue' => null
@@ -37,7 +37,7 @@ class ArrayFieldTest extends \tests\TestCase
     public function testDefinitionChangesWhenPropertiesSet()
     {
         $field = $this->createField()
-            ->notEmpty()
+            ->allowEmpty()
             ->info('Info')
             ->example('Example')
             ->identifier('custom name')
@@ -49,10 +49,10 @@ class ArrayFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'identifier' => 'custom name',
-            'notEmpty' => true,
+            'allowEmpty' =>true,
             'itemType' => [
                 'type' => 'mock',
-                'notEmpty' => false,
+                'allowEmpty' => true,
                 'emptyValue' => null,
                 'info' => null,
                 'identifier' => null,
@@ -70,7 +70,7 @@ class ArrayFieldTest extends \tests\TestCase
 
     public function testFailsOnNonArrayType()
     {
-        $field = $this->createField()->notEmpty()->emptyValue([]);
+        $field = $this->createField()->allowEmpty()->emptyValue([]);
         $error = [['type' => ArrayField::ERROR_NOT_AN_ARRAY]];
         $this->assertEquals($error, $field->validate(null));
         $this->assertEquals($error, $field->validate(''));
@@ -82,14 +82,14 @@ class ArrayFieldTest extends \tests\TestCase
 
     public function testAnyItemIsValidIfTypeIsNotSet()
     {
-        $field = $this->createField()->notEmpty();
+        $field = $this->createField()->allowEmpty();
         $this->assertEquals([], $field->validate(['1', 2, '3', true, null]));
     }
 
     public function testCanSetItemType()
     {
         $mock = new MockField();
-        $field = $this->createField()->notEmpty();
+        $field = $this->createField()->allowEmpty();
 
         $this->assertNull($field->of);
         $this->assertEquals($field, $field->of($mock));
@@ -99,7 +99,7 @@ class ArrayFieldTest extends \tests\TestCase
     public function testItemTypeIsValidated()
     {
         $mock = new MockField(['error1']);
-        $field = $this->createField()->notEmpty()->of($mock);
+        $field = $this->createField()->allowEmpty()->of($mock);
 
         $this->assertEquals([
             [
@@ -115,7 +115,7 @@ class ArrayFieldTest extends \tests\TestCase
     public function testSelectiveItemIsValidated()
     {
         $mock = new StringField();
-        $field = $this->createField()->notEmpty()->of($mock);
+        $field = $this->createField()->allowEmpty()->of($mock);
 
         $this->assertEquals([
             [
@@ -129,7 +129,7 @@ class ArrayFieldTest extends \tests\TestCase
     public function testAllItemAreValidated()
     {
         $mock = new StringField();
-        $field = $this->createField()->notEmpty()->of($mock);
+        $field = $this->createField()->allowEmpty()->of($mock);
         $this->assertEquals([], $field->validate(['1', '2', '3']));
     }
 
