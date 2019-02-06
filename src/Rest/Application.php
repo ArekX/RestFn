@@ -12,11 +12,27 @@ use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
 use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
 
+/**
+ * Class Application
+ *
+ * Class describing a REST application.
+ *
+ * @package ArekX\JsonQL\Rest
+ */
 class Application extends \ArekX\JsonQL\MainApplication
 {
-    /** @var HandlerInterface[] */
+    /**
+     * List of request handlers.
+     *
+     * @var HandlerInterface[]
+     */
     public $handlers = [];
 
+    /**
+     * Setups public properties in the application from setup value.
+     *
+     * @param $values
+     */
     public function setup($values): void
     {
         Value::setup($this, $values, [
@@ -24,6 +40,11 @@ class Application extends \ArekX\JsonQL\MainApplication
         ]);
     }
 
+    /**
+     * Runs an application and handles one request.
+     *
+     * @throws InvalidHandlerException
+     */
     public function run(): void
     {
         $request = $this->request->read();
@@ -37,7 +58,14 @@ class Application extends \ArekX\JsonQL\MainApplication
         $this->response->output();
     }
 
-    protected function getHandler($type): HandlerInterface
+    /**
+     * Returns one handler based on the type.
+     *
+     * @param string $type Type of the handler.
+     * @return HandlerInterface Instance of the handler.
+     * @throws InvalidHandlerException Exception thrown if handler cannot be resolved for a type.
+     */
+    protected function getHandler(string $type): HandlerInterface
     {
         foreach ($this->handlers as $handlerClass) {
             if ($handlerClass::requestType() === $type) {

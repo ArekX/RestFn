@@ -11,6 +11,13 @@ namespace ArekX\JsonQL\Interfaces;
 
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
 
+/**
+ * Interface ResponseInterface
+ *
+ * Interface used for response.
+ *
+ * @package ArekX\JsonQL\Interfaces
+ */
 interface ResponseInterface
 {
     /**

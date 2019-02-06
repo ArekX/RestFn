@@ -11,8 +11,20 @@ namespace ArekX\JsonQL\Rest\Services;
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
 use ArekX\JsonQL\Interfaces\ResponseInterface;
 
+/**
+ * Class JsonResponse
+ *
+ * Class for handling data for JSON responses.
+ *
+ * @package ArekX\JsonQL\Rest\Services
+ */
 class JsonResponse implements ResponseInterface
 {
+    /**
+     * Data to be written to the response.
+     *
+     * @var array
+     */
     protected $data = [];
 
     /**

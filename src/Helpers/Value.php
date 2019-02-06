@@ -97,7 +97,17 @@ class Value
         return static::resolveValue($walker, $lastPart, $default);
     }
 
-    protected static function resolveValue(&$object, $name, $default = null)
+    /**
+     * Resolves a value from a object.
+     *
+     * Object can be array or an instance of a class.
+     *
+     * @param array|object $object Object from which value will be resolved.
+     * @param string $name Name of the value to be resolved.
+     * @param null|mixed $default Default value to be returned.
+     * @return mixed|null
+     */
+    protected static function resolveValue(&$object, string $name, $default = null)
     {
         if (is_array($object) && array_key_exists($name, $object)) {
             return $object[$name];
@@ -110,30 +120,23 @@ class Value
         return $default;
     }
 
-    public static function has($object, $name)
-    {
-        return
-            (is_array($object) && array_key_exists($name, $object)) ||
-            (is_object($object) && property_exists($object, $name));
-    }
-
+    /**
+     * Setups an object from a configuration array.
+     *
+     * Config array is used to setup the object.
+     * Default config is array is used to return the default value if the key
+     * is not in the config array.
+     *
+     * Only public values can be set in an object.
+     *
+     * @param object $object Object which will be set.
+     * @param array $config Config which will be used to set actual values.
+     * @param array $defaultConfig Config which will be be used to return default value if the key is not in actual config.
+     */
     public static function setup($object, $config, $defaultConfig)
     {
         foreach ($defaultConfig as $key => $defaultValue) {
             $object->{$key} = $config[$key] ?? $defaultValue;
         }
-    }
-
-    public static function isEmpty($value, $strict = true)
-    {
-        if ($strict) {
-            return $value === "" ||
-                $value === null ||
-                $value === 0 ||
-                $value === 0.00 ||
-                $value === [];
-        }
-
-        return empty($value);
     }
 }

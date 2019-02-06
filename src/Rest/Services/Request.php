@@ -10,6 +10,13 @@ namespace ArekX\JsonQL\Rest\Services;
 
 use ArekX\JsonQL\Interfaces\RequestInterface;
 
+/**
+ * Class Request
+ *
+ * Class for handling request data from HTTP input.
+ *
+ * @package ArekX\JsonQL\Rest\Services
+ */
 class Request implements RequestInterface
 {
     /** @var null|array */

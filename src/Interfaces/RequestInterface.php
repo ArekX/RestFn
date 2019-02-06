@@ -8,7 +8,13 @@
 
 namespace ArekX\JsonQL\Interfaces;
 
-
+/**
+ * Interface RequestInterface
+ *
+ * Interface used for requests.
+ *
+ * @package ArekX\JsonQL\Interfaces
+ */
 interface RequestInterface
 {
     /**
