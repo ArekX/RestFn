@@ -120,19 +120,19 @@ class NumberField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if ($this->integerOnly && !is_int($value)) {
-            return [['type' => self::ERROR_NOT_AN_INT]];
+            return [self::ERROR_NOT_AN_INT => true];
         }
 
         if (!is_int($value) && !is_double($value)) {
-            return [['type' => self::ERROR_NOT_A_NUMBER]];
+            return [self::ERROR_NOT_A_NUMBER => true];
         }
 
         if ($this->min !== null && $value < $this->min) {
-            return [['type' => self::ERROR_LESS_THAN_MIN, 'min' => $this->min]];
+            return [self::ERROR_LESS_THAN_MIN => $this->min];
         }
 
         if ($this->max !== null && $value > $this->max) {
-            return [['type' => self::ERROR_GREATER_THAN_MAX, 'max' => $this->max]];
+            return [self::ERROR_GREATER_THAN_MAX => $this->max];
         }
 
         return [];

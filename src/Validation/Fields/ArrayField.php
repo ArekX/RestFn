@@ -66,14 +66,14 @@ class ArrayField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!is_array($value)) {
-            return [['type' => self::ERROR_NOT_AN_ARRAY]];
+            return [self::ERROR_NOT_AN_ARRAY => true];
         }
 
         if ($this->of === null) {
             return [];
         }
 
-        $errorItems  = [];
+        $errorItems = [];
 
         foreach ($value as $key => $item) {
             $errors = $this->of->validate($item, $value);
@@ -84,9 +84,7 @@ class ArrayField extends BaseField
         }
 
         if (!empty($errorItems)) {
-            return [
-                ['type' => self::ERROR_ITEM_NOT_VALID, 'items' => $errorItems]
-            ];
+            return [self::ERROR_ITEM_NOT_VALID => $errorItems];
         }
 
         return [];

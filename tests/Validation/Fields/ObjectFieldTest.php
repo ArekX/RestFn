@@ -78,7 +78,7 @@ class ObjectFieldTest extends \tests\TestCase
             'typeName' => 'Test Type',
             'info' => 'Info',
             'example' => 'Example',
-            'allowEmpty' =>true,
+            'allowEmpty' => true,
             'identifier' => null,
             'emptyValue' => 'null',
             'requiredKeys' => [],
@@ -110,7 +110,7 @@ class ObjectFieldTest extends \tests\TestCase
         $field = $this->createField([
             'key' => numberField()
         ]);
-        $this->assertEquals([['type' => ObjectField::ERROR_NOT_AN_ASSOCIATIVE]], $field->validate(''));
+        $this->assertEquals([ObjectField::ERROR_NOT_AN_ASSOCIATIVE => true], $field->validate(''));
     }
 
 
@@ -132,11 +132,8 @@ class ObjectFieldTest extends \tests\TestCase
             'key' => numberField()
         ]);
         $this->assertEquals([
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELDS,
-                'fields' => [
-                    'key' => [['type' => NumberField::ERROR_NOT_A_NUMBER]]
-                ]
+            ObjectField::ERROR_INVALID_FIELDS => [
+                'key' => [NumberField::ERROR_NOT_A_NUMBER => true]
             ]
         ], $field->validate([
             'key' => '1'
@@ -166,11 +163,8 @@ class ObjectFieldTest extends \tests\TestCase
     {
         $field = $this->createField()->anyKey(numberField());
         $this->assertEquals([
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELDS,
-                'fields' => [
-                    'key2' => [['type' => NumberField::ERROR_NOT_A_NUMBER]]
-                ]
+            ObjectField::ERROR_INVALID_FIELDS => [
+                'key2' => [NumberField::ERROR_NOT_A_NUMBER => true]
             ]
         ], $field->validate([
             'key1' => 1,
@@ -199,10 +193,7 @@ class ObjectFieldTest extends \tests\TestCase
             'key2' => numberField()
         ]);
         $this->assertEquals([
-            [
-                'type' => ObjectField::ERROR_MISSING_KEYS,
-                'keys' => ['key1']
-            ]
+            ObjectField::ERROR_MISSING_KEYS => ['key1']
         ], $field->validate([
             'key2' => 3
         ]));
@@ -216,10 +207,7 @@ class ObjectFieldTest extends \tests\TestCase
             'key3' => numberField()
         ])->requiredKeys(['key3']);
         $this->assertEquals([
-            [
-                'type' => ObjectField::ERROR_MISSING_KEYS,
-                'keys' => ['key3']
-            ]
+            ObjectField::ERROR_MISSING_KEYS => ['key3']
         ], $field->validate([
             'key2' => 3
         ]));
@@ -243,22 +231,13 @@ class ObjectFieldTest extends \tests\TestCase
         ])->strictKeys();
 
         $this->assertEquals([
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELDS,
-                'fields' => [
-                    'key2' => [
-                        ['type' => StringField::ERROR_NOT_A_STRING]
-                    ]
+            ObjectField::ERROR_INVALID_FIELDS => [
+                'key2' => [
+                    StringField::ERROR_NOT_A_STRING => true
                 ]
             ],
-            [
-                'type' => ObjectField::ERROR_MISSING_KEYS,
-                'keys' => ['key1']
-            ],
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELD_KEYS,
-                'keys' => ['unknownKey']
-            ]
+            ObjectField::ERROR_MISSING_KEYS => ['key1'],
+            ObjectField::ERROR_INVALID_FIELD_KEYS => ['unknownKey']
         ], $field->validate([
             'key2' => 3,
             'unknownKey' => true

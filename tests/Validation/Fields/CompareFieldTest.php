@@ -48,7 +48,7 @@ class CompareFieldTest extends \tests\TestCase
             'type' => 'compare',
             'info' => 'Info',
             'example' => 'Example',
-            'allowEmpty' =>true,
+            'allowEmpty' => true,
             'identifier' => null,
             'emptyValue' => 'null',
             'withField' => 'fieldName',
@@ -129,7 +129,7 @@ class CompareFieldTest extends \tests\TestCase
         foreach ($operators as $operator) {
             [$value, $op, $withValue] = $operator;
             $error = [
-                ['type' => CompareField::ERROR_COMPARE_VALUE_FAILED, 'withValue' => $withValue, 'operator' => $op]
+                CompareField::ERROR_COMPARE_VALUE_FAILED => ['withValue' => $withValue, 'operator' => $op]
             ];
 
             $this->assertEquals($error, $field->withValue($op, $withValue)->validate($value));
@@ -146,7 +146,7 @@ class CompareFieldTest extends \tests\TestCase
     public function testCompareFieldFails()
     {
         $field = $this->createField();
-        $error = [['type' => CompareField::ERROR_COMPARE_FIELD_FAILED, 'withField' => 'testField', 'operator' => '>']];
+        $error = [CompareField::ERROR_COMPARE_FIELD_FAILED => ['withField' => 'testField', 'operator' => '>']];
         $this->assertEquals($error, $field->withField('>', 'testField')->validate(9, ['testField' => 10]));
     }
 

@@ -46,7 +46,7 @@ class NullField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!is_null($value)) {
-            return [['type' => self::ERROR_NOT_A_NULL]];
+            return [self::ERROR_NOT_A_NULL => true];
         }
 
         return [];

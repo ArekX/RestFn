@@ -40,7 +40,7 @@ class BoolField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!is_bool($value)) {
-            return [['type' => self::ERROR_NOT_A_BOOL]];
+            return [self::ERROR_NOT_A_BOOL => true];
         }
 
         return [];

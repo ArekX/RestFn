@@ -61,7 +61,7 @@ class BoolFieldTest extends \tests\TestCase
     public function testFailsToValidateOtherTypes()
     {
         $field = $this->createField()->emptyValue(false);
-        $error = [['type' => BoolField::ERROR_NOT_A_BOOL]];
+        $error = [BoolField::ERROR_NOT_A_BOOL => true];
         $this->assertEquals($error, $field->validate(1));
         $this->assertEquals($error, $field->validate(1.5));
         $this->assertEquals($error, $field->validate('string'));

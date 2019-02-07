@@ -68,9 +68,7 @@ class NumberFieldTest extends \tests\TestCase
         $field = $this->createField();
 
         $field->allowEmpty(true);
-        $this->assertEquals([
-            ['type' => NumberField::ERROR_NOT_A_NUMBER]
-        ], $field->validate([]));
+        $this->assertEquals([NumberField::ERROR_NOT_A_NUMBER => true], $field->validate([]));
         $field->emptyValue([]);
         $this->assertEquals([], $field->validate([]));
     }
@@ -85,11 +83,11 @@ class NumberFieldTest extends \tests\TestCase
     public function testFailsIfNotANumber()
     {
         $field = $this->createField()->allowEmpty()->emptyValue(0);
-        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate(null));
-        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate(false));
-        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate([]));
-        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate('String'));
-        $this->assertEquals([['type' => NumberField::ERROR_NOT_A_NUMBER]], $field->validate(new MockField()));
+        $this->assertEquals([NumberField::ERROR_NOT_A_NUMBER => true], $field->validate(null));
+        $this->assertEquals([NumberField::ERROR_NOT_A_NUMBER => true], $field->validate(false));
+        $this->assertEquals([NumberField::ERROR_NOT_A_NUMBER => true], $field->validate([]));
+        $this->assertEquals([NumberField::ERROR_NOT_A_NUMBER => true], $field->validate('String'));
+        $this->assertEquals([NumberField::ERROR_NOT_A_NUMBER => true], $field->validate(new MockField()));
     }
 
     public function testCanSetIntegerOnly()
@@ -109,7 +107,7 @@ class NumberFieldTest extends \tests\TestCase
         $field = $this->createField()->allowEmpty()->integerOnly();
         $this->assertEquals([], $field->validate(0));
         $this->assertEquals([
-            ['type' => NumberField::ERROR_NOT_AN_INT]
+            NumberField::ERROR_NOT_AN_INT => true
         ], $field->validate(0.00));
     }
 
@@ -126,7 +124,7 @@ class NumberFieldTest extends \tests\TestCase
     {
         $field = $this->createField()->allowEmpty()->min(10);
         $this->assertEquals([
-            ['type' => NumberField::ERROR_LESS_THAN_MIN, 'min' => 10]
+            NumberField::ERROR_LESS_THAN_MIN => 10
         ], $field->validate(0));
         $this->assertEquals([], $field->validate(10));
         $this->assertEquals([], $field->validate(11));
@@ -145,7 +143,7 @@ class NumberFieldTest extends \tests\TestCase
     {
         $field = $this->createField()->allowEmpty()->max(10);
         $this->assertEquals([
-            ['type' => NumberField::ERROR_GREATER_THAN_MAX, 'max' => 10]
+            NumberField::ERROR_GREATER_THAN_MAX => 10
         ], $field->validate(11));
         $this->assertEquals([], $field->validate(9));
         $this->assertEquals([], $field->validate(10));

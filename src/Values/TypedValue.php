@@ -102,6 +102,18 @@ abstract class TypedValue
     }
 
     /**
+     * Returns iterator for the data.
+     *
+     * @return \Generator
+     */
+    public function iterate()
+    {
+        foreach ($this->data as $key => $value) {
+            yield $key => $value;
+        }
+    }
+
+    /**
      * Performs validation of the data.
      *
      * If the data is not valid error is thrown.
@@ -137,7 +149,7 @@ abstract class TypedValue
     protected static function getValidator(): ObjectField
     {
         return static::staticMemoize(static::class . __METHOD__, function () {
-            return static::type()::validator();
+            return static::type()::field();
         });
     }
 }

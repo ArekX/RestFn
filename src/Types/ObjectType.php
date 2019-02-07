@@ -30,7 +30,7 @@ abstract class ObjectType extends BaseType
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    public static function validator(): FieldInterface
+    public static function field(): FieldInterface
     {
         return fromType(static::class)->requiredKeys(static::requiredKeys());
     }

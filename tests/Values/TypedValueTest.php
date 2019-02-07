@@ -40,11 +40,8 @@ class TypedValueTest extends \tests\TestCase
         $this->assertValidationErrors(function () use ($value) {
             $value->setData(['key' => 1]);
         }, [
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELDS,
-                'fields' => [
-                    'key' => [['type' => StringField::ERROR_NOT_A_STRING]]
-                ]
+            ObjectField::ERROR_INVALID_FIELDS => [
+                'key' => [StringField::ERROR_NOT_A_STRING => true]
             ]
         ]);
     }
@@ -66,11 +63,8 @@ class TypedValueTest extends \tests\TestCase
         $this->assertValidationErrors(function () use ($value) {
             $value->set('key', 1);
         }, [
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELDS,
-                'fields' => [
-                    'key' => [['type' => StringField::ERROR_NOT_A_STRING]]
-                ]
+            ObjectField::ERROR_INVALID_FIELDS => [
+                'key' => [StringField::ERROR_NOT_A_STRING => true]
             ]
         ]);
     }
@@ -116,11 +110,8 @@ class TypedValueTest extends \tests\TestCase
                 'key' => 1
             ]);
         }, [
-            [
-                'type' => ObjectField::ERROR_INVALID_FIELDS,
-                'fields' => [
-                    'key' => [['type' => StringField::ERROR_NOT_A_STRING]]
-                ]
+            ObjectField::ERROR_INVALID_FIELDS => [
+                'key' => [StringField::ERROR_NOT_A_STRING => true]
             ]
         ]);
     }

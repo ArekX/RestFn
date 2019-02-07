@@ -72,12 +72,12 @@ class StringFieldTest extends \tests\TestCase
     public function testFailsIfNotAString()
     {
         $field = $this->createField()->allowEmpty()->emptyValue('');
-        $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(null));
-        $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(false));
-        $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate([]));
-        $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(0));
-        $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(0.00));
-        $this->assertEquals([['type' => StringField::ERROR_NOT_A_STRING]], $field->validate(new MockField()));
+        $this->assertEquals([StringField::ERROR_NOT_A_STRING => true], $field->validate(null));
+        $this->assertEquals([StringField::ERROR_NOT_A_STRING => true], $field->validate(false));
+        $this->assertEquals([StringField::ERROR_NOT_A_STRING => true], $field->validate([]));
+        $this->assertEquals([StringField::ERROR_NOT_A_STRING => true], $field->validate(0));
+        $this->assertEquals([StringField::ERROR_NOT_A_STRING => true], $field->validate(0.00));
+        $this->assertEquals([StringField::ERROR_NOT_A_STRING => true], $field->validate(new MockField()));
     }
 
     public function testCanSetMin()
@@ -93,7 +93,7 @@ class StringFieldTest extends \tests\TestCase
     {
         $field = $this->createField()->allowEmpty()->min(10);
         $this->assertEquals([
-            ['type' => StringField::ERROR_LESS_THAN_MIN_LENGTH, 'minLength' => 10]
+            StringField::ERROR_LESS_THAN_MIN_LENGTH => 10
         ], $field->validate('stringof9'));
         $this->assertEquals([], $field->validate('stringof10'));
         $this->assertEquals([], $field->validate('stringof 11'));
@@ -111,7 +111,7 @@ class StringFieldTest extends \tests\TestCase
     {
         $field = $this->createField()->allowEmpty()->max(10);
         $this->assertEquals([
-            ['type' => StringField::ERROR_GREATER_THAN_MAX_LENGTH, 'maxLength' => 10]
+            StringField::ERROR_GREATER_THAN_MAX_LENGTH => 10
         ], $field->validate('very long string above 10 characters'));
         $this->assertEquals([], $field->validate('stringof10'));
         $this->assertEquals([], $field->validate('stringof9'));
@@ -186,7 +186,7 @@ class StringFieldTest extends \tests\TestCase
     {
         $field = $this->createField()->match('/^\w+$/');
         $this->assertEquals([
-            ['type' => StringField::ERROR_NOT_A_MATCH, 'match' => '/^\w+$/']
+            StringField::ERROR_NOT_A_MATCH => '/^\w+$/'
         ], $field->validate('another Value'));
     }
 
@@ -196,8 +196,8 @@ class StringFieldTest extends \tests\TestCase
             ->max(10)
             ->match('/^\w+$/');
         $this->assertEquals([
-            ['type' => StringField::ERROR_GREATER_THAN_MAX_LENGTH, 'maxLength' => 10],
-            ['type' => StringField::ERROR_NOT_A_MATCH, 'match' => '/^\w+$/']
+            StringField::ERROR_GREATER_THAN_MAX_LENGTH => 10,
+            StringField::ERROR_NOT_A_MATCH => '/^\w+$/'
         ], $field->validate('another Value'));
     }
 

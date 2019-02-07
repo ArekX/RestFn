@@ -155,20 +155,20 @@ class StringField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!is_string($value)) {
-            return [['type' => self::ERROR_NOT_A_STRING]];
+            return [self::ERROR_NOT_A_STRING => true];
         }
 
         $errors = [];
         if ($this->min !== null && $this->getLength($value) < $this->min) {
-            $errors[] = ['type' => self::ERROR_LESS_THAN_MIN_LENGTH, 'minLength' => $this->min];
+            $errors[self::ERROR_LESS_THAN_MIN_LENGTH] = $this->min;
         }
 
         if ($this->max !== null && $this->getLength($value) > $this->max) {
-            $errors[] = ['type' => self::ERROR_GREATER_THAN_MAX_LENGTH, 'maxLength' => $this->max];
+            $errors[self::ERROR_GREATER_THAN_MAX_LENGTH] = $this->max;
         }
 
         if ($this->match !== null && !preg_match($this->match, $value)) {
-            $errors[] = ['type' => self::ERROR_NOT_A_MATCH, 'match' => $this->match];
+            $errors[self::ERROR_NOT_A_MATCH] = $this->match;
         }
 
         return $errors;

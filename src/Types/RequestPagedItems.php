@@ -41,7 +41,7 @@ class RequestPagedItems extends ObjectType
                 'by' => stringField(),
                 'direction' => enumField(['ascending', 'descending'])
             ])->requiredKeys(['by', 'direction'])),
-            'fields' => fromType(FieldItems::class)
+            'fields' => FieldItems::field()
         ];
     }
 

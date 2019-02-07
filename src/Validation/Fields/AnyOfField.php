@@ -98,7 +98,7 @@ class AnyOfField extends BaseField
                 return [];
             }
 
-            $errors = array_merge($errors, $results);
+            $errors += $results;
         }
 
         return $errors;

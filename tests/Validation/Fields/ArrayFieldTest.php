@@ -49,7 +49,7 @@ class ArrayFieldTest extends \tests\TestCase
             'info' => 'Info',
             'example' => 'Example',
             'identifier' => 'custom name',
-            'allowEmpty' =>true,
+            'allowEmpty' => true,
             'itemType' => [
                 'type' => 'mock',
                 'allowEmpty' => false,
@@ -71,7 +71,7 @@ class ArrayFieldTest extends \tests\TestCase
     public function testFailsOnNonArrayType()
     {
         $field = $this->createField()->allowEmpty()->emptyValue([]);
-        $error = [['type' => ArrayField::ERROR_NOT_AN_ARRAY]];
+        $error = [ArrayField::ERROR_NOT_AN_ARRAY => true];
         $this->assertEquals($error, $field->validate(null));
         $this->assertEquals($error, $field->validate(''));
         $this->assertEquals($error, $field->validate(0));
@@ -101,15 +101,11 @@ class ArrayFieldTest extends \tests\TestCase
         $mock = new MockField(['error1']);
         $field = $this->createField()->allowEmpty()->of($mock);
 
-        $this->assertEquals([
-            [
-                'type' => ArrayField::ERROR_ITEM_NOT_VALID,
-                'items' => [
-                    0 => ['error1'],
-                    1 => ['error1'],
-                    2 => ['error1']
-                ]]
-        ], $field->validate([1, 2, 3]));
+        $this->assertEquals([ArrayField::ERROR_ITEM_NOT_VALID => [
+            0 => ['error1'],
+            1 => ['error1'],
+            2 => ['error1']
+        ]], $field->validate([1, 2, 3]));
     }
 
     public function testSelectiveItemIsValidated()
@@ -117,13 +113,9 @@ class ArrayFieldTest extends \tests\TestCase
         $mock = new StringField();
         $field = $this->createField()->allowEmpty()->of($mock);
 
-        $this->assertEquals([
-            [
-                'type' => ArrayField::ERROR_ITEM_NOT_VALID,
-                'items' => [
-                    1 => [['type' => StringField::ERROR_NOT_A_STRING]],
-                ]]
-        ], $field->validate(['1', 2, '3']));
+        $this->assertEquals([ArrayField::ERROR_ITEM_NOT_VALID => [
+            1 => [StringField::ERROR_NOT_A_STRING => true],
+        ]], $field->validate(['1', 2, '3']));
     }
 
     public function testAllItemAreValidated()

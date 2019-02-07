@@ -96,7 +96,7 @@ class BaseFieldTest extends TestCase
             'info' => 'Info',
             'example' => 'Example',
             'identifier' => null,
-            'allowEmpty' =>true,
+            'allowEmpty' => true,
         ], $field->definition());
     }
 
@@ -118,13 +118,13 @@ class BaseFieldTest extends TestCase
     public function testAllowEmptyIsChecked()
     {
         $field = $this->createField()->allowEmpty(false);
-        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_EMPTY]], $field->validate(null));
+        $this->assertEquals([BaseField::ERROR_VALUE_IS_EMPTY => true], $field->validate(null));
     }
 
     public function testRequiredIsCheckedWithEmptyValue()
     {
         $field = $this->createField()->allowEmpty(false)->emptyValue('');
-        $this->assertEquals([['type' => BaseField::ERROR_VALUE_IS_EMPTY]], $field->validate(''));
+        $this->assertEquals([BaseField::ERROR_VALUE_IS_EMPTY => true], $field->validate(''));
     }
 
 

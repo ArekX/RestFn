@@ -8,30 +8,28 @@
 
 namespace ArekX\JsonQL\Types;
 
-use function ArekX\JsonQL\Validation\fromType;
+use function ArekX\JsonQL\Validation\anyOf;
 use function ArekX\JsonQL\Validation\objectField;
-use function ArekX\JsonQL\Validation\stringField;
 
-class RequestSingleItem extends ObjectType
+class ReaderRequest extends ObjectType
 {
     /**
      * @inheritdoc
      */
     public static function typeName(): string
     {
-        return 'single-request';
+        return 'reader-request';
     }
 
     /**
      * @inheritdoc
      */
-    public static function fields(): array
+    public static function fields()
     {
-        return [
-            'as' => stringField()->info('Name of the result set. Will be returned in response.'),
-            'at' => objectField()->info('Request parameters.'),
-            'fields' => FieldItems::field()
-        ];
+        return objectField()->anyKey(anyOf(
+            RequestSingleItem::field(),
+            RequestPagedItems::field()
+        ));
     }
 
     public static function requiredKeys()

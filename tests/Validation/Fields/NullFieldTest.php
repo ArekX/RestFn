@@ -60,7 +60,7 @@ class NullFieldTest extends \tests\TestCase
     public function testFailsToValidateOtherTypes()
     {
         $field = $this->createField()->emptyValue(false);
-        $error = [['type' => NullField::ERROR_NOT_A_NULL]];
+        $error = [NullField::ERROR_NOT_A_NULL => true];
         $this->assertEquals($error, $field->validate(1));
         $this->assertEquals($error, $field->validate(1.5));
         $this->assertEquals($error, $field->validate('string'));

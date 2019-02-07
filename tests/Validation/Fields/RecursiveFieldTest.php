@@ -126,21 +126,15 @@ class RecursiveFieldTest extends \tests\TestCase
         $field->of($oneOf);
 
         $this->assertEquals([
-            [
-                'type' => ArrayField::ERROR_ITEM_NOT_VALID,
-                'items' => [
-                    [
-                        ['type' => StringField::ERROR_NOT_A_STRING],
-                        [
-                            'type' => ArrayField::ERROR_ITEM_NOT_VALID,
-                            'items' => [
-                                [
-                                    ['type' => StringField::ERROR_NOT_A_STRING],
-                                    ['type' => ArrayField::ERROR_NOT_AN_ARRAY]
-                                ]
-                            ]
+            ArrayField::ERROR_ITEM_NOT_VALID => [
+                0 => [
+                    StringField::ERROR_NOT_A_STRING => true,
+                    ArrayField::ERROR_ITEM_NOT_VALID => [
+                        0 => [
+                            StringField::ERROR_NOT_A_STRING => true,
+                            ArrayField::ERROR_NOT_AN_ARRAY => true
                         ]
-                    ],
+                    ]
                 ]
             ]
         ], $field->validate([

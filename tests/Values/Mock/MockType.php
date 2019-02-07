@@ -37,13 +37,13 @@ class MockType implements TypeInterface
      */
     public static function definition(): array
     {
-        return static::validator()->definition();
+        return static::field()->definition();
     }
 
     /**
      * @inheritdoc
      */
-    public static function validator(): ObjectField
+    public static function field(): ObjectField
     {
         return objectField(static::fields());
     }

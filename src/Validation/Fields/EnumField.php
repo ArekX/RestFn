@@ -58,7 +58,7 @@ class EnumField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!in_array($value, $this->values, true)) {
-            return [['type' => self::ERROR_NOT_IN_ENUM, 'valid' => $this->values]];
+            return [self::ERROR_NOT_IN_ENUM => $this->values];
         }
 
         return [];

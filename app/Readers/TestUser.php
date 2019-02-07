@@ -8,16 +8,12 @@
 
 namespace App\Readers;
 
-use ArekX\JsonQL\Interfaces\ReaderInterface;
-use ArekX\JsonQL\Values\DataProvider;
+use ArekX\JsonQL\Rest\Interfaces\ReaderInterface;
 
 class TestUser implements ReaderInterface
 {
-    public function run(): array
+    public function run(array $data)
     {
-        return [
-            'data' => 'test',
-            'def' => DataProvider::definition()
-        ];
+        return $data;
     }
 }

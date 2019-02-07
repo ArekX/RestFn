@@ -92,7 +92,7 @@ abstract class BaseField implements FieldInterface, DefineFieldInterface
         }
 
         if (!$this->allowEmpty && $value === $this->emptyValue) {
-            return [['type' => self::ERROR_VALUE_IS_EMPTY]];
+            return [self::ERROR_VALUE_IS_EMPTY => true];
         }
 
         return $this->doValidate($value, $parentValue);

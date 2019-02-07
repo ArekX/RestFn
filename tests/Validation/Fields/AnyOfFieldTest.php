@@ -123,11 +123,11 @@ class AnyOfFieldTest extends \tests\TestCase
         $field1 = $this->createMock(MockField::class);
         $field2 = $this->createMock(MockField::class);
 
-        $field1->method('validate')->willReturn(['error1']);
-        $field2->method('validate')->willReturn(['error2']);
+        $field1->method('validate')->willReturn(['error1' => true]);
+        $field2->method('validate')->willReturn(['error2' => true]);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error1', 'error2']);
+        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error1' => true, 'error2' => true]);
     }
 
     public function testDefinitionIsReturned()

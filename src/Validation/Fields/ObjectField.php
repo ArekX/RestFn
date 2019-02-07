@@ -208,7 +208,7 @@ class ObjectField extends BaseField
     protected function doValidate($value, $parentValue = null): array
     {
         if (!is_array($value)) {
-            return [['type' => self::ERROR_NOT_AN_ASSOCIATIVE]];
+            return [self::ERROR_NOT_AN_ASSOCIATIVE => true];
         }
 
         $errors = [];
@@ -232,14 +232,14 @@ class ObjectField extends BaseField
 
 
         if (!empty($fieldErrors)) {
-            $errors[] = ['type' => self::ERROR_INVALID_FIELDS, 'fields' => $fieldErrors];
+            $errors[self::ERROR_INVALID_FIELDS] = $fieldErrors;
         }
 
         if ($this->requiredKeys !== []) {
             $missingKeys = array_diff($this->getRequiredKeys(), array_keys($value));
 
             if (!empty($missingKeys)) {
-                $errors[] = ['type' => self::ERROR_MISSING_KEYS, 'keys' => $missingKeys];
+                $errors[self::ERROR_MISSING_KEYS] = $missingKeys;
             }
         }
 
@@ -247,7 +247,7 @@ class ObjectField extends BaseField
             $invalidKeys = array_keys(array_diff_key($value, $this->fields));
 
             if (!empty($invalidKeys)) {
-                $errors[] = ['type' => self::ERROR_INVALID_FIELD_KEYS, 'keys' => $invalidKeys];
+                $errors[self::ERROR_INVALID_FIELD_KEYS] = $invalidKeys;
             }
         }
 

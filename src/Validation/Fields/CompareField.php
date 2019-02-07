@@ -109,11 +109,20 @@ class CompareField extends BaseField
             $vsValue = is_array($parentValue) ? $parentValue[$this->fieldName] : null;
 
             if (!$this->compareValue($value, $vsValue)) {
-                return [['type' => self::ERROR_COMPARE_FIELD_FAILED, 'withField' => $this->fieldName, 'operator' => $this->operator]];
+                return [
+                    self::ERROR_COMPARE_FIELD_FAILED => [
+                        'withField' => $this->fieldName,
+                        'operator' => $this->operator]
+                ];
             }
 
         } else if (!$this->compareValue($value, $this->value)) {
-            return [['type' => self::ERROR_COMPARE_VALUE_FAILED, 'withValue' => $this->value, 'operator' => $this->operator]];
+            return [
+                self::ERROR_COMPARE_VALUE_FAILED => [
+                    'withValue' => $this->value,
+                    'operator' => $this->operator
+                ]
+            ];
         }
 
         return [];

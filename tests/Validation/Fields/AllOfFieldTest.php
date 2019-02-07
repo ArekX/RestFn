@@ -28,7 +28,7 @@ class AllOfFieldTest extends \tests\TestCase
         ];
 
         $allOfField = $this->createField($dummyFields);
-        $this->assertEquals($allOfField->fields, $dummyFields);
+        $this->assertEquals($dummyFields, $allOfField->fields);
     }
 
     public function testAddingAFieldAppendsToList()
@@ -46,7 +46,7 @@ class AllOfFieldTest extends \tests\TestCase
         $dummyFields[] = $newField;
         $allOfField->andField($newField);
 
-        $this->assertEquals($allOfField->fields, $dummyFields);
+        $this->assertEquals($dummyFields, $allOfField->fields);
     }
 
     public function testAddingMultipleFieldsAddsThemToList()
@@ -68,7 +68,7 @@ class AllOfFieldTest extends \tests\TestCase
         $dummyFields = array_merge($dummyFields, $newFields);
 
         $this->assertSame($allOfField, $allOfField->withFields($newFields));
-        $this->assertEquals($allOfField->fields, $dummyFields);
+        $this->assertEquals($dummyFields, $allOfField->fields);
     }
 
     public function testCallingAddReturnsChainedInterface()
@@ -115,7 +115,7 @@ class AllOfFieldTest extends \tests\TestCase
         $field2->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error2']);
+        $this->assertEquals(['error2'], $allOfField->validate(rand(1, 500)));
     }
 
     public function testFirstFailWontRunOtherValidators()
@@ -127,7 +127,7 @@ class AllOfFieldTest extends \tests\TestCase
         $field2->method('validate')->willReturn(['error2']);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate(rand(1, 500)), ['error1']);
+        $this->assertEquals(['error1'], $allOfField->validate(rand(1, 500)));
     }
 
     public function testValueIsPassedToAllFields()
@@ -142,7 +142,7 @@ class AllOfFieldTest extends \tests\TestCase
         $field1->method('validate')->with($fieldValue, $parentFieldValue)->willReturn([]);
 
         $allOfField = $this->createField([$field1, $field2]);
-        $this->assertEquals($allOfField->validate($fieldValue, $parentFieldValue), []);
+        $this->assertEquals([], $allOfField->validate($fieldValue, $parentFieldValue));
     }
 
     public function testDefinitionIsReturned()

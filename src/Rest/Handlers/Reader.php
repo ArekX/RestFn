@@ -11,6 +11,9 @@ namespace ArekX\JsonQL\Rest\Handlers;
 
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Config;
+use ArekX\JsonQL\Rest\Interfaces\ReaderInterface;
+use ArekX\JsonQL\Values\InvalidValueException;
+use ArekX\JsonQL\Values\ReaderRequestValue;
 
 class Reader implements HandlerInterface
 {
@@ -54,6 +57,54 @@ class Reader implements HandlerInterface
      */
     public function handle(array $data): array
     {
-        return [];
+        try {
+            return $this->tryHandleReaders($data);
+        } catch (InvalidValueException $e) {
+            return $e->validationErrors;
+        }
+    }
+
+    public function runReader($readerClass, array &$data): array
+    {
+        /** @var ReaderInterface $instance */
+        $instance = $this->config->make($readerClass, ['data' => $data]);
+        return $instance->run($data);
+    }
+
+    protected function isMultiRequest(array &$request)
+    {
+        $keys = array_keys($request);
+        return count($keys) === count(array_filter($keys, 'is_int'));
+    }
+
+    protected function tryHandleReaders(array &$data): array
+    {
+        $responses = [];
+
+        foreach (ReaderRequestValue::from($data)->iterate() as $key => $request) {
+            $readerClass = "{$this->namespace}\\" . ucfirst($key);
+
+            if (!class_exists($readerClass)) {
+                $responses[$key] = [
+                    'type' => 'not_found',
+                    'reader' => $key,
+                    'searchClass' => $readerClass
+                ];
+                continue;
+            }
+
+            if ($this->isMultiRequest($request)) {
+                $responses[$key] = [];
+                foreach ($request as $index => $singleRequest) {
+                    $request[$key][$index] = $this->runReader($readerClass, $singleRequest);
+                }
+
+                continue;
+            }
+
+            $responses[$key] = $this->runReader($readerClass, $request);
+        }
+
+        return $responses;
     }
 }

@@ -24,7 +24,7 @@ abstract class BaseType implements TypeInterface
      */
     public static function definition(): array
     {
-        return static::validator()->definition();
+        return static::field()->definition();
     }
 
     /**
@@ -34,7 +34,7 @@ abstract class BaseType implements TypeInterface
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    public static function validator(): FieldInterface
+    public static function field(): FieldInterface
     {
         return fromType(static::class);
     }
