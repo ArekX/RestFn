@@ -20,19 +20,19 @@ class ApplicationTest extends TestCase
     public function testInitializedWithHandlers()
     {
         /** @var Application $app */
-        $app = $this->di->get(MainApplication::class);
+        $app = $this->di->make(MainApplication::class);
         $this->assertEquals($app->handlers, [MockHandler::class]);
     }
 
     public function testHandlersAreNotRunWhenNotInRequest()
     {
         /** @var MockRequest $request */
-        $request = $this->di->get(RequestInterface::class);
+        $request = $this->di->make(RequestInterface::class);
         $request->body = [];
 
         $this->app->run();
 
-        $handler = $this->di->get(MockHandler::class);
+        $handler = $this->di->make(MockHandler::class);
 
         $this->assertFalse($handler->isRun);
     }
@@ -40,12 +40,14 @@ class ApplicationTest extends TestCase
     public function testHandlersAreRunFromRequest()
     {
         /** @var MockRequest $request */
-        $request = $this->di->get(RequestInterface::class);
+        $request = $this->di->make(RequestInterface::class);
+
+        $this->assertSame($request, $this->di->make(RequestInterface::class));
         $request->body = [MockHandler::requestType() => ['data' => 'value']];
 
         $this->app->run();
 
-        $handler = $this->di->get(MockHandler::class);
+        $handler = $this->di->make(MockHandler::class);
 
         $this->assertTrue($handler->isRun);
         $this->assertEquals($handler->data, ['data' => 'value']);
@@ -54,7 +56,7 @@ class ApplicationTest extends TestCase
     public function testExceptionIsThrownOnUnknownRequestType()
     {
         /** @var MockRequest $request */
-        $request = $this->di->get(RequestInterface::class);
+        $request = $this->di->make(RequestInterface::class);
         $request->body = ['unknown' => ['data' => 'value']];
 
         $this->expectException(InvalidHandlerException::class);

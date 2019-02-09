@@ -21,12 +21,12 @@ class MockRestConfig extends Config
     protected function getCoreConfig(): array
     {
         return [
-            RequestInterface::class => DI::wireClass(MockRequest::class),
-            ResponseInterface::class => DI::wireClass(MockResponse::class),
-            JsonResponse::class => DI::wireClass(MockJsonResponse::class),
-            Reader::class => DI::wireSetup(Reader::class, [
+            RequestInterface::class => MockRequest::class,
+            ResponseInterface::class => MockResponse::class,
+            JsonResponse::class => MockJsonResponse::class,
+            Reader::class => [
                 'namespace' => ''
-            ])
+            ]
         ];
     }
 

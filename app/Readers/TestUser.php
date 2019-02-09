@@ -8,12 +8,27 @@
 
 namespace App\Readers;
 
+use App\Services\Database;
+use ArekX\JsonQL\Data\Query;
 use ArekX\JsonQL\Rest\Interfaces\ReaderInterface;
 
 class TestUser implements ReaderInterface
 {
+    /** @var Database */
+    public $db;
+
+    public function __construct(Database $db, array $setup)
+    {
+        $this->db = $db;
+    }
+
     public function run(array $data)
     {
-        return $data;
+        $result = $this->db->select('actor', [
+            'actor_id',
+            'first_name'
+        ]);
+        // ScopedData
+        return $result + ['test' => 2];
     }
 }

@@ -31,6 +31,6 @@ class ReaderTest extends \tests\Rest\TestCase
 
     protected function getReader(): Reader
     {
-        return $this->di->get(Reader::class);
+        return $this->di->make(Reader::class);
     }
 }

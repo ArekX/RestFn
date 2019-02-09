@@ -11,6 +11,7 @@ namespace tests;
 use ArekX\JsonQL\Config\Config;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\MainApplication;
+use Auryn\Injector;
 use DI\Container;
 use tests\Mock\MockConfig;
 
@@ -22,7 +23,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /** @var MainApplication */
     protected $app;
 
-    /** @var Container */
+    /** @var Injector */
     protected $di;
 
     public function setUp()
@@ -32,7 +33,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
         DI::bootstrap($this->config);
 
-        $this->app = $this->di->get(MainApplication::class);
+        $this->app = $this->di->make(MainApplication::class);
     }
 
     protected function createConfig()

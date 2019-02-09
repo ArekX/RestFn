@@ -20,7 +20,7 @@ class ConfigTest extends TestCase
     public function testApplicationCreatedIsRestApplication()
     {
         $config = new Config();
-        $this->assertInstanceOf(Application::class, $config->getDI()->get(MainApplication::class));
+        $this->assertInstanceOf(Application::class, $config->getDI()->make(MainApplication::class));
     }
 
     public function testCallingBootstrapWillRunTheApp()
@@ -29,7 +29,7 @@ class ConfigTest extends TestCase
         $config->bootstrap();
 
         /** @var MockApplication $app */
-        $app = $config->getDI()->get(MainApplication::class);
+        $app = $config->getDI()->make(MainApplication::class);
         $this->assertTrue($app->ran);
     }
 }

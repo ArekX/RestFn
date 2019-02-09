@@ -23,8 +23,8 @@ trait MakeFunction
     public function testMakeClassWithParams()
     {
         $instance = DI::make(CustomClassWithParameters::class, [
-            'param1' => 'test',
-            'param2' => 'value'
+            ':param1' => 'test',
+            ':param2' => 'value'
         ]);
         $this->assertInstanceOf(CustomClassWithParameters::class, $instance);
         $this->assertEquals('test', $instance->param1);

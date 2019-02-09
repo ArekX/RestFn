@@ -30,6 +30,6 @@ class WriterTest extends \tests\Rest\TestCase
 
     protected function getWriter(): Writer
     {
-        return $this->di->get(Writer::class);
+        return $this->di->make(Writer::class);
     }
 }

@@ -139,8 +139,8 @@ class BaseFieldTest extends TestCase
     protected function createField($validation = [], $definition = []): MockField
     {
         return DI::make(MockField::class, [
-            'validation' => $validation,
-            'definition' => $definition
+            ':validation' => $validation,
+            ':definition' => $definition
         ]);
     }
 }

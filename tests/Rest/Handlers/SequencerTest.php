@@ -30,6 +30,6 @@ class SequencerTest extends \tests\Rest\TestCase
 
     protected function getSequencer(): Sequencer
     {
-        return $this->di->get(Sequencer::class);
+        return $this->di->make(Sequencer::class);
     }
 }

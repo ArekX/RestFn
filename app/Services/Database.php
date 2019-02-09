@@ -6,14 +6,14 @@
  * @since 1.0.0
  **/
 
-namespace tests\Helpers\DI;
+namespace App\Services;
 
+use Medoo\Medoo;
 
-
-use tests\TestCase;
-
-class DITest extends TestCase
+class Database extends Medoo
 {
-    use
-        MakeFunction;
+    public function __construct($setup)
+    {
+        parent::__construct($setup);
+    }
 }

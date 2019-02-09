@@ -68,8 +68,11 @@ class Application extends \ArekX\JsonQL\MainApplication
     protected function getHandler(string $type): HandlerInterface
     {
         foreach ($this->handlers as $handlerClass) {
+
+            $this->config->share($handlerClass);
+
             if ($handlerClass::requestType() === $type) {
-                return $this->config->getDI()->get($handlerClass);
+                return $this->config->make($handlerClass);
             }
         }
 

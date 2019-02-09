@@ -34,8 +34,8 @@ class Config extends \ArekX\JsonQL\Config\Config
     protected function getCoreConfig(): array
     {
         return [
-            RequestInterface::class => DI::wireClass(Request::class),
-            ResponseInterface::class => DI::wireClass(JsonResponse::class),
+            RequestInterface::class => Request::class,
+            ResponseInterface::class => JsonResponse::class,
         ];
     }
 

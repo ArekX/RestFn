@@ -15,7 +15,7 @@ class BaseApplicationTest extends TestCase
 {
     public function testCreateSingletonApp()
     {
-        $app = $this->di->get(BaseApplication::class);
+        $app = $this->di->make(BaseApplication::class);
         $this->assertEquals($this->app, $app);
     }
 }

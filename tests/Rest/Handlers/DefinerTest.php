@@ -30,6 +30,6 @@ class DefinerTest extends \tests\Rest\TestCase
 
     protected function getDefiner(): Definer
     {
-        return $this->di->get(Definer::class);
+        return $this->di->make(Definer::class);
     }
 }

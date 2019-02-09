@@ -72,6 +72,6 @@ class EnumFieldTest extends \tests\TestCase
 
     protected function createField(array $values): EnumField
     {
-        return DI::make(EnumField::class, ['values' => $values]);
+        return \ArekX\JsonQL\Validation\enumField($values);
     }
 }

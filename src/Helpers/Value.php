@@ -80,15 +80,15 @@ class Value
         }
 
         $parts = explode('.', $name);
-        $walker = &$object;
+        $walker = $object;
 
         $lastPart = array_pop($parts);
 
         foreach ($parts as $part) {
             if (is_array($walker) && array_key_exists($part, $walker)) {
-                $walker = &$walker[$part];
+                $walker = $walker[$part];
             } elseif (is_object($walker) && property_exists($walker, $part)) {
-                $walker = &$walker->{$part};
+                $walker = $walker->{$part};
             } else {
                 return $default;
             }
@@ -107,7 +107,7 @@ class Value
      * @param null|mixed $default Default value to be returned.
      * @return mixed|null
      */
-    protected static function resolveValue(&$object, string $name, $default = null)
+    protected static function resolveValue($object, string $name, $default = null)
     {
         if (is_array($object) && array_key_exists($name, $object)) {
             return $object[$name];

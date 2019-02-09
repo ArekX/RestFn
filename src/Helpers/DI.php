@@ -9,7 +9,7 @@
 namespace ArekX\JsonQL\Helpers;
 
 use ArekX\JsonQL\Config\Config;
-use function DI\autowire;
+use Auryn\ConfigException;
 
 /**
  * Class DI Helper for Dependency Injection
@@ -54,36 +54,23 @@ class DI
      * @param array $params Parameters which will be passed.
      * @return mixed Instance created.
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     public static function make($name, $params = [])
     {
         return static::$config->make($name, $params);
     }
 
-    /**
-     * Wires a class with $setup array in its constructor.
-     *
-     * Setup is used in conjunction with `Value::setup()`
-     *
-     * @param $class
-     * @param $setupConfig
-     * @return \DI\Definition\Helper\AutowireDefinitionHelper
-     */
-    public static function wireSetup($class, $setupConfig)
-    {
-        return autowire($class)->constructorParameter('setup', $setupConfig);
-    }
 
     /**
-     * Wires a class for DI configuration.
+     * Share the specified class/instance across the Injector context
      *
-     * @param string $class Class which will be wired.
-     * @return \DI\Definition\Helper\AutowireDefinitionHelper
+     * @param mixed $nameOrInstance The class or object to share
+     * @throws ConfigException if $nameOrInstance is not a string or an object
+     * @throws \Auryn\ConfigException
      */
-    public static function wireClass($class)
+    public static function share($nameOrInstance)
     {
-        return autowire($class);
+        static::$config->share($nameOrInstance);
     }
 }

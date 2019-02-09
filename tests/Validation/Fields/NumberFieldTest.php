@@ -186,6 +186,6 @@ class NumberFieldTest extends \tests\TestCase
 
     protected function createField(): NumberField
     {
-        return DI::make(NumberField::class);
+        return \ArekX\JsonQL\Validation\numberField();
     }
 }

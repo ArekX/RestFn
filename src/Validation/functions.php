@@ -32,13 +32,12 @@ if (!function_exists('ArekX\JsonQL\Validation\allOf')) {
      * @see AllOfField
      * @param FieldInterface ...$fields Fields to be added in AllOfField instance.
      * @return AllOfField New instance of AllOfField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function allOf(FieldInterface ...$fields): AllOfField
     {
         return DI::make(AllOfField::class, [
-            'fields' => $fields
+            ':fields' => $fields
         ]);
     }
 }
@@ -52,13 +51,12 @@ if (!function_exists('ArekX\JsonQL\Validation\anyOf')) {
      * @see AnyOfField
      * @param FieldInterface ...$fields Fields to be added in AnyOfField instance.
      * @return AnyOfField New instance of AnyOfField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function anyOf(FieldInterface ...$fields): AnyOfField
     {
         return DI::make(AnyOfField::class, [
-            'fields' => $fields
+            ':fields' => $fields
         ]);
     }
 }
@@ -71,8 +69,7 @@ if (!function_exists('ArekX\JsonQL\Validation\compare')) {
      *
      * @see CompareField
      * @return CompareField New instance of CompareField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function compare(): CompareField
     {
@@ -87,8 +84,7 @@ if (!function_exists('ArekX\JsonQL\Validation\numberField')) {
      *
      * @see NumberField
      * @return NumberField New instance of NumberField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function numberField(): NumberField
     {
@@ -104,12 +100,11 @@ if (!function_exists('ArekX\JsonQL\Validation\stringField')) {
      * @see StringField
      * @param int|null $length Maximum length of the string.
      * @return StringField New instance of StringField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function stringField(?int $length = null): StringField
     {
-        return DI::make(StringField::class, ['maxLength' => $length]);
+        return DI::make(StringField::class, [':maxLength' => $length]);
     }
 }
 
@@ -121,8 +116,7 @@ if (!function_exists('ArekX\JsonQL\Validation\anyField')) {
      *
      * @see AnyField
      * @return AnyField New instance of AnyField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function anyField(): AnyField
     {
@@ -137,8 +131,7 @@ if (!function_exists('ArekX\JsonQL\Validation\arrayField')) {
      *
      * @see ArrayField
      * @return ArrayField New instance of ArrayField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function arrayField(): ArrayField
     {
@@ -153,8 +146,7 @@ if (!function_exists('ArekX\JsonQL\Validation\boolField')) {
      *
      * @see BoolField
      * @return BoolField New instance of BoolField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function boolField(): BoolField
     {
@@ -169,8 +161,7 @@ if (!function_exists('ArekX\JsonQL\Validation\nullField')) {
      *
      * @see NullField
      * @return NullField New instance of NullField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function nullField(): NullField
     {
@@ -187,12 +178,11 @@ if (!function_exists('ArekX\JsonQL\Validation\enumField')) {
      * @see EnumField
      * @param array $values
      * @return EnumField New instance of EnumField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function enumField(array $values): EnumField
     {
-        return DI::make(EnumField::class, ['values' => $values]);
+        return DI::make(EnumField::class, [':values' => $values]);
     }
 }
 
@@ -204,12 +194,11 @@ if (!function_exists('ArekX\JsonQL\Validation\objectField')) {
      * @see ObjectField
      * @param array $fields Fields to be passed to constructor.
      * @return ObjectField New instance of ObjectField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function objectField(array $fields = []): ObjectField
     {
-        return DI::make(ObjectField::class, ['fields' => $fields]);
+        return DI::make(ObjectField::class, [':fields' => $fields]);
     }
 }
 
@@ -221,8 +210,7 @@ if (!function_exists('ArekX\JsonQL\Validation\fromType')) {
      * @param string $className Class implementing TypeInterface from which the fields will be taken.
      * @param array $mergeFields Fields which will be merged with type fields. Existing fields will be overridden.
      * @return ObjectField|FieldInterface Object field created from type.
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function fromType($className, $mergeFields = [])
     {
@@ -249,11 +237,10 @@ if (!function_exists('ArekX\JsonQL\Validation\recursiveField')) {
      *
      * @param FieldInterface $field Field which is wrapped as recursive.
      * @return RecursiveField
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Auryn\InjectionException
      */
     function recursiveField(FieldInterface $field): RecursiveField
     {
-        return DI::make(RecursiveField::class, ['field' => $field]);
+        return DI::make(RecursiveField::class, [':field' => $field]);
     }
 }

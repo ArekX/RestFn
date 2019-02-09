@@ -9,7 +9,9 @@
 namespace ArekX\JsonQL\Config;
 
 
-use Psr\Container\ContainerInterface;
+use Auryn\ConfigException;
+use Auryn\InjectionException;
+use Auryn\Injector;
 
 /**
  * Interface ConfigInterface Interface for all configuration classes.
@@ -25,9 +27,9 @@ interface ConfigInterface
     public function __construct(array $config = [], array $params = []);
 
     /**
-     * Returns current DI container implementing ContainerInterface.
+     * Returns current DI container implementing Injector.
      */
-    public function getDI(): ContainerInterface;
+    public function getDI(): Injector;
 
     /**
      * Returns core configuration.
@@ -70,6 +72,27 @@ interface ConfigInterface
      * @return array
      */
     public function getParams(): array;
+
+
+    /**
+     * Instantiate/provision a class instance
+     *
+     * @param string $name
+     * @param array $args
+     * @throws InjectionException if a cyclic gets detected when provisioning
+     * @throws \Auryn\InjectionException
+     * @return mixed
+     */
+    public function make($name, array $parameters = []);
+
+    /**
+     * Share the specified class/instance across the Injector context
+     *
+     * @param mixed $nameOrInstance The class or object to share
+     * @throws ConfigException if $nameOrInstance is not a string or an object
+     */
+    public function share($nameOrInstance);
+
 
     /**
      * Returns one parameter from params. Name can be accessed recursively using dot notation.

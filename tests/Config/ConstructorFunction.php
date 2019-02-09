@@ -11,6 +11,7 @@ namespace tests\Config;
 
 use ArekX\JsonQL\Config\Config;
 use ArekX\JsonQL\Config\ConfigInterface;
+use Auryn\Injector;
 use DI\Container;
 use tests\Mock\MockConfig;
 
@@ -18,9 +19,9 @@ trait ConstructorFunction
 {
     public function testConfigGetsResolvedOnce()
     {
-        /** @var Container $di */
+        /** @var Injector $di */
         $di = $this->di;
-        $config = $di->get(ConfigInterface::class);
+        $config = $di->make(ConfigInterface::class);
         $this->assertEquals($config, $this->config);
     }
 

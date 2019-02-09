@@ -27,7 +27,7 @@ class JsonResponseTest extends TestCase
     {
         $handler = $this->getHandler();
         /** @var JsonResponse $response */
-        $response = $this->di->get(JsonResponse::class);
+        $response = $this->di->make(JsonResponse::class);
         $response->write($handler, ['key' => 'value']);
         $response->clearAll();
         $this->assertEquals('{}', $this->getResponseString($response));
@@ -37,7 +37,7 @@ class JsonResponseTest extends TestCase
     {
         $handler = $this->getHandler();
         /** @var JsonResponse $response */
-        $response = $this->di->get(JsonResponse::class);
+        $response = $this->di->make(JsonResponse::class);
         $response->write($handler, ['key' => 'value']);
         $response->clearHandler($handler);
         $this->assertEquals('{"test":{}}', $this->getResponseString($response));
@@ -46,7 +46,7 @@ class JsonResponseTest extends TestCase
     public function outputResponse(HandlerInterface $handler, array $data): string
     {
         /** @var JsonResponse $response */
-        $response = $this->di->get(JsonResponse::class);
+        $response = $this->di->make(JsonResponse::class);
         $response->write($handler, $data);
 
         return $this->getResponseString($response);
@@ -61,6 +61,6 @@ class JsonResponseTest extends TestCase
 
     public function getHandler(): MockHandler
     {
-        return $this->di->get(MockHandler::class);
+        return $this->di->make(MockHandler::class);
     }
 }

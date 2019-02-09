@@ -31,6 +31,6 @@ class PerformerTest extends \tests\Rest\TestCase
 
     protected function getPerformer(): Performer
     {
-        return $this->di->get(Performer::class);
+        return $this->di->make(Performer::class);
     }
 }

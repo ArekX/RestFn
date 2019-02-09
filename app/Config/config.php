@@ -14,6 +14,14 @@ return [
     Config::SERVICES => [
         Reader::class => [
             'namespace' => 'App\Readers'
+        ],
+        \App\Readers\TestUser::class => [],
+        \App\Services\Database::class => [
+            'database_type' => 'mysql',
+            'database_name' => 'sakila',
+            'server' => 'localhost',
+            'username' => 'test',
+            'password' => 'test'
         ]
     ]
 ];

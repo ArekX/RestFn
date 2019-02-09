@@ -69,6 +69,6 @@ class NullFieldTest extends \tests\TestCase
 
     protected function createField(): NullField
     {
-        return DI::make(NullField::class);
+        return \ArekX\JsonQL\Validation\nullField();
     }
 }

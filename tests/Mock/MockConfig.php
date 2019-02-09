@@ -22,8 +22,8 @@ class MockConfig extends Config
     protected function getCoreConfig(): array
     {
         return [
-            RequestInterface::class => DI::wireClass(MockRequest::class),
-            ResponseInterface::class => DI::wireClass(MockResponse::class),
+            RequestInterface::class => MockRequest::class,
+            ResponseInterface::class => MockResponse::class,
             Reader::class => [
                 '@class' => Reader::class,
                 'namespace' => ''

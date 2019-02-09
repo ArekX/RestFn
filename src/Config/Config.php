@@ -12,10 +12,8 @@ namespace ArekX\JsonQL\Config;
 use ArekX\JsonQL\Helpers\DI;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\MainApplication;
-use DI\Container;
-use DI\ContainerBuilder;
-use DI\FactoryInterface;
-use Psr\Container\ContainerInterface;
+use Auryn\InjectionException;
+use Auryn\Injector;
 
 /**
  * Class Config Contains all of the configuration for the application.
@@ -32,7 +30,7 @@ use Psr\Container\ContainerInterface;
  *
  * @package ArekX\JsonQL\Config
  */
-abstract class Config implements ConfigInterface, ContainerInterface, FactoryInterface
+abstract class Config implements ConfigInterface
 {
     const APP = 'app';
     const DI = 'di';
@@ -45,8 +43,8 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
     /** @var array Input parameter array. */
     protected $params;
 
-    /** @var Container DI container */
-    protected $container;
+    /** @var Injector Dependency injector */
+    protected $injector;
 
     /**
      * Config constructor.
@@ -58,7 +56,7 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
     {
         $this->config = Value::merge($this->getInitialConfig(), $config);
         $this->params = $params;
-        $this->container = $this->createDI();
+        $this->injector = $this->createDI();
     }
 
 
@@ -171,11 +169,11 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      * This should be used internally for specific logic of wiring your classes in DI way.
      * Do not make this a service locator and get classes directly.
      *
-     * @return ContainerInterface
+     * @return Injector
      */
-    public function getDI(): ContainerInterface
+    public function getDI(): Injector
     {
-        return $this->container;
+        return $this->injector;
     }
 
     /**
@@ -207,54 +205,24 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
     /**
      * Creates dependency injection container with current configuration.
      *
-     * @return Container Created container.
+     * @return Injector Created dependency injector
      * @throws \Exception
      */
-    protected function createDI(): Container
+    protected function createDI(): Injector
     {
-        $builder = new ContainerBuilder();
+        $injector = new Injector();
 
-        $di = $this->config[self::DI];
+        $this->applyServiceConfig(self::SERVICES, $injector);
+        $this->applyServiceConfig(self::CORE, $injector);
 
+        $injector->alias(MainApplication::class, $this->getApplicationClass());
+        $injector->define($this->getApplicationClass(), [':setup' => $this->config[self::APP]]);
+        $injector->share($this->getApplicationClass());
 
-        if ($di['compile']) {
-            // @codeCoverageIgnoreStart
-            $builder->enableCompilation($di['cacheFolder']);
-            // @codeCoverageIgnoreEnd
-        }
+        $injector->share($this);
+        $injector->alias(ConfigInterface::class, static::class);
 
-        $builder->addDefinitions($this->resolveDefinitions(self::SERVICES));
-        $builder->addDefinitions($this->resolveDefinitions(self::CORE));
-        $builder->addDefinitions([
-            MainApplication::class => DI::wireSetup($this->getApplicationClass(), $this->config[self::APP]),
-            ConfigInterface::class => $this
-        ]);
-
-        return $builder->build();
-    }
-
-    /**
-     * Resolves class definitions to handle array
-     *
-     * @param string $configKey Config key which is used to get the configuration section.
-     * @return array Item definitions
-     */
-    protected function resolveDefinitions(string $configKey)
-    {
-        $items = $this->config[$configKey];
-
-        foreach ($items as $class => $resolver) {
-            if (is_array($resolver)) {
-                if (!empty($resolver['@class'])) {
-                    $class = $resolver['@class'];
-                    unset($resolver['@class']);
-                }
-
-                $items[$class] = DI::wireSetup($class, $resolver);
-            }
-        }
-
-        return $items;
+        return $injector;
     }
 
 
@@ -263,23 +231,7 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      */
     public function bootstrap()
     {
-        $this->get(MainApplication::class)->run();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function has($id)
-    {
-        return $this->container->has($id);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
-    {
-        return $this->container->get($id);
+        $this->make(MainApplication::class)->run();
     }
 
     /**
@@ -287,9 +239,17 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
      */
     public function make($name, array $parameters = [])
     {
-        return $this->container->make($name, $parameters);
+        return $this->injector->make($name, $parameters);
     }
 
+
+    /**
+     * @inheritdoc
+     */
+    public function share($nameOrInstance)
+    {
+        $this->injector->share($nameOrInstance);
+    }
 
     /**
      * Returns application class used to bootstrap the application and configure it.
@@ -304,5 +264,25 @@ abstract class Config implements ConfigInterface, ContainerInterface, FactoryInt
     protected function getAppConfig()
     {
         return [];
+    }
+
+    protected function applyServiceConfig(string $type, Injector $injector): void
+    {
+        foreach ($this->config[$type] as $class => $config) {
+
+            $injector->share($class);
+
+            if (is_array($config)) {
+                if (!empty($config['@class'])) {
+                    $injector->alias($class, $config['@class']);
+                    unset($config['@class']);
+                }
+
+                $injector->define($class, [':setup' => $config]);
+                continue;
+            }
+
+            $injector->alias($class, $config);
+        }
     }
 }
