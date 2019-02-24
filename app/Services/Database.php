@@ -8,12 +8,30 @@
 
 namespace App\Services;
 
-use Medoo\Medoo;
+use App\Data\Select;
 
-class Database extends Medoo
+class Database
 {
+    public $pdo;
+
     public function __construct($setup)
     {
-        parent::__construct($setup);
+        $this->pdo = new \PDO($setup['dsn'], $setup['username'], $setup['password']);
+    }
+
+    public function get(Select $select)
+    {
+        [$sql, $params] = $select->toSql();
+
+        $statement = $this->pdo->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $statement->bindValue($key, $value);
+        }
+
+        if (!$statement->execute()) {
+            throw new \Exception('Failed: ' . implode(",", $statement->errorInfo()) . '| sql:' . $sql);
+        };
+        return $statement->fetchAll();
     }
 }

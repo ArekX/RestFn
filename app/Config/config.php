@@ -15,13 +15,13 @@ return [
         Reader::class => [
             'namespace' => 'App\Readers'
         ],
-        \App\Readers\TestUser::class => [],
         \App\Services\Database::class => [
-            'database_type' => 'mysql',
-            'database_name' => 'sakila',
-            'server' => 'localhost',
+            'dsn' => 'mysql:host=localhost;dbname=sakila',
             'username' => 'test',
-            'password' => 'test'
+            'password' => 'test',
+            'options' => [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            ]
         ]
     ]
 ];
