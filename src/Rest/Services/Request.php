@@ -8,7 +8,12 @@
 
 namespace ArekX\JsonQL\Rest\Services;
 
+use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Interfaces\RequestInterface;
+use function ArekX\JsonQL\Validation\anyField;
+use function ArekX\JsonQL\Validation\arrayField;
+use function ArekX\JsonQL\Validation\objectField;
+use ArekX\JsonQL\Values\InvalidValueException;
 
 /**
  * Class Request
@@ -22,6 +27,9 @@ class Request implements RequestInterface
     /** @var null|array */
     protected $body = null;
 
+    /** @var null|array */
+    protected $meta = [];
+
     /**
      * @codeCoverageIgnore
      */
@@ -31,12 +39,30 @@ class Request implements RequestInterface
             return $this->body;
         }
 
-        $this->body = @json_decode(file_get_contents('php://input'), true);
+        $result = @json_decode(file_get_contents('php://input'), true);
 
-        if (empty($this->body)) {
-            $this->body = [];
+        if (empty($result)) {
+            $result = [];
         }
 
-        return $this->body;
+        $errors = objectField([
+            'meta' => arrayField()
+        ])->requiredKeys([])->anyKey(anyField())->validate($result);
+
+        if (!empty($errors)) {
+            throw new InvalidValueException($errors);
+        }
+
+        if (array_key_exists('meta', $result)) {
+            $this->meta = $result['meta'];
+            unset($result['meta']);
+        }
+
+        return $this->body = $result;
+    }
+
+    public function getMeta(string $key, $defaultValue = null)
+    {
+        return Value::get($this->meta, $key, $defaultValue);
     }
 }

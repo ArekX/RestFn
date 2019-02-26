@@ -14,23 +14,28 @@ use App\Data\Select;
 use ArekX\JsonQL\Data\Query;
 use ArekX\JsonQL\Helpers\Value;
 
-class SubItemScope implements ScopeInterface
+class ViaTableItemScope implements ScopeInterface
 {
     public $parentColumn;
     public $subClass;
-    public $subColumn;
     public $field;
+    public $via;
+    public $viaColumn;
+    public $scopeColumn;
+    public $viaScope;
 
     public function __construct($subClass, array $setup)
     {
         $this->subClass = $subClass;
         Value::setup($this, $setup, [
             'parentColumn' => null,
-            'subColumn' => null,
-            'field' => null
+            'field' => null,
+            'via' => null,
+            'viaColumn' => null,
+            'scopeColumn' => null,
+            'viaScope' => null
         ]);
     }
-
 
     public static function from($subItemClass, array $setup)
     {
@@ -39,21 +44,32 @@ class SubItemScope implements ScopeInterface
 
     public function apply(Query $query, array $subFields)
     {
-        $query->setup(function (Select $select) {
-            $select->andColumns($this->parentColumn);
-        });
-
+        $query->requestField($this->parentColumn);
         $query->mapField($this->field, function ($results) use ($subFields) {
-            /** @var DataItem $subClass */
-            $subClass = $this->subClass;
-            $subQuery = $subClass::request($subFields);
+            /** @var DataItem $subItemClass */
+            $subItemClass = $this->subClass;
+            $subQuery = $subItemClass::request($subFields);
 
-            $subQuery->request(function (Select $select) use ($results) {
-                $select->andColumns($this->subColumn);
-                $select->andWhere([$this->subColumn => array_unique(array_column($results, $this->parentColumn))]);
+            $subQuery->request(function (Select $select) use ($results, $subQuery) {
+
+                $select->columns = array_map(function ($column) use ($subQuery) {
+                    if (strpos($column, '.') === false) {
+                        return $subQuery->metadata['tableName'] . '.' . $column;
+                    }
+
+                    return $column;
+                }, $select->columns);
+
+                $select->andColumns($this->scopeColumn);
+
+                $paramField = $select->scopeParam();
+                $viaScope = $this->viaScope;
+                $viaScope[] = $this->scopeColumn . ' IN (' . $paramField . ')';
+                $select->join("INNER JOIN", $this->via, $viaScope);
+                $select->param($paramField, array_unique(array_column($results, $this->parentColumn)));
             });
 
-            return [$subQuery, $this->subColumn, $this->parentColumn];
+            return [$subQuery, $this->viaColumn, $this->parentColumn];
         });
     }
 }

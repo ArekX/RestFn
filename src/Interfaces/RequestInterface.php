@@ -23,4 +23,13 @@ interface RequestInterface
      * @return array
      */
     public function read(): array;
+
+    /**
+     * Returns request metadata specified by key.
+     *
+     * @param string $key Key which will be used to retrieve the value.
+     * @param null|mixed $defaultValue Default value to be returned if key doesn't exist.
+     * @return mixed Data specified by key or value from $defaultValue if not found.
+     */
+    public function getMeta(string $key, $defaultValue = null);
 }

@@ -9,7 +9,10 @@
 namespace ArekX\JsonQL\Data\Scopes;
 
 
-class BaseScope
-{
+use ArekX\JsonQL\Data\Query;
 
+interface ScopeInterface
+{
+    public function apply(Query $query, array $subFields);
+    public static function from($subItemClass, array $setup);
 }

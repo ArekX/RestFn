@@ -25,7 +25,20 @@ interface ResponseInterface
      * @param HandlerInterface $handler
      * @param array $data
      */
-    public function write(HandlerInterface $handler, array $data): void;
+    public function writeHandler(HandlerInterface $handler, array $data): void;
+
+    /**
+     * Sets response data array.
+     * @param array $data
+     */
+    public function write(array $data): void;
+
+    /**
+     * Sets metadata specified by key.
+     *
+     * @param string $key Key which will be used to retrieve the value.
+     */
+    public function writeMeta(string $key, $value): void;
 
     /**
      * Outputs response.

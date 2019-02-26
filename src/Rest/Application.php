@@ -11,6 +11,7 @@ namespace ArekX\JsonQL\Rest;
 use ArekX\JsonQL\Helpers\Value;
 use ArekX\JsonQL\Rest\Handlers\HandlerInterface;
 use ArekX\JsonQL\Rest\Handlers\InvalidHandlerException;
+use ArekX\JsonQL\Values\InvalidValueException;
 
 /**
  * Class Application
@@ -47,13 +48,18 @@ class Application extends \ArekX\JsonQL\MainApplication
      */
     public function run(): void
     {
-        $request = $this->request->read();
+        try {
+            $request = $this->request->read();
 
-        foreach ($request as $type => $data) {
-            $handler = $this->getHandler($type);
-            $result = $handler->handle($data);
-            $this->response->write($handler, $result);
+            foreach ($request as $type => $data) {
+                $handler = $this->getHandler($type);
+                $result = $handler->handle($data);
+                $this->response->writeHandler($handler, $result);
+            }
+        } catch (InvalidValueException $e) {
+            $this->response->write($e->validationErrors);
         }
+
 
         $this->response->output();
     }

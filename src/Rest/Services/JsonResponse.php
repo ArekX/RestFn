@@ -65,6 +65,10 @@ class JsonResponse implements ResponseInterface
             return;
         }
 
+        $this->data['meta']['memory'] = round(memory_get_usage(true), 4);
+        $this->data['meta']['memoryKB'] = round(memory_get_usage(true) / 1024, 4) . ' KB';
+        $this->data['meta']['memoryMB'] = round(memory_get_usage(true) / 1024 / 1024, 4) . ' MB';
+
         echo json_encode($this->data);
     }
 
@@ -73,8 +77,27 @@ class JsonResponse implements ResponseInterface
      * @param HandlerInterface $handler
      * @param array $data
      */
-    public function write(HandlerInterface $handler, array $data): void
+    public function writeHandler(HandlerInterface $handler, array $data): void
     {
         $this->data[$handler->responseType()] = !empty($data) ? $data : (object)[];
+    }
+
+    /**
+     * Sets response data array.
+     * @param array $data
+     */
+    public function write(array $data): void
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Sets metadata specified by key.
+     *
+     * @param string $key Key which will be used to retrieve the value.
+     */
+    public function writeMeta(string $key, $value): void
+    {
+        $this->data['meta'][$key] = $value;
     }
 }
