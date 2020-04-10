@@ -10,12 +10,13 @@ Functional rest framework
 
 ## User guide
 
-User guide available on https://restfn.readthedocs.io/en/latest
+User guide is available on https://restfn.readthedocs.io/en/latest
 
-Otherwise it can be generated locally using steps below:
-1. Install Python and PIP.
-2. Install MkDocs with `pip install mkdocs`
-3. From project root run `mkdocs build`
+### Manual generation
+
+1. Install `Python` and `pip`.
+2. Install `mkdocs` with `pip install mkdocs`
+3. From project's directory run `mkdocs build`
 4. Manual will be built in the `site` folder.
 
 ## Testing

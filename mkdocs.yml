@@ -1,4 +1,6 @@
 site_name: RestFn
+theme:
+  name: null
+  custom_dir: './cinder'
 nav:
   - Home: index.md
-theme: readthedocs
