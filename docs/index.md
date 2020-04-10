@@ -1,6 +1,6 @@
 # Welcome to RestFn
 
-JsonQL is a REST API framework which only uses one endpoint  
+This is a REST framework which only uses one endpoint  
 for all of its data needs.
 
 You can get all of the data you need, perform any action and add
