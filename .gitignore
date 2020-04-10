@@ -1,9 +1,1 @@
-vendor
-.idea
-phpDocumentor.phar
-phpDocumentor.phar.pubkey
-api
-build
-app
-site
-prototype
+/vendor/
