@@ -3,4 +3,7 @@ theme:
   name: null
   custom_dir: './cinder'
 nav:
-  - Home: index.md
+  - Home:
+      - Home:  index.md
+      - License: license.md
+  - DI: di.md
