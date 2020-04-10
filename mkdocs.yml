@@ -1,4 +1,10 @@
 site_name: RestFn
+site_url: https://github.com/ArekX/RestFn
+site_author: Aleksandar Panic
+site_description: "Functional style Rest framework"
+repo_url: "https://github.com/ArekX/RestFn"
+copyright: "RestFn is licensed under the <a href='https://restfn.readthedocs.io/en/latest/license/'>Apache 2.0 license</a>"
+
 theme:
   name: null
   custom_dir: './cinder'
