@@ -1,0 +1,4 @@
+site_name: RestFn
+nav:
+  - Home: index.md
+theme: readthedocs
