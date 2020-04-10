@@ -9,13 +9,15 @@ namespace tests\DI;
 
 
 use ArekX\RestFn\DI\Injector;
+use tests\DI\_mock\DummyClass;
 use tests\TestCase;
 
 class InjectorTest extends TestCase
 {
-    public function testCreation()
+    public function testMakeCreatesAClass()
     {
         $injector = new Injector();
-        $this->assertNotEmpty($injector);
+        $value = $injector->make(DummyClass::class);
+        $this->assertInstanceOf(DummyClass::class, $value);
     }
 }

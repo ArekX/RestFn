@@ -10,5 +10,12 @@ namespace ArekX\RestFn\DI;
 
 class Injector
 {
+    public function __construct(array $config = [])
+    {
+    }
 
+    public function make($class, ...$args)
+    {
+        return new $class(...$args);
+    }
 }
