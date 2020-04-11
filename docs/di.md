@@ -29,7 +29,7 @@ WIP
 
 WIP
 
-### Auto-wiring
+## Auto-wiring
 
 Auto-wiring is a process of instantiating and loading all of the necessary dependencies which
 one class needs automatically without it being manually created. This means that if you have
@@ -92,13 +92,13 @@ $class1 = $injector->make(Class1::class, 'valuePassedToArg1');
 Injector first creates the instance of this class, wires the dependencies then calls `__construct()`
 on the created the class, passing any arguments necessary.
 
-### Shared instances (Singletons)
+## Shared instances (Singletons)
 
 Instances can be shared on the Injector across all calls to `Injector::make()` which 
 includes time when you are auto-wiring dependencies. These classes are instantiated only once and their reference is 
 shared across all subsequent calls to `Injector::make()`.
 
-#### Sharing as an instance
+### Sharing as an instance
 
 You can share an instance by calling:
 
@@ -114,7 +114,7 @@ echo $shared === $instance ? 'Same classes' : 'Not same'; // Will output: Same c
 
 This class will be automatically shared across all calls to `Injector::make()`
 
-#### Sharing as a defintion
+### Sharing as a defintion
 
 If you share a class as an non-object ([as a definition](#injection-definition)), this 
 function will first instantiate this class by calling the `Injector::make()` function 
@@ -130,7 +130,7 @@ $sharedB = $injector->make(\MyClass::class);
 echo $sharedA === $sharedB ? 'Same classes' : 'Not same'; // Will output: Same classes
 ```
 
-#### Sharing by using an interface
+### Sharing by using an interface
 
 If your class implements `\ArekX\RestFn\DI\Contracts\SharedInstance` your class will always 
 automatically be defined as a shared class and instantiated only once. Using this method is 
@@ -147,13 +147,13 @@ echo $sharedA === $sharedB ? 'Same classes' : 'Not same'; // Will output: Same c
 ``` 
 
 
-### Factories
+## Factories
 
 WIP
 
-### Considerations
+## Considerations
 
-#### Injector is NOT a service locator
+### Injector is NOT a service locator
 
 For most of your use-cases RestFn will handle all injection for you. However you can
 request na injector by specifying the `Injector` as a public property in your classes 
