@@ -15,22 +15,18 @@
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\DI\Contracts;
+namespace tests\DI\_mock;
 
-/**
- * Interface Configurable
- * @package ArekX\RestFn\DI\Contracts
- *
- * Class which implement this interface will receive config from Injector::getConfig()
- */
-interface Configurable
+
+use ArekX\RestFn\DI\Contracts\Injectable;
+
+class DummyInjectableClass implements Injectable
 {
-    /**
-     * Performs configuration on this class.
-     *
-     * Classes implementing configure will have this function called right after the constructor is called.
-     *
-     * @param array $config Array containing keys and values of configuration data.
-     */
-    public function configure(array $config);
+    public DummyClass $dummyClass;
+    public $test;
+    public string $str = "";
+    public array $arr = [];
+    public int $int = 0;
+    public float $float = 0;
+    public bool $bool = false;
 }
