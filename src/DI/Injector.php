@@ -51,69 +51,50 @@ class Injector
     protected $configMap = [];
 
     /**
+     * Contains all aliases for aliasing between definitions when calling make.
+     *
+     * @var array
+     */
+    protected $aliasMap = [];
+
+    /**
      * Injector constructor
      *
      * @param array $configMap Configuration map to be passed for classes implementing Configurable
      * @see Configurable::configure()
      * @see Injector::$configMap
      */
-    public function __construct(array $configMap = [])
+    public function __construct(array $config = [])
     {
-        $this->configMap = $configMap;
+        $this->configMap = $config['configurations'] ?? [];
+        $this->aliasMap = $config['aliases'] ?? [];
     }
 
     /**
      * Creates instance from a class.
      *
-     * @param string|array $definition Class which will be resolved to create instance from.
+     * @param string $definition Class which will be resolved to create instance from.
      * @param mixed ...$args Constructor arguments passed to the class constructor.
      * @return mixed Created instance or existing instance if the class implements SharedInstance
      * @throws \ReflectionException*@throws ConfigNotSpecifiedException
      * @throws ConfigNotSpecifiedException
-     * @see Injector::resolveDefinition() For how definitions are resolved.
-     * @see Injector::resolveBlueprint() For how class blueprint for injectables are resolved.
      *
+     * @see Injector::makeFromBlueprint()
      * @see Factory For classes which are factory providers
      * @see Injectable For classes which should be instantiated only once
      * @see SharedInstance For classes which should be instantiated only once
      * @see Configurable For classes to be auto-wired
      *
      */
-    public function make($className, ...$args)
+    public function make(string $definition, ...$args)
     {
-        if (!empty($this->shared[$className])) {
-            return $this->shared[$className];
+        $definition = $this->resolveAlias($definition);
+
+        if (!empty($this->shared[$definition])) {
+            return $this->shared[$definition];
         }
 
-        $blueprint = $this->resolveBlueprint($className);
-
-        /** @var \ReflectionClass $reflection */
-        $reflection = $blueprint['reflection'];
-
-        /** @var object $instance */
-        $instance = $reflection->newInstanceWithoutConstructor();
-
-        if ($instance instanceof SharedInstance) {
-            $this->share($instance);
-        }
-
-        if ($instance instanceof Injectable) {
-            foreach ($blueprint['dependencies'] as $property => $type) {
-                $instance->{$property} = $this->make($type);
-            }
-        }
-
-        if ($instance instanceof Configurable) {
-            if (empty($this->configMap[$className])) {
-                throw new ConfigNotSpecifiedException($className);
-            }
-
-            $instance->configure($this->configMap[$className]);
-        }
-
-        if ($blueprint['construct']) {
-            $instance->__construct(...$args);
-        }
+        $instance = $this->makeFromBlueprint($definition, $args);
 
         return $instance;
     }
@@ -148,13 +129,25 @@ class Injector
      *
      * Class must implement Configurable for this configuration to be passed to it.
      *
-     * @param string $className Class which will be configured.
+     * @param string $definition Class which will be configured.
      * @param array $config Configuration to be passed to classes configure method.
      * @see Configurable
      */
-    public function configure($className, array $config)
+    public function configure($definition, array $config)
     {
-        $this->configMap[$className] = $config;
+        $this->configMap[$definition] = $config;
+    }
+
+
+    /**
+     * Sets alias definition between definitions.
+     *
+     * @param string $definition
+     * @param string $withDefinition
+     */
+    public function alias($definition, $withDefinition)
+    {
+        $this->aliasMap[$definition] = $withDefinition;
     }
 
     /**
@@ -200,5 +193,69 @@ class Injector
             'construct' => $reflection->getConstructor() !== null,
             'dependencies' => $dependencyMap
         ];
+    }
+
+    /**
+     * Creates instance from blueprint.
+     *
+     * @param string $class
+     * @param $args
+     * @return object
+     *
+     * @throws ConfigNotSpecifiedException
+     * @throws \ReflectionException
+     * @see Injector::resolveDefinition() For how definitions are resolved.
+     * @see Injector::resolveBlueprint() For how class blueprint for injectables are resolved.
+     */
+    protected function makeFromBlueprint(string $class, $args): object
+    {
+        $blueprint = $this->resolveBlueprint($class);
+
+        /** @var \ReflectionClass $reflection */
+        $reflection = $blueprint['reflection'];
+
+        /** @var object $instance */
+        $instance = $reflection->newInstanceWithoutConstructor();
+
+        if ($instance instanceof SharedInstance) {
+            $this->share($instance);
+        }
+
+        if ($instance instanceof Injectable) {
+            foreach ($blueprint['dependencies'] as $property => $type) {
+                $instance->{$property} = $this->make($type);
+            }
+        }
+
+        if ($instance instanceof Configurable) {
+            if (empty($this->configMap[$class])) {
+                throw new ConfigNotSpecifiedException($class);
+            }
+
+            $instance->configure($this->configMap[$class]);
+        }
+
+        if ($blueprint['construct']) {
+            $instance->__construct(...$args);
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Recursively resolve definitions through alias map.
+     *
+     * @param string $definition
+     * @return string Resolved definition.
+     */
+    protected function resolveAlias(string $definition)
+    {
+        if (empty($this->aliasMap[$definition])) {
+            return $definition;
+        }
+
+        $resolved = $this->aliasMap[$definition];
+
+        return empty($this->aliasMap[$resolved]) ? $resolved : $this->resolveAlias($resolved);
     }
 }

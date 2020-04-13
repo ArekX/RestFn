@@ -33,15 +33,12 @@ use ArekX\RestFn\DI\Injector;
 interface Factory
 {
     /**
-     * Resolve class creation
+     * Resolves instance creation on the factory instance.
      *
-     * @param Injector $injector Injector which called this function.
-     * @param array $config Configuration for this class name set by Injector::configure()
-     * @param string $class Class passed to Injector::createThroughFactory()
-     * @param array $constructorArgs Constructor arguments passed to Injector::createThroughFactory()
-     * @see Injector::configure() Which will result in Configuration passed to this function.
-     * @see Injector::createThroughFactory() Which will end up calling this function
-     * @return mixed Resolved instance of the class.
+     * @param string $definition Definition to be resolved.
+     * @param array $args Constructor arguments passed for this class creation.
+     * @param array|null $config Configuration set for this class or null if no configuration set.
+     * @return mixed Instance to be returned.
      */
-    public static function create(Injector $injector, array $config, string $class, array $constructorArgs);
+    public function create(string $definition, array $args, ?array $config);
 }

@@ -24,6 +24,7 @@ use tests\DI\_mock\DummyClass;
 use tests\DI\_mock\DummyClassWithArgs;
 use tests\DI\_mock\DummyConfigurableClass;
 use tests\DI\_mock\DummyConfigurableClassWithArgs;
+use tests\DI\_mock\DummyOverrideClass;
 use tests\TestCase;
 
 class InjectorMakeTest extends TestCase
@@ -64,7 +65,9 @@ class InjectorMakeTest extends TestCase
             'test' => 1
         ];
         $injector = new Injector([
-            DummyConfigurableClass::class => $testConfig
+            'configurations' => [
+                DummyConfigurableClass::class => $testConfig
+            ]
         ]);
 
         /** @var DummyConfigurableClass $value */
@@ -84,7 +87,9 @@ class InjectorMakeTest extends TestCase
             'test' => 1
         ];
         $injector = new Injector([
-            DummyConfigurableClass::class => $testConfig
+            'configurations' => [
+                DummyConfigurableClass::class => $testConfig
+            ]
         ]);
 
         /** @var DummyConfigurableClass $value */
@@ -106,7 +111,9 @@ class InjectorMakeTest extends TestCase
             'test' => 1
         ];
         $injector = new Injector([
-            DummyConfigurableClassWithArgs::class => $testConfig
+            'configurations' => [
+                DummyConfigurableClassWithArgs::class => $testConfig
+            ]
         ]);
 
         /** @var DummyConfigurableClassWithArgs $value */
@@ -147,5 +154,38 @@ class InjectorMakeTest extends TestCase
 
         $this->assertInstanceOf(DummyConfigurableClass::class, $value, 'Created is of type of DummyClassWithArgs.');
         $this->assertEquals($value->passedConfig, $testConfig, 'Config is passed correctly.');
+    }
+
+    /**
+     * @throws \ReflectionException
+     * @throws ConfigNotSpecifiedException
+     */
+    public function testAliasedClasses()
+    {
+        $injector = new Injector([
+            'aliases' => [DummyClass::class => DummyOverrideClass::class]
+        ]);
+
+        /** @var DummyClass $value */
+        $value = $injector->make(DummyClass::class, 'arg1', 'arg2');
+
+        $this->assertInstanceOf(DummyOverrideClass::class, $value, 'Created is of type of DummyOverrideClass.');
+    }
+
+
+    /**
+     * @throws \ReflectionException
+     * @throws ConfigNotSpecifiedException
+     */
+    public function testAliasingThroughAliasCall()
+    {
+        $injector = new Injector();
+
+        $injector->alias(DummyClass::class, DummyOverrideClass::class);
+
+        /** @var DummyClass $value */
+        $value = $injector->make(DummyClass::class, 'arg1', 'arg2');
+
+        $this->assertInstanceOf(DummyOverrideClass::class, $value, 'Created is of type of DummyOverrideClass.');
     }
 }

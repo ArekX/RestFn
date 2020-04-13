@@ -72,7 +72,7 @@ class Class2 {
     }
 }
 
-class Class1 {
+class Class1 implements \ArekX\RestFn\DI\Contracts\Injectable {
     public Class2 $class2;
 
     public function __construct($arg1) {
@@ -150,13 +150,15 @@ interface.
 To these interfaces, injector will pass the array config to them before their `__construct()` is called. This is done in a 
 way to ensure that the class you instantiate has everything ready for it before it can do any work.
 
-Configuration is passed per class in an array during Injector creation:
+Configuration is passed per class in an array during Injector creation or by a call to `Injector::configure()`:
 
 ```php
 $injector = new \ArekX\RestFn\DI\Injector([
-    \MyConfigurableClass::class => [
-        'key1' => 'value',
-        'key2' => 'value2',
+    'configurations' => [
+         \MyConfigurableClass::class => [
+                'key1' => 'value',
+                'key2' => 'value2',
+            ]
     ]
 ]);
 
@@ -183,6 +185,31 @@ $instance = $injector->make(MyConfigurableClass::class);
 If there is no configuration specified for the instance in the injector itself. Injector will throw an error.
 
 You can also manually pass the configuration for a specific class by calling `Injector::configure()`.
+
+## Aliasing
+
+Classes can be aliased so that you can set an interface and inject the implementation of that interface
+to every class which implements `Injectable` interface.
+
+Aliasing can be setup by calling `Injector::alias()` or by passing the constructor configuration.
+
+```php
+interface MyInterface {}
+
+class MyClass implements MyInterface {}
+
+class MyClass2 implements \ArekX\RestFn\DI\Contracts\Injectable {
+    public MyInterface $interface;
+}
+
+$injector = new \ArekX\RestFn\DI\Injector([
+    'aliases' => [
+        \MyInterface::class => \MyClass::class
+    ]
+]);
+
+$instance = $injector->make(MyClass2::class); // Creates instance of MyClass2 with MyClass injected into $interface.
+```
 
 ## Factories
 

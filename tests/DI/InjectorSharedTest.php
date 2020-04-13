@@ -20,6 +20,7 @@ namespace tests\DI;
 
 use ArekX\RestFn\DI\Injector;
 use tests\DI\_mock\DummyClass;
+use tests\DI\_mock\DummyOverrideClass;
 use tests\DI\_mock\DummySharedClass;
 use tests\TestCase;
 
@@ -68,6 +69,28 @@ class InjectorSharedTest extends TestCase
 
         $test = $injector->make(DummySharedClass::class);
         $newInstance = $injector->make(DummySharedClass::class);
+
+        $this->assertSame($test, $newInstance, 'New instance is same for singleton.');
+    }
+
+
+    /**
+     * @throws \ReflectionException
+     * @throws \ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException
+     */
+    public function testShareClassNameIsBeingAlwaysAliased()
+    {
+        $injector = new Injector();
+
+        $injector->alias(DummyClass::class, DummyOverrideClass::class);
+
+        $injector->share(DummyClass::class);
+
+        $test = $injector->make(DummyClass::class);
+        $newInstance = $injector->make(DummyClass::class);
+
+        $this->assertInstanceOf(DummyOverrideClass::class, $test);
+        $this->assertInstanceOf(DummyOverrideClass::class, $newInstance);
 
         $this->assertSame($test, $newInstance, 'New instance is same for singleton.');
     }
