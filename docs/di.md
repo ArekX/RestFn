@@ -25,10 +25,6 @@ $instance = $injector->make(\MyClass::class);
 
 WIP
 
-## Injection definition
-
-WIP
-
 ## Auto-wiring
 
 Auto-wiring is a process of instantiating and loading all of the necessary dependencies which
@@ -114,11 +110,10 @@ echo $shared === $instance ? 'Same classes' : 'Not same'; // Will output: Same c
 
 This class will be automatically shared across all calls to `Injector::make()`
 
-### Sharing as a defintion
+### Sharing as a class name
 
-If you share a class as an non-object ([as a definition](#injection-definition)), this 
-function will first instantiate this class by calling the `Injector::make()` function 
-before making this class shared.
+If you share a class as string (by calling `MyClass::class` or passing a string), this function 
+will first instantiate this class by calling the `Injector::make()` function before making this class shared.
 
 ```php
 $injector->share(\MyClass::class);
@@ -146,6 +141,48 @@ $sharedB = $injector->make(\MyClass::class);
 echo $sharedA === $sharedB ? 'Same classes' : 'Not same'; // Will output: Same classes
 ``` 
 
+## Configurable Instances
+
+Instances can have configurations passed to them by the injector itself. In order for
+instances to get the configuration passed to them they need to implement `ArekX\RestFn\DI\Contracts\Configurable`
+interface.
+
+To these interfaces, injector will pass the array config to them before their `__construct()` is called. This is done in a 
+way to ensure that the class you instantiate has everything ready for it before it can do any work.
+
+Configuration is passed per class in an array during Injector creation:
+
+```php
+$injector = new \ArekX\RestFn\DI\Injector([
+    \MyConfigurableClass::class => [
+        'key1' => 'value',
+        'key2' => 'value2',
+    ]
+]);
+
+class MyConfigurableClass implements ArekX\RestFn\DI\Contracts\Configurable {
+    public function configure(array $config) {
+        /**
+          * $config here will contain 
+          * [
+          *    'key1' => 'value',
+          *    'key2' => 'value2',
+          * ] 
+          */
+    }
+    
+    public function __construct($arg1, $arg2) {
+        // This is called after configure in this case, so all dependencies
+        // and configuration is available here.
+    }
+}
+
+$instance = $injector->make(MyConfigurableClass::class);
+```
+
+If there is no configuration specified for the instance in the injector itself. Injector will throw an error.
+
+You can also manually pass the configuration for a specific class by calling `Injector::configure()`.
 
 ## Factories
 

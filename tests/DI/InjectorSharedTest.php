@@ -27,6 +27,7 @@ class InjectorSharedTest extends TestCase
 {
     /**
      * @throws \ReflectionException
+     * @throws \ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException
      */
     public function testShareInstance()
     {
@@ -43,6 +44,7 @@ class InjectorSharedTest extends TestCase
 
     /**
      * @throws \ReflectionException
+     * @throws \ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException
      */
     public function testShareClassName()
     {
@@ -58,6 +60,7 @@ class InjectorSharedTest extends TestCase
 
     /**
      * @throws \ReflectionException
+     * @throws \ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException
      */
     public function testInstancesImplementingSharedAreAutomaticallyShared()
     {

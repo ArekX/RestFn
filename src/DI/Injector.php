@@ -17,8 +17,10 @@
 
 namespace ArekX\RestFn\DI;
 
+use ArekX\RestFn\DI\Contracts\Configurable;
 use ArekX\RestFn\DI\Contracts\Injectable;
 use ArekX\RestFn\DI\Contracts\SharedInstance;
+use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
 
 /**
  * Class Injector
@@ -29,20 +31,45 @@ use ArekX\RestFn\DI\Contracts\SharedInstance;
  */
 class Injector
 {
+    /**
+     * Contains key => value storage which is a list of current shared instances
+     * in this injector.
+     *
+     * @var SharedInstance[]
+     */
     protected $shared = [];
+
+    /**
+     * Contains className => config storage which contains configurations for all classes
+     * which implement Configurable.
+     *
+     * During creation this config will be passed to instances configure() function.
+     *
+     * @see Configurable::configure()
+     * @var array
+     */
+    protected $configMap = [];
 
     /**
      * Injector constructor
      *
-     * @param array $config Injector configuration for configuring specific classes.
+     * @param array $configMap Configuration map to be passed for classes implementing Configurable
+     * @see Configurable::configure()
+     * @see Injector::$configMap
      */
-    public function __construct(array $config = [])
+    public function __construct(array $configMap = [])
     {
+        $this->configMap = $configMap;
     }
 
     /**
      * Creates instance from a class.
      *
+     * @param string|array $definition Class which will be resolved to create instance from.
+     * @param mixed ...$args Constructor arguments passed to the class constructor.
+     * @return mixed Created instance or existing instance if the class implements SharedInstance
+     * @throws \ReflectionException*@throws ConfigNotSpecifiedException
+     * @throws ConfigNotSpecifiedException
      * @see Injector::resolveDefinition() For how definitions are resolved.
      * @see Injector::resolveBlueprint() For how class blueprint for injectables are resolved.
      *
@@ -51,15 +78,9 @@ class Injector
      * @see SharedInstance For classes which should be instantiated only once
      * @see Configurable For classes to be auto-wired
      *
-     * @param string|array $definition Class which will be resolved to create instance from.
-     * @param mixed ...$args Constructor arguments passed to the class constructor.
-     * @return mixed Created instance or existing instance if the class implements SharedInstance
-     * @throws \ReflectionException
      */
-    public function make($definition, ...$args)
+    public function make($className, ...$args)
     {
-        [$className, $resolvedArgs] = $this->resolveDefinition($definition, $args);
-
         if (!empty($this->shared[$className])) {
             return $this->shared[$className];
         }
@@ -69,6 +90,7 @@ class Injector
         /** @var \ReflectionClass $reflection */
         $reflection = $blueprint['reflection'];
 
+        /** @var object $instance */
         $instance = $reflection->newInstanceWithoutConstructor();
 
         if ($instance instanceof SharedInstance) {
@@ -81,8 +103,16 @@ class Injector
             }
         }
 
+        if ($instance instanceof Configurable) {
+            if (empty($this->configMap[$className])) {
+                throw new ConfigNotSpecifiedException($className);
+            }
+
+            $instance->configure($this->configMap[$className]);
+        }
+
         if ($blueprint['construct']) {
-            $instance->__construct(...$resolvedArgs);
+            $instance->__construct(...$args);
         }
 
         return $instance;
@@ -99,6 +129,7 @@ class Injector
      * @param mixed ...$args Arguments to be passed to make().
      * @return object Passed or created definition.
      * @throws \ReflectionException
+     * @throws ConfigNotSpecifiedException
      * @see Injector::make()
      */
     public function share($definition, ...$args)
@@ -111,35 +142,19 @@ class Injector
     }
 
     /**
-     * Resolves definition of a class from various types.
+     * Sets configuration for specified class.
      *
-     * This resolution accepts two types, string and array.
+     * This configuration will be passed during the class creation in the call to make().
      *
-     * If a resolution is a string then that string is treated as a class name.
+     * Class must implement Configurable for this configuration to be passed to it.
      *
-     * Classes in array format are defined as follows:
-     * ```php
-     * [InjectionClass::class, ['key' => 'value']]
-     * ```
-     * Will result in a class where first parameter of it's constructor is the second parameter of this array.
-     * All other parameters in the from $args are passed after that.
-     *
-     * Classes in string format are created as that class with all of it's arguments from $args passed directly
-     * to the constructor.
-     *
-     * @param array|string $definition Definition which will be resolved
-     * @param array $args Arguments to be passed to constructor.
-     * @return array Array with first value containing string class name and second value containing constructor args.
+     * @param string $className Class which will be configured.
+     * @param array $config Configuration to be passed to classes configure method.
+     * @see Configurable
      */
-    protected function resolveDefinition($definition, $args = [])
+    public function configure($className, array $config)
     {
-        if (is_array($definition)) {
-            return count($definition) === 2
-                ? [$definition[0], [$definition[1], ...$args]]
-                : [$definition[0], $args];
-        }
-
-        return [$definition, $args];
+        $this->configMap[$className] = $config;
     }
 
     /**

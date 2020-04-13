@@ -28,6 +28,7 @@ class InjectorInjectableTest extends TestCase
 {
     /**
      * @throws \ReflectionException
+     * @throws \ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException
      */
     public function testCreateInjectable()
     {
@@ -54,6 +55,7 @@ class InjectorInjectableTest extends TestCase
 
     /**
      * @throws \ReflectionException
+     * @throws \ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException
      */
     public function testNonInjectablesDoNotGetClassesAutoWired()
     {
