@@ -106,7 +106,7 @@ class Injector
      *
      * If a definition is not an object it will be created using make() function.
      *
-     * @param array|string|object $definition Definition to be resolved.
+     * @param string|object $definition Definition to be resolved.
      * @param mixed ...$args Arguments to be passed to make().
      * @return object Passed or created definition.
      * @throws \ReflectionException
