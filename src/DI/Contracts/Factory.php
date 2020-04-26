@@ -37,8 +37,7 @@ interface Factory
      *
      * @param string $definition Definition to be resolved.
      * @param array $args Constructor arguments passed for this class creation.
-     * @param array|null $config Configuration set for this class or null if no configuration set.
      * @return mixed Instance to be returned.
      */
-    public function create(string $definition, array $args, ?array $config);
+    public function create(string $definition, array $args);
 }

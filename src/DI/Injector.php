@@ -18,6 +18,7 @@
 namespace ArekX\RestFn\DI;
 
 use ArekX\RestFn\DI\Contracts\Configurable;
+use ArekX\RestFn\DI\Contracts\Factory;
 use ArekX\RestFn\DI\Contracts\Injectable;
 use ArekX\RestFn\DI\Contracts\SharedInstance;
 use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
@@ -58,6 +59,24 @@ class Injector
     protected $aliasMap = [];
 
     /**
+     * Contains key, value map of factories for specific classes.
+     *
+     * @see Injector::factory()
+     * @var array
+     */
+    protected $factoryMap = [];
+
+    /**
+     * Contains key, value maps of disabled factory classes.
+     *
+     * If a disabled factory is set then it will not be used during any
+     * subsequent calls to make().
+     *
+     * @var array
+     */
+    protected $enabledFactories = [];
+
+    /**
      * Injector constructor
      *
      * @param array $configMap Configuration map to be passed for classes implementing Configurable
@@ -66,8 +85,17 @@ class Injector
      */
     public function __construct(array $config = [])
     {
-        $this->configMap = $config['configurations'] ?? [];
         $this->aliasMap = $config['aliases'] ?? [];
+
+        $configurations = $config['configurations'] ?? [];
+        foreach ($configurations as $definition => $config) {
+            $this->configure($definition, $config);
+        }
+
+        $factories = $config['factories'] ?? [];
+        foreach ($factories as $definition => $factoryClass) {
+            $this->factory($definition, $factoryClass);
+        }
     }
 
     /**
@@ -94,9 +122,11 @@ class Injector
             return $this->shared[$definition];
         }
 
-        $instance = $this->makeFromBlueprint($definition, $args);
+        if (!empty($this->factoryMap[$definition])) {
+            return $this->makeUsingFactory($definition, $args);
+        }
 
-        return $instance;
+        return $this->makeFromBlueprint($definition, $args);
     }
 
     /**
@@ -120,6 +150,55 @@ class Injector
         }
 
         return $this->shared[get_class($definition)] = $definition;
+    }
+
+    /**
+     * Sets factory class for a specific class.
+     *
+     * Factory classes will go through the full make() process
+     * so they can be set with Configurable and SharedInstance interfaces
+     * as necessary.
+     *
+     * When a $forClass is being made using make() function it will be made by calling
+     * factory class's function create.
+     *
+     * Instances created through factory's create method will NOT go through the injection process
+     * so if you need them to go through it you need to call Injector::make() from within that
+     * factory class.
+     *
+     * Classes need to implement Factory to be used as factories.
+     *
+     * @param string $forClass class for which
+     * @param string $factoryClass Factory class which will be set.
+     * @see Factory
+     * @see Injector::make()
+     */
+    public function factory(string $forClass, string $factoryClass)
+    {
+        $this->factoryMap[$forClass] = $factoryClass;
+        $this->enabledFactories[$factoryClass] = true;
+    }
+
+    /**
+     * Disables factory from being resolved for a class during calls to make().
+     *
+     * @param string $factoryClass
+     * @see Injector::make()
+     */
+    public function disableFactory(string $factoryClass)
+    {
+        $this->enabledFactories[$factoryClass] = false;
+    }
+
+    /**
+     * Enables factory so it's being resolved for a class during calls to make().
+     *
+     * @param string $factoryClass
+     * @see Injector::make()
+     */
+    public function enableFactory(string $factoryClass)
+    {
+        $this->enabledFactories[$factoryClass] = true;
     }
 
     /**
@@ -238,6 +317,34 @@ class Injector
         if ($blueprint['construct']) {
             $instance->__construct(...$args);
         }
+
+        return $instance;
+    }
+
+
+    /**
+     * Creates instance by using a factory class.
+     *
+     * @param string $definition Class definition to be created.
+     * @param array $args Arguments passed to class definition.
+     * @return mixed Instance created by factory class.
+     * @throws ConfigNotSpecifiedException
+     * @throws \ReflectionException
+     */
+    protected function makeUsingFactory(string $definition, array $args)
+    {
+        $factoryClass = $this->factoryMap[$definition];
+
+        if (!$this->enabledFactories[$factoryClass]) {
+            return $this->makeFromBlueprint($definition, $args);
+        }
+
+        /** @var Factory $factory */
+        $factory = $this->make($factoryClass, $args);
+
+        $this->disableFactory($factoryClass);
+        $instance = $factory->create($definition, $args);
+        $this->enableFactory($factoryClass);
 
         return $instance;
     }

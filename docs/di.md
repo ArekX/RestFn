@@ -23,7 +23,8 @@ $instance = $injector->make(\MyClass::class);
 // Do something with your instance.
 ```
 
-WIP
+Calling function `make()` creates new instance of the desired class, processes auto-wiring 
+and shares the class if necessary. You can see below for more info on specific parts of injection process.
 
 ## Auto-wiring
 
@@ -213,7 +214,66 @@ $instance = $injector->make(MyClass2::class); // Creates instance of MyClass2 wi
 
 ## Factories
 
-WIP
+Factory classes are classes to which injector delegates instance creation. When a `make()` function is called,
+injector first checks if there are factory classes set for that specific class and if there are it instantiates
+the factory classes using `make()` method and then calls the factory's `create()` method, passing the desired
+class and arguments.
+
+For a class to be a factory class it must implement the `\ArekX\RestFn\DI\Contracts\Factory` interface.
+
+Example:
+```php
+class MyFactory implements \ArekX\RestFn\DI\Contracts\Factory {
+
+  public function create(string $definition,array $args) {
+      // Your logic for handling $definitionClass here.
+      return new $definition(...$args);
+  }
+}
+
+class MyClass {}
+
+$injector = new \ArekX\RestFn\DI\Injector([
+    'factories' => [
+        \MyClass::class => \MyFactory::class
+    ]
+]);
+
+// Instance will be created by using MyFactory::create() method.
+$instance = $injector->make(MyClass::class);
+```
+
+Please note that instances created through factory's `create()` method will not go through the injection process
+which means that they will not be auto-wired or shared by default. If you need this functionality then you
+need to inject the injector in the factory function.
+
+Example:
+```php
+class MyFactory implements \ArekX\RestFn\DI\Contracts\Factory {
+  
+  public \ArekX\RestFn\DI\Injector $injector;
+
+  public function create(string $definition,array $args) {
+      // Injector calls disableFactory() for this class before calling this create() function
+      // so its safe to directly call make() here.
+      return $this->injector->make($definition, ...$args);
+  }
+}
+
+class MyClass {}
+
+$injector = new \ArekX\RestFn\DI\Injector([
+    'factories' => [
+        \MyClass::class => \MyFactory::class
+    ]
+]);
+
+$injector->share($this);
+
+
+// Instance will be created by using MyFactory::create() method.
+$instance = $injector->make(MyClass::class);
+```
 
 ## Considerations
 
