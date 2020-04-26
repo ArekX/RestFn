@@ -10,6 +10,5 @@ theme:
   custom_dir: './docs/build/cinder'
 nav:
   - Home:
-      - Home:  index.md
-      - License: license.md
+      - Readme:  index.md
   - DI: di.md
