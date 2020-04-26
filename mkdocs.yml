@@ -7,7 +7,7 @@ copyright: "RestFn is licensed under the <a href='https://restfn.readthedocs.io/
 
 theme:
   name: null
-  custom_dir: './cinder'
+  custom_dir: './docs/build/cinder'
 nav:
   - Home:
       - Home:  index.md
