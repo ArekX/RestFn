@@ -4,6 +4,9 @@
         <testsuite name="DI">
             <directory>tests/DI</directory>
         </testsuite>
+        <testsuite name="Parser">
+            <directory>tests/Parser</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
