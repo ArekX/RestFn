@@ -25,7 +25,7 @@ class DummyFailOperation implements Operation
 {
     public function validate(Evaluator $evaluator, $value)
     {
-        return ['failed' => true];
+        return ['test', ['failed' => true]];
     }
 
     public function evaluate(Evaluator $evaluator, $value)

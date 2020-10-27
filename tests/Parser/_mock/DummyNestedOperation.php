@@ -25,6 +25,8 @@ class DummyNestedOperation implements Operation
 {
     public function validate(Evaluator $evaluator, $value)
     {
+        $result = $evaluator->validate($value[1]);
+        return $result ? [$value[0], $result] : null;
     }
 
     public function evaluate(Evaluator $evaluator, $value)
