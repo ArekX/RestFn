@@ -23,16 +23,23 @@ use tests\TestCase;
 
 class ValueOpTest extends TestCase
 {
-    public function testAlwaysValidates()
+    public function testValidateEmptyValue()
     {
         $valueOp = new ValueOp();
-        $this->assertEquals(null, $valueOp->validate([], null, new Parser()));
+        $this->assertEquals(['min_parameters' => 1], $valueOp->validate(new Parser(), []));
+        $this->assertEquals(['min_parameters' => 1], $valueOp->validate(new Parser(), [ValueOp::name()]));
+    }
+
+    public function testValidatePassing()
+    {
+        $valueOp = new ValueOp();
+        $this->assertEquals(null, $valueOp->validate(new Parser(), [ValueOp::name(), 1]));
     }
 
     public function testAlwaysReturnsSetValue()
     {
-        $rule = ['value', rand(1, 2000)];
+        $rule = [ValueOp::name(), rand(1, 2000)];
         $valueOp = new ValueOp();
-        $this->assertEquals($rule[1], $valueOp->evaluate($rule, null, new Parser()));
+        $this->assertEquals($rule[1], $valueOp->evaluate(new Parser(), $rule));
     }
 }

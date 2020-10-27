@@ -19,8 +19,9 @@ namespace tests\Parser;
 
 
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
-use ArekX\RestFn\Parser\Exceptions\InvalidRuleFormat;
+use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
 use ArekX\RestFn\Parser\Parser;
+use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyNestedOperation;
 use tests\Parser\_mock\DummyOperation;
 use tests\TestCase;
@@ -50,9 +51,7 @@ class ParserTest extends TestCase
         $parser = new Parser();
         $parser->ops = [];
 
-        $this->expectException(InvalidOperation::class);
-
-        $parser->evaluate([], null);
+        $this->assertEquals([], $parser->evaluate([]));
     }
 
     public function testInvalidRulePassedToParser()
@@ -60,9 +59,9 @@ class ParserTest extends TestCase
         $parser = new Parser();
         $parser->ops = [];
 
-        $this->expectException(InvalidRuleFormat::class);
+        $this->expectException(InvalidValueFormatException::class);
 
-        $parser->evaluate('invalidrule', null);
+        $parser->evaluate('invalidrule');
     }
 
     public function testInvalidOperationThrowsException()
@@ -72,49 +71,96 @@ class ParserTest extends TestCase
 
         $this->expectException(InvalidOperation::class);
 
-        $parser->evaluate(['test'], null);
+        $parser->evaluate(['test']);
     }
 
     public function testParserConfigure()
     {
+        $ops = [
+            DummyOperation::name() => DummyOperation::class
+        ];
+
         $parser = new Parser();
         $parser->configure([
-            'ops' => [
-                'test' => DummyOperation::class
-            ]
+            'ops' => [DummyOperation::class]
         ]);
 
-        $this->assertEquals(1, $parser->evaluate(['test'], null));
+        $this->assertEquals($ops, $parser->ops);
+        $this->assertEquals(1, $parser->evaluate(['test']));
     }
 
     public function testOperationIsEvaluated()
     {
         $parser = new Parser();
         $parser->ops = [
-            'test' => DummyOperation::class
+            DummyOperation::name() => DummyOperation::class
         ];
 
-        $this->assertEquals(1, $parser->evaluate(['test'], null));
+        $this->assertEquals(1, $parser->evaluate(['test']));
     }
 
     public function testNestedOperationsIsEvaluated()
     {
         $parser = new Parser();
         $parser->ops = [
-            'nested' => DummyNestedOperation::class,
-            'test' => DummyOperation::class
+            DummyNestedOperation::name() => DummyNestedOperation::class,
+            DummyOperation::name() => DummyOperation::class
         ];
 
 
-        $this->assertEquals('nested-1', $parser->evaluate(['nested', ['test']], null));
+        $this->assertEquals('nested-1', $parser->evaluate(['nested', ['test']]));
     }
 
 
     public function testValidateEmpty()
     {
         $parser = new Parser();
+        $parser->ops = [
+            DummyOperation::name() => DummyOperation::class
+        ];
+
+        $this->assertEquals(null, $parser->validate([]));
+    }
+
+    public function testValidateSuccess()
+    {
+        $parser = new Parser();
+        $parser->ops = [
+            DummyOperation::name() => DummyOperation::class
+        ];
+
+        $this->assertEquals(null, $parser->validate(['test']));
+    }
+
+    public function testValidateFail()
+    {
+        $parser = new Parser();
+        $parser->ops = [
+            DummyFailOperation::name() => DummyFailOperation::class
+        ];
+
+        $this->assertEquals(['failed' => true], $parser->validate(['test']));
+    }
+
+
+    public function testInvalidValidationError()
+    {
+        $parser = new Parser();
         $parser->ops = [];
 
-        $this->assertEquals(null, $parser->validate(['nested', ['test']], null));
+        $this->expectException(InvalidValueFormatException::class);
+
+        $parser->validate('invalidrule');
     }
+
+    public function testInvalidOpValidation()
+    {
+        $parser = new Parser();
+        $parser->ops = [];
+
+        $this->expectException(InvalidOperation::class);
+
+        $this->assertEquals(null, $parser->validate(['test']));
+    }
+
 }

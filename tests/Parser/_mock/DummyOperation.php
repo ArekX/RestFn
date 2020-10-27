@@ -23,20 +23,18 @@ use ArekX\RestFn\Parser\Contracts\Operation;
 
 class DummyOperation implements Operation
 {
-    public $validateCalled = false;
-    public $validateValue = null;
-    public $evaluateCalled = false;
-    public $evaluateValue = 1;
-
-    public function validate($rules, $value, Evaluator $evaluator)
+    public function validate(Evaluator $evaluator, $value)
     {
-        $this->validateCalled = true;
-        return $this->validateValue;
+        return null;
     }
 
-    public function evaluate($rules, $value, Evaluator $evaluator)
+    public function evaluate(Evaluator $evaluator, $value)
     {
-        $this->evaluateCalled = true;
-        return $this->evaluateValue;
+        return 1;
+    }
+
+    public static function name(): string
+    {
+        return 'test';
     }
 }
