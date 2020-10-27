@@ -12,3 +12,6 @@ nav:
   - Home:
       - Readme:  index.md
   - DI: di.md
+  - Ops:
+      - Ops: ops/index.md
+      - Value: ops/value.md
