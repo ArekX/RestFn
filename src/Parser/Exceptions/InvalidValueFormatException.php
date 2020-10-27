@@ -18,10 +18,10 @@
 namespace ArekX\RestFn\Parser\Exceptions;
 
 
-class InvalidRuleFormat extends \Exception
+class InvalidValueFormatException extends \Exception
 {
     public function __construct()
     {
-        parent::__construct("Passed rule must be an array.");
+        parent::__construct("Passed value must be an array.");
     }
 }

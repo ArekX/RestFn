@@ -21,15 +21,40 @@ namespace ArekX\RestFn\Parser\Ops;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
+/**
+ * Class ValueOp
+ * @package ArekX\RestFn\Parser\Ops
+ *
+ * Represents one value operation
+ *
+ */
 class ValueOp implements Operation
 {
-    public function validate($rules, $value, Evaluator $evaluator)
+    /**
+     * @inheritDoc
+     */
+    public static function name(): string
     {
+        return 'value';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validate(Evaluator $evaluator, $value)
+    {
+        if (count($value) !== 2) {
+            return ['min_parameters' => 1];
+        }
+
         return null;
     }
 
-    public function evaluate($rules, $value, Evaluator $evaluator)
+    /**
+     * @inheritDoc
+     */
+    public function evaluate(Evaluator $evaluator, $value)
     {
-        return $rules[1];
+        return $value[1];
     }
 }

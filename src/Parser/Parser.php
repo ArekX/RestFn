@@ -21,8 +21,9 @@ namespace ArekX\RestFn\Parser;
 use ArekX\RestFn\DI\Contracts\Configurable;
 use ArekX\RestFn\DI\Contracts\Injectable;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
+use ArekX\RestFn\Parser\Contracts\Operation;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
-use ArekX\RestFn\Parser\Exceptions\InvalidRuleFormat;
+use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
 
 /**
  * Class Parser
@@ -40,16 +41,6 @@ class Parser implements Injectable, Configurable, Evaluator
     public $ops = [];
 
     /**
-     * Configures parser with data.
-     *
-     * @param array $config
-     */
-    public function configure(array $config)
-    {
-        $this->ops = $config['ops'] ?? [];
-    }
-
-    /**
      * Represents current context.
      *
      * Contexts is an arbitrary data which is is stored inside a Parser
@@ -61,15 +52,20 @@ class Parser implements Injectable, Configurable, Evaluator
     protected $context = [];
 
     /**
-     * Sets current context.
+     * Configures parser with data.
      *
-     * Expected context for this parser is in array format.
-     *
-     * @param array $context
+     * @param array $config
      */
-    public function setContext($context)
+    public function configure(array $config)
     {
-        $this->context = $context;
+        /** @var Operation[] $ops */
+        $ops = $config['ops'];
+
+        $this->ops = [];
+
+        foreach ($ops as $op) {
+            $this->ops[$op::name()] = $op;
+        }
     }
 
     /**
@@ -84,26 +80,76 @@ class Parser implements Injectable, Configurable, Evaluator
         return $this->context;
     }
 
-    public function validate($rules, $value): ?array
+    /**
+     * Sets current context.
+     *
+     * Expected context for this parser is in array format.
+     *
+     * @param array $context
+     */
+    public function setContext($context)
     {
-        return null;
+        $this->context = $context;
     }
 
-    public function evaluate($rules, $value)
+    /**
+     * Performs value validation.
+     *
+     * If a value is valid for evaluating null is returned,
+     * otherwise errors are returned in nested format.
+     *
+     * @param mixed $value
+     * @return array|null
+     * @throws InvalidOperation
+     * @throws InvalidValueFormatException
+     */
+    public function validate($value): ?array
     {
-        if (!is_array($rules)) {
-            throw new InvalidRuleFormat();
+        if (empty($value)) {
+            return null;
         }
 
-        $ruleName = $rules[0] ?? '';
+        return $this->getOperation($value)->validate($this, $value);
+    }
+
+    /**
+     * Returns operation based on a value
+     *
+     * @param $value
+     * @return mixed
+     * @throws InvalidOperation
+     * @throws InvalidValueFormatException
+     */
+    protected function getOperation($value)
+    {
+        if (!is_array($value)) {
+            throw new InvalidValueFormatException();
+        }
+
+        $ruleName = $value[0] ?? '';
 
         if (empty($this->ops[$ruleName])) {
             throw new InvalidOperation($ruleName);
         }
 
         $operationClass = $this->ops[$ruleName];
-        $operation = new $operationClass();
+        return new $operationClass();
+    }
 
-        return $operation->evaluate($rules, $value, $this);
+    /**
+     * Evaluates a value and returns a result.
+     *
+     * @param mixed $value
+     * @return array|mixed
+     * @throws InvalidOperation
+     * @throws InvalidValueFormatException
+     */
+    public function evaluate($value)
+    {
+        if (empty($value)) {
+            return [];
+        }
+
+        return $this->getOperation($value)->evaluate($this, $value);
     }
 }

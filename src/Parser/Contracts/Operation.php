@@ -30,21 +30,26 @@ interface Operation
      *
      * Validate a rule against a value and return errors if any.
      *
-     * @param mixed $rules Rules to be validated.
      * @param mixed $value Value to be validated.
      * @param Evaluator $evaluator Evaluator which created the operation.
      *
      * @return null|array Returns null if rules and value are valid, array of errors otherwise.
      */
-    public function validate($rules, $value, Evaluator $evaluator);
+    public function validate(Evaluator $evaluator, $value);
 
     /**
      * Evaluates rules against a value.
      *
-     * @param mixed $rules Rules to be evaluated.
      * @param mixed $value Value to be evaluated against.
      * @param Evaluator $evaluator Evaluator which created this rule.
      * @return mixed Evaluated result
      */
-    public function evaluate($rules, $value, Evaluator $evaluator);
+    public function evaluate(Evaluator $evaluator, $value);
+
+    /**
+     * Returns a name of the operation
+     *
+     * @return string
+     */
+    public static function name(): string;
 }

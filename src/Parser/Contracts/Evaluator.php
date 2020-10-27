@@ -46,18 +46,16 @@ interface Evaluator
     /**
      * Validates rules sent rules against a value.
      *
-     * @param mixed $rules Rules to be validated.
      * @param mixed $value Value to be validated with rules.
      * @return null|array Returns list of errors if validation fails, or null if validation is successful.
      */
-    public function validate($rules, $value): ?array;
+    public function validate($value): ?array;
 
     /**
-     * Evaluates list of rules over a value.
+     * Evaluates a value.
      *
-     * @param mixed $rules Rules to be evaluated.
      * @param mixed $value Value to be evaluated.
-     * @return mixed Returns value from evaluated rules.
+     * @return mixed Returns a result from evaluated value.
      */
-    public function evaluate($rules, $value);
+    public function evaluate($value);
 }
