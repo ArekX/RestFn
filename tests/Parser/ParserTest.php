@@ -139,7 +139,7 @@ class ParserTest extends TestCase
             DummyFailOperation::name() => DummyFailOperation::class
         ];
 
-        $this->assertEquals(['test', ['failed' => true]], $parser->validate(['test']));
+        $this->assertEquals([DummyFailOperation::name(), ['failed' => true]], $parser->validate([DummyFailOperation::name()]));
     }
 
 
@@ -172,7 +172,10 @@ class ParserTest extends TestCase
             DummyFailOperation::name() => DummyFailOperation::class
         ];
 
-        $this->assertEquals(['nested', ['test', ['failed' => true]]], $parser->validate(['nested', ['test']]));
+        $this->assertEquals(
+            [DummyNestedOperation::name(), [DummyFailOperation::name(), ['failed' => true]]],
+            $parser->validate([DummyNestedOperation::name(), [DummyFailOperation::name()]])
+        );
     }
 
     public function testNestedValidationSuccess()

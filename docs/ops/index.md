@@ -2,3 +2,11 @@
 
 Operations are used during the requests to handle specific actions. You can pass multiple
 operations in one request.
+
+You can find all the supported operations below:
+
+
+| Operation  | Defintion  | Description  |
+|------------|------------|--------------|
+| [Value](value.md)  | `["value", <literal: any>]`  |  Returns a literal directly as a result.  |
+| [Take](take.md)  | `["take", <number: int>, <expression: array>]`  |  Takes a number of items from an resulting expression array and returns them.  |

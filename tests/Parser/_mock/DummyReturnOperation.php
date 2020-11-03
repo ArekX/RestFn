@@ -21,20 +21,20 @@ namespace tests\Parser\_mock;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
-class DummyFailOperation implements Operation
+class DummyReturnOperation implements Operation
 {
     public function validate(Evaluator $evaluator, $value)
-    {
-        return ['failed' => true];
-    }
-
-    public function evaluate(Evaluator $evaluator, $value)
     {
         return null;
     }
 
+    public function evaluate(Evaluator $evaluator, $value)
+    {
+        return $value[1];
+    }
+
     public static function name(): string
     {
-        return 'fail';
+        return 'return';
     }
 }

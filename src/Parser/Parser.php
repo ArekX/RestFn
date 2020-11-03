@@ -109,7 +109,13 @@ class Parser implements Injectable, Configurable, Evaluator
             return null;
         }
 
-        return $this->getOperation($value)->validate($this, $value);
+        $result = $this->getOperation($value)->validate($this, $value);
+
+        if ($result !== null) {
+            return [$this->getRuleName($value), $result];
+        }
+
+        return null;
     }
 
     /**
@@ -126,7 +132,7 @@ class Parser implements Injectable, Configurable, Evaluator
             throw new InvalidValueFormatException();
         }
 
-        $ruleName = $value[0] ?? '';
+        $ruleName = $this->getRuleName($value);
 
         if (empty($this->ops[$ruleName])) {
             throw new InvalidOperation($ruleName);
@@ -151,5 +157,10 @@ class Parser implements Injectable, Configurable, Evaluator
         }
 
         return $this->getOperation($value)->evaluate($this, $value);
+    }
+
+    protected function getRuleName($value): string
+    {
+        return $value[0] ?? '';
     }
 }

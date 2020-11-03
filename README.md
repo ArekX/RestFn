@@ -26,9 +26,9 @@ Testing is done using `PHPUnit`
 * To run all tests run `composer test`
 * To generate test coverage run `composer coverage`
 
-## API Reference
+## Project status
 
-Work in progress.
+You can track current project status at: https://trello.com/b/iksUgezA/restfn-framework
 
 ## License
 

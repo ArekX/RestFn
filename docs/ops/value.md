@@ -4,7 +4,10 @@ This value op represents one single literal value which can be used in other req
 
 Value does not do any further evaluation of its parameters and just returns the value passed.
 
-Definition:`["value", <any value>]`
+Definition:`["value", <literal: any>]`
+
+* __&lt;literal: any&gt;__ - represents a literal value which will be returned. 
+  This value can be any valid value supported in JSON.
 
 ## Usage
 
@@ -34,5 +37,5 @@ Request:
 
 Response:
 ```json
-2
+[1]
 ```
