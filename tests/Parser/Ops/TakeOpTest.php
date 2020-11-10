@@ -18,13 +18,11 @@
 namespace tests\Parser\Ops;
 
 use ArekX\RestFn\Parser\Ops\TakeOp;
-use ArekX\RestFn\Parser\Parser;
 use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyOperation;
 use tests\Parser\_mock\DummyReturnOperation;
-use tests\TestCase;
 
-class TakeOpTest extends TestCase
+class TakeOpTest extends OpTestCase
 {
     public function testParameterValidation()
     {
@@ -33,7 +31,16 @@ class TakeOpTest extends TestCase
         $this->assertEquals(['min_parameters' => 2], $takeOp->validate($this->createParser(), []));
         $this->assertEquals(['min_parameters' => 2], $takeOp->validate($this->createParser(), [TakeOp::name()]));
         $this->assertEquals(['min_parameters' => 2], $takeOp->validate($this->createParser(), [TakeOp::name(), 1]));
-        $this->assertEquals(null, $takeOp->validate($this->createParser(), [TakeOp::name(), 1, [ DummyOperation::name()]]));
+        $this->assertEquals(null, $takeOp->validate($this->createParser(), [TakeOp::name(), 1, [DummyOperation::name()]]));
+    }
+
+    protected function createParser()
+    {
+        return $this->getParser([
+            DummyOperation::class,
+            DummyFailOperation::class,
+            DummyReturnOperation::class
+        ]);
     }
 
     public function testNonNumericAmount()
@@ -61,14 +68,13 @@ class TakeOpTest extends TestCase
         );
     }
 
-
     public function testTake()
     {
         $takeOp = new TakeOp();
 
         $this->assertEquals([1, 22], $takeOp->evaluate(
             $this->createParser(),
-            [TakeOp::name(), 2, [DummyReturnOperation::name(), [1,22,3,456]]])
+            [TakeOp::name(), 2, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
         );
     }
 
@@ -78,7 +84,7 @@ class TakeOpTest extends TestCase
 
         $this->assertEquals([], $takeOp->evaluate(
             $this->createParser(),
-            [TakeOp::name(), 0, [DummyReturnOperation::name(), [1,22,3,456]]])
+            [TakeOp::name(), 0, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
         );
     }
 
@@ -88,7 +94,7 @@ class TakeOpTest extends TestCase
 
         $this->assertEquals([3, 456], $takeOp->evaluate(
             $this->createParser(),
-            [TakeOp::name(), -2, [DummyReturnOperation::name(), [1,22,3,456]]])
+            [TakeOp::name(), -2, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
         );
     }
 
@@ -98,7 +104,7 @@ class TakeOpTest extends TestCase
 
         $this->assertEquals([1, 2, 3], $takeOp->evaluate(
             $this->createParser(),
-            [TakeOp::name(), 50, [DummyReturnOperation::name(), [1,2,3]]])
+            [TakeOp::name(), 50, [DummyReturnOperation::name(), [1, 2, 3]]])
         );
     }
 
@@ -112,17 +118,5 @@ class TakeOpTest extends TestCase
             $this->createParser(),
             [TakeOp::name(), 2, [DummyReturnOperation::name(), null]]
         );
-    }
-
-    protected function createParser()
-    {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyOperation::name() => DummyOperation::class,
-            DummyFailOperation::name() => DummyFailOperation::class,
-            DummyReturnOperation::name() => DummyReturnOperation::class
-        ];
-
-        return $parser;
     }
 }

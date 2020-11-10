@@ -18,28 +18,26 @@
 namespace tests\Parser\Ops;
 
 use ArekX\RestFn\Parser\Ops\ValueOp;
-use ArekX\RestFn\Parser\Parser;
-use tests\TestCase;
 
-class ValueOpTest extends TestCase
+class ValueOpTest extends OpTestCase
 {
     public function testValidateEmptyValue()
     {
         $valueOp = new ValueOp();
-        $this->assertEquals(['min_parameters' => 1], $valueOp->validate(new Parser(), []));
-        $this->assertEquals(['min_parameters' => 1], $valueOp->validate(new Parser(), [ValueOp::name()]));
+        $this->assertEquals(['min_parameters' => 1], $valueOp->validate($this->getParser(), []));
+        $this->assertEquals(['min_parameters' => 1], $valueOp->validate($this->getParser(), [ValueOp::name()]));
     }
 
     public function testValidatePassing()
     {
         $valueOp = new ValueOp();
-        $this->assertEquals(null, $valueOp->validate(new Parser(), [ValueOp::name(), 1]));
+        $this->assertEquals(null, $valueOp->validate($this->getParser(), [ValueOp::name(), 1]));
     }
 
     public function testAlwaysReturnsSetValue()
     {
         $rule = [ValueOp::name(), rand(1, 2000)];
         $valueOp = new ValueOp();
-        $this->assertEquals($rule[1], $valueOp->evaluate(new Parser(), $rule));
+        $this->assertEquals($rule[1], $valueOp->evaluate($this->getParser(), $rule));
     }
 }

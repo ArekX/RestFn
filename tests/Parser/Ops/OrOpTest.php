@@ -25,21 +25,20 @@ use tests\Parser\_mock\DummyOperation;
 use tests\Parser\_mock\DummyReturnOperation;
 use tests\TestCase;
 
-class OrOpTest extends TestCase
+class OrOpTest extends OpTestCase
 {
     public function testValidateEmptyValue()
     {
         $orOp = new OrOp();
-        $this->assertEquals(null, $orOp->validate(new Parser(), [OrOp::name()]));
+        $this->assertEquals(null, $orOp->validate($this->getParser(), [OrOp::name()]));
     }
 
     public function testValidateSubItemsInAnd()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyFailOperation::class
+        ]);
         $this->assertEquals([
             'op_errors' => [[DummyFailOperation::name(), ['failed' => true]]]
         ], $orOp->validate($parser, [
@@ -51,11 +50,10 @@ class OrOpTest extends TestCase
     public function testValidateInBetweenAnd()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class,
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyFailOperation::class,
+            DummyOperation::class
+        ]);
         $this->assertEquals([
             'op_errors' => [
                 [DummyFailOperation::name(), ['failed' => true]],
@@ -73,11 +71,10 @@ class OrOpTest extends TestCase
     public function testAllSucceed()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class,
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyFailOperation::class,
+            DummyOperation::class
+        ]);
         $this->assertEquals(null, $orOp->validate($parser, [
             OrOp::name(),
             [DummyOperation::name()],
@@ -90,17 +87,16 @@ class OrOpTest extends TestCase
     public function testEvaluateEmpty()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
+        $parser = $this->getParser();
         $this->assertEquals(false, $orOp->evaluate($parser, [OrOp::name()]));
     }
 
     public function testEvaluateTrue()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyReturnOperation::name() => DummyReturnOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyReturnOperation::class
+        ]);
 
         $this->assertEquals(true, $orOp->evaluate($parser, [OrOp::name(), [DummyReturnOperation::name(), true]]));
     }
@@ -108,11 +104,10 @@ class OrOpTest extends TestCase
     public function testSucceedFast()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyReturnOperation::name() => DummyReturnOperation::class,
-            DummyCalledOperation::name() => DummyCalledOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyReturnOperation::class,
+            DummyCalledOperation::class
+        ]);
 
         DummyCalledOperation::$evaluated = false;
         $this->assertEquals(true, $orOp->evaluate($parser, [OrOp::name(),
@@ -127,11 +122,10 @@ class OrOpTest extends TestCase
     public function testEvaluateAll()
     {
         $orOp = new OrOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyReturnOperation::name() => DummyReturnOperation::class,
-            DummyCalledOperation::name() => DummyCalledOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyReturnOperation::class,
+            DummyCalledOperation::class
+        ]);
 
         DummyCalledOperation::$evaluated = false;
         $this->assertEquals(false, $orOp->evaluate($parser, [OrOp::name(),

@@ -25,21 +25,21 @@ use tests\Parser\_mock\DummyOperation;
 use tests\Parser\_mock\DummyReturnOperation;
 use tests\TestCase;
 
-class AndOpTest extends TestCase
+class AndOpTest extends OpTestCase
 {
     public function testValidateEmptyValue()
     {
         $andOp = new AndOp();
-        $this->assertEquals(null, $andOp->validate(new Parser(), [AndOp::name()]));
+        $this->assertEquals(null, $andOp->validate($this->getParser(), [AndOp::name()]));
     }
 
     public function testValidateSubItemsInAnd()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyFailOperation::class
+        ]);
+
         $this->assertEquals([
             'op_errors' => [[DummyFailOperation::name(), ['failed' => true]]]
         ], $andOp->validate($parser, [
@@ -51,11 +51,11 @@ class AndOpTest extends TestCase
     public function testValidateInBetweenAnd()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class,
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyFailOperation::class,
+            DummyOperation::class
+        ]);
+
         $this->assertEquals([
             'op_errors' => [
                 [DummyFailOperation::name(), ['failed' => true]],
@@ -73,11 +73,11 @@ class AndOpTest extends TestCase
     public function testAllSucceed()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class,
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyFailOperation::class,
+            DummyOperation::class
+        ]);
+
         $this->assertEquals(null, $andOp->validate($parser, [
             AndOp::name(),
             [DummyOperation::name()],
@@ -90,17 +90,14 @@ class AndOpTest extends TestCase
     public function testEvaluateEmpty()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
+        $parser = $this->getParser();
         $this->assertEquals(false, $andOp->evaluate($parser, [AndOp::name()]));
     }
 
     public function testEvaluateTrue()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyReturnOperation::name() => DummyReturnOperation::class
-        ];
+        $parser = $this->getParser([DummyReturnOperation::class]);
 
         $this->assertEquals(true, $andOp->evaluate($parser, [AndOp::name(), [DummyReturnOperation::name(), true]]));
     }
@@ -108,11 +105,10 @@ class AndOpTest extends TestCase
     public function testFailFast()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyReturnOperation::name() => DummyReturnOperation::class,
-            DummyCalledOperation::name() => DummyCalledOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyReturnOperation::class,
+            DummyCalledOperation::class
+        ]);
 
         DummyCalledOperation::$evaluated = false;
         $this->assertEquals(false, $andOp->evaluate($parser, [AndOp::name(),
@@ -127,11 +123,10 @@ class AndOpTest extends TestCase
     public function testEvaluateAll()
     {
         $andOp = new AndOp();
-        $parser = new Parser();
-        $parser->ops = [
-            DummyReturnOperation::name() => DummyReturnOperation::class,
-            DummyCalledOperation::name() => DummyCalledOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyReturnOperation::class,
+            DummyCalledOperation::class
+        ]);
 
         DummyCalledOperation::$evaluated = false;
         $this->assertEquals(true, $andOp->evaluate($parser, [AndOp::name(),

@@ -10,8 +10,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "ArekX\\RestFn\\": "src/",
-      "App\\": "app/"
+      "ArekX\\RestFn\\": "src/"
     }
   },
   "minimum-stability": "stable",
