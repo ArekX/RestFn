@@ -6,12 +6,12 @@ operations in one request.
 You can find all the supported operations below:
 
 
-|      Operation        |                                                Definition                                                 |                                  Description                                   |
-|-----------------------|-----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [Value](value.md)     | `["value", <literal: any>]`                                                                               |  Returns a literal directly as a result.                                       |
-| [Take](take.md)       | `["take", <number: int>, <result: expression(array)>]`                                                    |  Takes a number of items from an resulting expression array and returns them.  |
-| [And](and.md)         | `["and", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]`                                |  Runs one AND operation.                                                       |
-| [Or](or.md)           | `["or", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]`                                 |  Runs one OR operation.                                                        |
-| [Not](not.md)         | `["not", <check: expression(boolean)>]`                                                                   |  Runs one NOT operation.                                                       |
-| [Get](get.md)         | `["get", <key: string, expression(string)>, <result: expression(array)> [, <default: expression(any)>]]`  |  Runs GET operation and return data from specified `key`.                      |
-| [Compare](comper.md)  | `["compare",  <valueA: expression(any)>, <operation: string>, <valueB: expression(any)>]`                 |  Compares results of `valueA` and `valueB` by using `operation`                |
+|     Operation         |     Definition |
+|-----------------------|----------------|
+| [Value](value.md)     | `["value", <literal: any>]` <br><br>  Returns a `literal` value directly as a result. |
+| [Take](take.md)       | `["take", <number: int>, <result: expression(array)>]` <br><br> Takes a number of items from an resulting expression array and returns them. |
+| [And](and.md)         | `["and", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]` <br><br> Runs AND operation returing true if all `check` values are true. |
+| [Or](or.md)           | `["or", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]` <br><br> Runs OR operation returning first true value from `check`. |
+| [Not](not.md)         | `["not", <check: expression(boolean)>]` <br><br> Runs NOT operation on result of `check`. |
+| [Get](get.md)         | `["get", <key: string, expression(string)>, <result: expression(array)> [, <default: expression(any)>]]` <br><br> Gets a value specified by `key` from a `result`. |
+| [Compare](compare.md) | `["compare",  <valueA: expression(any)>, <operation: string>, <valueB: expression(any)>]` <br><br>  Compares results of `valueA` and `valueB` by using `operation` |
