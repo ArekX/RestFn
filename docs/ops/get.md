@@ -4,7 +4,7 @@ This op represents a retrieval operation
 
 This operation returns one specific value, referenced by a key from the resulting expression or a default if specified.
 
-Definition:`["get",  <key: string | expression(string)>, <result: expression(array)> [, <default: expression(any)>]]`
+Definition:`["get",  <key: string, expression(string)>, <result: expression(array)> [, <default: expression(any)>]]`
 
 * __&lt;key: string | expression(string)&gt;__ - Key which will be used to search the value by. This key supports full
 walking through resulting array by using a dot syntax.
