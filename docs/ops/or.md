@@ -5,9 +5,9 @@ This op represents one OR operation.
 This operation returns true if one of the items in it is truthy. If one of the items is trutyh then this operation will
 stop further evaluations.
 
-Definition:`["or", <expression1: boolean>, ...<expressionN: boolean>]`
+Definition: `["or", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]`
 
-* __&lt;expressionN: boolean&gt;__ - represents an expression which returns truthy or falsy value.
+* __&lt;checkN: expression(boolean)&gt;__ - represents an expression which returns truthy or falsy value.
 
 ## Usage
 

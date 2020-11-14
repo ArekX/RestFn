@@ -5,9 +5,9 @@ This op represents one AND operation.
 This operation returns true if all items in it are truthy. If one of the items is falsy then this operation will fail 
 fast and not evaluate other operations.
 
-Definition:`["and", <expression1: boolean>, ...<expressionN: boolean>]`
+Definition: `["and", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]`
 
-* __&lt;expressionN: boolean&gt;__ - represents an expression which returns truthy or falsy value.
+* __&lt;checkN: expression(boolean)&gt;__ - represents an expression which returns truthy or falsy value.
 
 ## Usage
 

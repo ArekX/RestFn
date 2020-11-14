@@ -4,9 +4,9 @@ This op represents one NOT operation.
 
 This operation returns true if the result is false or returns false if the result is true.
 
-Definition:`["not", <expression: boolean>]`
+Definition: `["not", <check: expression(boolean)>]`
 
-* __&lt;expression: boolean&gt;__ - represents an expression which returns truthy or falsy value.
+* __&lt;check: expression(boolean)&gt;__ - represents an expression which returns truthy or falsy value.
 
 ## Usage
 
