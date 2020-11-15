@@ -64,7 +64,7 @@ class GetOpTest extends OpTestCase
         ]));
 
         $this->assertEquals([
-            'invalid_getter_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_getter_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [
             GetOp::name(),
             [DummyFailOperation::name()],
@@ -82,7 +82,7 @@ class GetOpTest extends OpTestCase
         ]);
 
         $this->assertEquals([
-            'invalid_value_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_value_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [
             GetOp::name(),
             'value',
@@ -90,7 +90,7 @@ class GetOpTest extends OpTestCase
         ]));
 
         $this->assertEquals([
-            'invalid_value_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_value_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [
             GetOp::name(),
             [DummyReturnOperation::name(), 'value'],
@@ -108,7 +108,7 @@ class GetOpTest extends OpTestCase
         ]);
 
         $this->assertEquals([
-            'invalid_default_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_default_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [
             GetOp::name(),
             'value',
@@ -117,7 +117,7 @@ class GetOpTest extends OpTestCase
         ]));
 
         $this->assertEquals([
-            'invalid_default_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_default_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [
             GetOp::name(),
             [DummyReturnOperation::name(), 'value'],

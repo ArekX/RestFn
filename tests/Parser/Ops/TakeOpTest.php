@@ -28,9 +28,9 @@ class TakeOpTest extends OpTestCase
     {
         $takeOp = new TakeOp();
 
-        $this->assertEquals(['min_parameters' => 2], $takeOp->validate($this->createParser(), []));
-        $this->assertEquals(['min_parameters' => 2], $takeOp->validate($this->createParser(), [TakeOp::name()]));
-        $this->assertEquals(['min_parameters' => 2], $takeOp->validate($this->createParser(), [TakeOp::name(), 1]));
+        $this->assertEquals(['min_parameters' => 3, 'max_parameters' => 3], $takeOp->validate($this->createParser(), []));
+        $this->assertEquals(['min_parameters' => 3, 'max_parameters' => 3], $takeOp->validate($this->createParser(), [TakeOp::name()]));
+        $this->assertEquals(['min_parameters' => 3, 'max_parameters' => 3], $takeOp->validate($this->createParser(), [TakeOp::name(), 1]));
         $this->assertEquals(null, $takeOp->validate($this->createParser(), [TakeOp::name(), 1, [DummyOperation::name()]]));
     }
 
@@ -69,7 +69,7 @@ class TakeOpTest extends OpTestCase
         );
 
         $this->assertEquals([
-            'invalid_amount_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_amount_expression' => DummyFailOperation::errorValue()
         ], $takeOp->validate(
             $this->createParser(),
             [TakeOp::name(), [DummyFailOperation::name()], [DummyOperation::name()]])
@@ -80,7 +80,7 @@ class TakeOpTest extends OpTestCase
     {
         $takeOp = new TakeOp();
 
-        $this->assertEquals(['value_error' => [DummyFailOperation::name(), ['failed' => true]]], $takeOp->validate(
+        $this->assertEquals(['value_error' => DummyFailOperation::errorValue()], $takeOp->validate(
             $this->createParser(),
             [TakeOp::name(), 1, [DummyFailOperation::name()]])
         );

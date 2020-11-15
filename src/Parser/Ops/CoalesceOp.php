@@ -22,19 +22,19 @@ use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
 /**
- * Class OrOp
+ * Class CoalesceOp
  * @package ArekX\RestFn\Parser\Ops
  *
- * Represents OR operation
+ * Represents Coalesce operation
  */
-class OrOp implements Operation
+class CoalesceOp implements Operation
 {
     /**
      * @inheritDoc
      */
     public static function name(): string
     {
-        return 'or';
+        return 'coalesce';
     }
 
     /**
@@ -64,11 +64,12 @@ class OrOp implements Operation
         $max = count($value);
 
         for ($i = 1; $i < $max; $i++) {
-            if ($evaluator->evaluate($value[$i])) {
-                return true;
+            $result = $evaluator->evaluate($value[$i]);
+            if ($result !== null) {
+                return $result;
             }
         }
 
-        return false;
+        return null;
     }
 }

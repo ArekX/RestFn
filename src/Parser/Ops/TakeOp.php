@@ -45,7 +45,10 @@ class TakeOp implements Operation
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 3) {
-            return ['min_parameters' => 2];
+            return [
+                'min_parameters' => 3,
+                'max_parameters' => 3,
+            ];
         }
 
         if (!is_numeric($value[1]) && !is_array($value[1])) {

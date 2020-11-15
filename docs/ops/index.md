@@ -17,3 +17,5 @@ You can find all the supported operations below:
 | [Compare](compare.md) | `["compare",  <valueA: expression(any)>, <operation: string, expression(string)>, <valueB: expression(any)>]` <br><br>  Compares results of `valueA` and `valueB` by using `operation` |
 | [If Else](ifelse.md) | `["ifElse", <check: expression(boolean)>, <trueResult: expression(any)>, <falseResult: expression(any)>]` <br><br>  Evaluates `check` and returns `trueResult` if true or `falseResult` if false. |
 | [Map](map.md) | `["map", <key: string, expression(string)>, <value: string, expression(string)>, <result: expression(array)>]` <br><br>  Maps `result` to key-value list where key is specified by `key` and value is specified by `value` |
+| [Object](object.md) | `["object", <object: array[key -> expression(any)]>]` <br><br>  Evaluates all expressions in an object and returns the result with same populated keys. |
+| [Coalesce](coalesce.md) | `["coalesce", <result1: expression(any)>, ...<resultN: expression(any)>]` <br><br>  Evaluates results sequentially one by one and stops and returns on first non-null result. |

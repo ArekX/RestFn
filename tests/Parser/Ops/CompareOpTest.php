@@ -56,7 +56,7 @@ class CompareOpTest extends OpTestCase
         $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, [DummyOperation::name()], $dummyOp]));
 
         $this->assertEquals([
-            'invalid_operation_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_operation_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [CompareOp::name(), $dummyOp, [DummyFailOperation::name()], $dummyOp]));
 
         $this->assertEquals([
@@ -82,12 +82,12 @@ class CompareOpTest extends OpTestCase
 
 
         $this->assertEquals([
-            'invalid_left_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_left_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [CompareOp::name(), [DummyFailOperation::name()], '=', [DummyOperation::name()]]));
 
 
         $this->assertEquals([
-            'invalid_right_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_right_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [CompareOp::name(), [DummyOperation::name()], '=', [DummyFailOperation::name()]]));
     }
 

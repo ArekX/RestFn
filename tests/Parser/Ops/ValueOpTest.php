@@ -24,8 +24,8 @@ class ValueOpTest extends OpTestCase
     public function testValidateEmptyValue()
     {
         $valueOp = new ValueOp();
-        $this->assertEquals(['min_parameters' => 1], $valueOp->validate($this->getParser(), []));
-        $this->assertEquals(['min_parameters' => 1], $valueOp->validate($this->getParser(), [ValueOp::name()]));
+        $this->assertEquals(['min_parameters' => 2, 'max_parameters' => 2], $valueOp->validate($this->getParser(), []));
+        $this->assertEquals(['min_parameters' => 2, 'max_parameters' => 2], $valueOp->validate($this->getParser(), [ValueOp::name()]));
     }
 
     public function testValidatePassing()

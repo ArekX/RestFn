@@ -41,7 +41,7 @@ class AndOpTest extends OpTestCase
         ]);
 
         $this->assertEquals([
-            'op_errors' => [[DummyFailOperation::name(), ['failed' => true]]]
+            'op_errors' => [1 => DummyFailOperation::errorValue()]
         ], $andOp->validate($parser, [
             AndOp::name(),
             [DummyFailOperation::name()],
@@ -58,9 +58,8 @@ class AndOpTest extends OpTestCase
 
         $this->assertEquals([
             'op_errors' => [
-                [DummyFailOperation::name(), ['failed' => true]],
-                null,
-                [DummyFailOperation::name(), ['failed' => true]],
+                1 => DummyFailOperation::errorValue(),
+                3 => DummyFailOperation::errorValue(),
             ]
         ], $andOp->validate($parser, [
             AndOp::name(),

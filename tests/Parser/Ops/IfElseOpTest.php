@@ -58,16 +58,16 @@ class IfElseOpTest extends OpTestCase
         $parser = $this->getParser([DummyFailOperation::class, DummyOperation::class]);
 
         $this->assertEquals([
-            'if_expression_invalid' => [DummyFailOperation::name(), ['failed' => true]]
+            'if_expression_invalid' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [IfElseOp::name(), [DummyFailOperation::name()], [DummyOperation::name()], [DummyOperation::name()]]));
 
         $this->assertEquals([
-            'true_expression_invalid' => [DummyFailOperation::name(), ['failed' => true]]
+            'true_expression_invalid' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()], [DummyFailOperation::name()], [DummyOperation::name()]]));
 
 
         $this->assertEquals([
-            'false_expression_invalid' => [DummyFailOperation::name(), ['failed' => true]]
+            'false_expression_invalid' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()], [DummyOperation::name()], [DummyFailOperation::name()]]));
     }
 

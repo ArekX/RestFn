@@ -28,8 +28,8 @@ class NotOpTest extends OpTestCase
     {
         $op = new NotOp();
         $this->assertEquals([
-            'min_parameters' => 1,
-            'max_parameters' => 1
+            'min_parameters' => 2,
+            'max_parameters' => 2
         ], $op->validate($this->getParser(), [NotOp::name()]));
     }
 

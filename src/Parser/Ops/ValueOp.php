@@ -44,7 +44,10 @@ class ValueOp implements Operation
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 2) {
-            return ['min_parameters' => 1];
+            return [
+                'min_parameters' => 2,
+                'max_parameters' => 2,
+            ];
         }
 
         return null;

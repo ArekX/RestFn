@@ -62,7 +62,7 @@ class MapOpTest extends OpTestCase
         ], $op->validate($parser, [MapOp::name(), 23, [DummyOperation::name()], [DummyOperation::name()]]));
 
         $this->assertEquals([
-            'invalid_from_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_from_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [MapOp::name(), [DummyFailOperation::name()], [DummyOperation::name()], [DummyOperation::name()]]));
     }
 
@@ -77,7 +77,7 @@ class MapOpTest extends OpTestCase
         ], $op->validate($parser, [MapOp::name(), [DummyOperation::name()], 23, [DummyOperation::name()]]));
 
         $this->assertEquals([
-            'invalid_to_expression' => [DummyFailOperation::name(), ['failed' => true]]
+            'invalid_to_expression' => DummyFailOperation::errorValue()
         ], $op->validate($parser, [MapOp::name(), [DummyOperation::name()], [DummyFailOperation::name()], [DummyOperation::name()]]));
     }
 

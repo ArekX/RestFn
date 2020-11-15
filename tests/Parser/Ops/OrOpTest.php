@@ -40,7 +40,7 @@ class OrOpTest extends OpTestCase
             DummyFailOperation::class
         ]);
         $this->assertEquals([
-            'op_errors' => [[DummyFailOperation::name(), ['failed' => true]]]
+            'op_errors' => [1 => DummyFailOperation::errorValue()]
         ], $orOp->validate($parser, [
             OrOp::name(),
             [DummyFailOperation::name()],
@@ -56,9 +56,8 @@ class OrOpTest extends OpTestCase
         ]);
         $this->assertEquals([
             'op_errors' => [
-                [DummyFailOperation::name(), ['failed' => true]],
-                null,
-                [DummyFailOperation::name(), ['failed' => true]],
+                1 => DummyFailOperation::errorValue(),
+                3 => DummyFailOperation::errorValue(),
             ]
         ], $orOp->validate($parser, [
             OrOp::name(),

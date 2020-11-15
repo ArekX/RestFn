@@ -22,19 +22,19 @@ use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
 /**
- * Class OrOp
+ * Class ObjectOp
  * @package ArekX\RestFn\Parser\Ops
  *
- * Represents OR operation
+ * Represents Object operation
  */
-class OrOp implements Operation
+class ObjectOp implements Operation
 {
     /**
      * @inheritDoc
      */
     public static function name(): string
     {
-        return 'or';
+        return 'object';
     }
 
     /**
@@ -42,18 +42,23 @@ class OrOp implements Operation
      */
     public function validate(Evaluator $evaluator, $value)
     {
-        $max = count($value);
+        if (count($value) !== 2) {
+            return [
+                'min_parameters' => 2,
+                'max_parameters' => 2
+            ];
+        }
 
         $errors = [];
 
-        for ($i = 1; $i < $max; $i++) {
-            $result = $evaluator->validate($value[$i]);
+        foreach ($value[1] as $key => $expression) {
+            $result = $evaluator->validate($expression);
             if ($result) {
-                $errors[$i] = $result;
+                $errors[$key] = $result;
             }
         }
 
-        return !empty($errors) ? ['op_errors' => $errors] : null;
+        return !empty($errors) ? ['invalid_object_expression' => $errors] : null;
     }
 
     /**
@@ -61,14 +66,12 @@ class OrOp implements Operation
      */
     public function evaluate(Evaluator $evaluator, $value)
     {
-        $max = count($value);
+        $result = [];
 
-        for ($i = 1; $i < $max; $i++) {
-            if ($evaluator->evaluate($value[$i])) {
-                return true;
-            }
+        foreach ($value[1] as $key => $expression) {
+            $result[$key] = $evaluator->evaluate($expression);
         }
 
-        return false;
+        return $result;
     }
 }

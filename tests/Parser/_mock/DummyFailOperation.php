@@ -23,6 +23,16 @@ use ArekX\RestFn\Parser\Contracts\Operation;
 
 class DummyFailOperation implements Operation
 {
+    public static function errorValue()
+    {
+        return [DummyFailOperation::name(), ['failed' => true]];
+    }
+
+    public static function name(): string
+    {
+        return 'fail';
+    }
+
     public function validate(Evaluator $evaluator, $value)
     {
         return ['failed' => true];
@@ -31,10 +41,5 @@ class DummyFailOperation implements Operation
     public function evaluate(Evaluator $evaluator, $value)
     {
         return null;
-    }
-
-    public static function name(): string
-    {
-        return 'fail';
     }
 }

@@ -44,20 +44,16 @@ class AndOp implements Operation
     {
         $max = count($value);
 
-        $subResults = [];
-        $hasErrors = false;
+        $errors = [];
 
         for ($i = 1; $i < $max; $i++) {
             $result = $evaluator->validate($value[$i]);
-            if ($result !== null) {
-                $subResults[] = $result;
-                $hasErrors = true;
-            } else {
-                $subResults[] = null;
+            if ($result) {
+                $errors[$i] = $result;
             }
         }
 
-        return $hasErrors ? ['op_errors' => $subResults] : null;
+        return !empty($errors) ? ['op_errors' => $errors] : null;
     }
 
     /**
