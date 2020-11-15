@@ -15,3 +15,5 @@ You can find all the supported operations below:
 | [Not](not.md)         | `["not", <check: expression(boolean)>]` <br><br> Runs NOT operation on result of `check`. |
 | [Get](get.md)         | `["get", <key: string, expression(string)>, <result: expression(array)> [, <default: expression(any)>]]` <br><br> Gets a value specified by `key` from a `result`. |
 | [Compare](compare.md) | `["compare",  <valueA: expression(any)>, <operation: string>, <valueB: expression(any)>]` <br><br>  Compares results of `valueA` and `valueB` by using `operation` |
+| [If Else](ifelse.md) | `["ifElse", <check: expression(boolean)>, <trueResult: expression(any)>, <falseResult: expression(any)>]` <br><br>  Evaluates `check` and returns `trueResult` if true or `falseResult` if false. |
+| [Map](map.md) | `["map", <key: string, expression(string)>, <value: string, expression(string)>, <result: expression(array)>]` <br><br>  Maps `result` to key-value list where key is specified by `key` and value is specified by `value` |
