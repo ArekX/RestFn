@@ -17,7 +17,7 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
+use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
@@ -85,26 +85,13 @@ class GetOp implements Operation
             $getter = $evaluator->evaluate($getter);
         }
 
-        if (array_key_exists($getter, $result)) {
-            return $result[$getter];
+        $gotResult = Value::get($getter, $result, NAN);
+
+        if (is_float($gotResult) && is_nan($gotResult)) {
+            $default = $value[3] ?? null;
+            return is_array($default) ? $evaluator->evaluate($default) : null;
         }
 
-        $parts = explode('.', $getter);
-        $walker = $result;
-
-        foreach ($parts as $key) {
-            if (!is_array($walker) || !array_key_exists($key, $walker)) {
-                $default = $value[3] ?? null;
-                if (is_array($default)) {
-                    return $evaluator->evaluate($value[3]);
-                }
-
-                return null;
-            }
-
-            $walker = $walker[$key];
-        }
-
-        return $walker;
+        return $gotResult;
     }
 }

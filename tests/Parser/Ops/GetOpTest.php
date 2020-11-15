@@ -181,37 +181,6 @@ class GetOpTest extends OpTestCase
         ]);
     }
 
-    public function testNonExistentPath()
-    {
-        $this->assertEvaluatedResult(null, 'invalid.path', [
-            'path' => [
-                'to' => [
-                    'item' => 'value'
-                ]
-            ]
-        ]);
-    }
-
-    public function testPathThroughNonArray()
-    {
-        $this->assertEvaluatedResult(null, 'path.to.item.value', [
-            'path' => [
-                'to' => 'item.value'
-            ]
-        ]);
-    }
-
-    public function testPathThroughNonArrayForLastKey()
-    {
-        $this->assertEvaluatedResult(null, 'path.to.item.value', [
-            'path' => [
-                'to' => [
-                    'item' => 'value'
-                ]
-            ]
-        ]);
-    }
-
     public function testDefaultValue()
     {
         $this->assertEvaluatedResult('default', 'path.to.item.value', [
@@ -238,48 +207,5 @@ class GetOpTest extends OpTestCase
         ], [DummyCalledOperation::name(), 'default']);
 
         $this->assertFalse(DummyCalledOperation::$evaluated);
-    }
-
-    public function testNonExistingKey()
-    {
-        $this->assertEvaluatedResult('default', 'non.existing.path', [
-            'path' => [
-                'to' => 'value'
-            ]
-        ], [DummyReturnOperation::name(), 'default']);
-    }
-
-
-    public function testInvalidParams()
-    {
-        $this->assertEvaluatedResult(null, 'path..to', [
-            'path' => [
-                'to' => 'value'
-            ]
-        ]);
-
-        $this->assertEvaluatedResult(null, 'path. to', [
-            'path' => [
-                'to' => 'value'
-            ]
-        ]);
-
-        $this->assertEvaluatedResult(null, 'path.to.', [
-            'path' => [
-                'to' => 'value'
-            ]
-        ]);
-
-        $this->assertEvaluatedResult(null, '....', [
-            'path' => [
-                'to' => 'value'
-            ]
-        ]);
-
-        $this->assertEvaluatedResult(null, '-123', [
-            'path' => [
-                'to' => 'value'
-            ]
-        ]);
     }
 }
