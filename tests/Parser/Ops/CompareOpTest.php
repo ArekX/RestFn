@@ -50,12 +50,14 @@ class CompareOpTest extends OpTestCase
     public function testValidateOperation()
     {
         $op = new CompareOp();
-        $parser = $this->getParser([DummyOperation::class]);
+        $parser = $this->getParser([DummyOperation::class, DummyFailOperation::class]);
         $dummyOp = [DummyOperation::name()];
 
+        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, [DummyOperation::name()], $dummyOp]));
+
         $this->assertEquals([
-            'invalid_operation' => []
-        ], $op->validate($parser, [CompareOp::name(), $dummyOp, [], $dummyOp]));
+            'invalid_operation_expression' => [DummyFailOperation::name(), ['failed' => true]]
+        ], $op->validate($parser, [CompareOp::name(), $dummyOp, [DummyFailOperation::name()], $dummyOp]));
 
         $this->assertEquals([
             'invalid_operation' => 'a'

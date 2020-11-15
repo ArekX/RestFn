@@ -4,12 +4,12 @@ This op represents comparison operation between two expressions.
 
 This operation returns true if the results of expressions match the specified operation or false if not.
 
-Definition: `["compare",  <valueA: expression(any)>, <operation: string>, <valueB: expression(any)>]`
+Definition: `["compare",  <valueA: expression(any)>, <operation: string, expression(string)>, <valueB: expression(any)>]`
 
 * __&lt;valueA: expression(any)&gt;__ - This expression will be evaluated, and it's result will be compared to the result of `valueB`
 by using on of the operations specified by operation.
 
-* __&lt;operation: string&gt;__ - Operation to be used for comparison. Available operations: `=`, `!=`, `<`, `>`, `<=`, `>=`
+* __&lt;operation: string, expression(string)&gt;__ - Operation to be used for comparison. Available operations: `=`, `!=`, `<`, `>`, `<=`, `>=`
 
 * __&lt;valueB: expression(any)&gt;__ - This expression will be evaluated, and it's result will be compared to the result of `valueA`
 by using on of the operations specified by operation.

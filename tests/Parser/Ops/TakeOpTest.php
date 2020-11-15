@@ -58,6 +58,24 @@ class TakeOpTest extends OpTestCase
         );
     }
 
+
+    public function testValueExpressionValid()
+    {
+        $takeOp = new TakeOp();
+
+        $this->assertEquals(null, $takeOp->validate(
+            $this->createParser(),
+            [TakeOp::name(), [DummyOperation::name()], [DummyOperation::name()]])
+        );
+
+        $this->assertEquals([
+            'invalid_amount_expression' => [DummyFailOperation::name(), ['failed' => true]]
+        ], $takeOp->validate(
+            $this->createParser(),
+            [TakeOp::name(), [DummyFailOperation::name()], [DummyOperation::name()]])
+        );
+    }
+
     public function testValueValid()
     {
         $takeOp = new TakeOp();
@@ -75,6 +93,16 @@ class TakeOpTest extends OpTestCase
         $this->assertEquals([1, 22], $takeOp->evaluate(
             $this->createParser(),
             [TakeOp::name(), 2, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
+        );
+    }
+
+    public function testTakeExpression()
+    {
+        $takeOp = new TakeOp();
+
+        $this->assertEquals([1, 22], $takeOp->evaluate(
+            $this->createParser(),
+            [TakeOp::name(), [DummyReturnOperation::name(), 2], [DummyReturnOperation::name(), [1, 22, 3, 456]]])
         );
     }
 

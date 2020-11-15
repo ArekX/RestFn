@@ -63,22 +63,30 @@ class CompareOp implements Operation
 
         $operation = $value[2] ?? '';
 
-        switch ($operation) {
-            case '=':
-                break;
-            case '>':
-                break;
-            case '<':
-                break;
-            case '!=':
-                break;
-            case '>=':
-                break;
-            case '<=':
-                break;
-            default:
-                return ['invalid_operation' => $operation];
+        if (is_array($operation)) {
+            $operationResult = $evaluator->validate($operation);
+            if ($operationResult) {
+                return ['invalid_operation_expression' => $operationResult];
+            }
+        } else {
+            switch ($operation) {
+                case '=':
+                    break;
+                case '>':
+                    break;
+                case '<':
+                    break;
+                case '!=':
+                    break;
+                case '>=':
+                    break;
+                case '<=':
+                    break;
+                default:
+                    return ['invalid_operation' => $operation];
+            }
         }
+
 
         return null;
     }

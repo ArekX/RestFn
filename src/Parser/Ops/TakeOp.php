@@ -48,8 +48,15 @@ class TakeOp implements Operation
             return ['min_parameters' => 2];
         }
 
-        if (!is_numeric($value[1])) {
+        if (!is_numeric($value[1]) && !is_array($value[1])) {
             return ['invalid_amount' => $value[1]];
+        }
+
+        if (is_array($value[1])) {
+            $takeResult = $evaluator->validate($value[1]);
+            if ($takeResult) {
+                return ['invalid_amount_expression' => $takeResult];
+            }
         }
 
         $errors = $evaluator->validate($value[2]);
@@ -72,10 +79,16 @@ class TakeOp implements Operation
             throw new Exception('Result must be an array');
         }
 
-        if ($value[1] == 0) {
+        $amount = $value[1];
+
+        if (is_array($amount)) {
+            $amount = $evaluator->evaluate($amount);
+        }
+
+        if ($amount == 0) {
             return [];
         }
 
-        return $value[1] > 0 ? array_slice($result, 0, $value[1]) : array_slice($result, $value[1]);
+        return $amount > 0 ? array_slice($result, 0, $amount) : array_slice($result, $amount);
     }
 }

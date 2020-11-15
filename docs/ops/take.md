@@ -2,9 +2,9 @@
 
 This operation takes a number of items from a resulting evaluated array. 
 
-Definition: `["take", <number: int>, <result: expression(array)>]`
+Definition: `["take", <number: int, expression(int)>, <result: expression(array)>]`
 
-* __&lt;number: int&gt;__ - number of items to take from result array. If it's above 0 it returns number of items.
+* __&lt;number: int, expression(int)&gt;__ - number of items to take from result array. If it's above 0 it returns number of items.
   If it's below zero it will take the amount of items from the end.
 * __&lt;result: expression(array)&gt;__ - expression which will be evaluated which returns an array.
   If an array is not returned this operation will throw an exception.
