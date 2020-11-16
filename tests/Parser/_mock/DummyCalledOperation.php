@@ -42,4 +42,9 @@ class DummyCalledOperation implements Operation
         static::$evaluated = true;
         return $value[1];
     }
+
+    public static function op($return)
+    {
+        return [DummyCalledOperation::name(), $return];
+    }
 }

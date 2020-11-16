@@ -9,7 +9,8 @@ Definition: `["compare",  <valueA: expression(any)>, <operation: string, express
 * __&lt;valueA: expression(any)&gt;__ - This expression will be evaluated, and it's result will be compared to the result of `valueB`
 by using on of the operations specified by operation.
 
-* __&lt;operation: string, expression(string)&gt;__ - Operation to be used for comparison. Available operations: `=`, `!=`, `<`, `>`, `<=`, `>=`
+* __&lt;operation: string, expression(string)&gt;__ - Operation to be used for comparison. Available operations: `=`, `!=`, `<`, `>`, `<=`, `>=`.
+There are also `==` and `!==` operations for strict checking.
 
 * __&lt;valueB: expression(any)&gt;__ - This expression will be evaluated, and it's result will be compared to the result of `valueA`
 by using on of the operations specified by operation.

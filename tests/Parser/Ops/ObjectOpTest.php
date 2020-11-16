@@ -24,54 +24,38 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class ObjectOpTest extends OpTestCase
 {
+    public $opClass = ObjectOp::class;
+
     public function testValidateParameters()
     {
-        $op = new ObjectOp();
-        $parser = $this->getParser([DummyOperation::class]);
-        $error = [
+        $this->assertValidated([
             'min_parameters' => 2,
             'max_parameters' => 2
-        ];
-
-        $this->assertEquals($error, $op->validate($parser, [ObjectOp::name()]));
-        $this->assertEquals(null, $op->validate($parser, [ObjectOp::name(), []]));
+        ]);
+        $this->assertValidated(null, []);
+        $this->assertValidated(null, ['key' => DummyOperation::op()]);
     }
 
     public function testValidateObject()
     {
-        $op = new ObjectOp();
-        $parser = $this->getParser([DummyOperation::class, DummyFailOperation::class]);
         $error = [
-            'invalid_object_expression' => ['name' => DummyFailOperation::errorValue()]
+            'invalid_object_expression' => ['name' => DummyFailOperation::error()]
         ];
 
-        $this->assertEquals($error, $op->validate($parser, [ObjectOp::name(), [
-            'name' => [DummyFailOperation::name()]
-        ]]));
-
-        $this->assertEquals(null, $op->validate($parser, [ObjectOp::name(), [
-            'name' => [DummyOperation::name()]
-        ]]));
+        $this->assertValidated($error, ['name' => DummyFailOperation::op()]);
+        $this->assertValidated(null, ['name' => DummyOperation::op()]);
     }
 
     public function testEvaluate()
     {
-        $this->assertResult([
+        $this->assertEvaluated([
             'name' => 'test',
             'age' => 22
         ], [
-            'name' => [DummyReturnOperation::name(), 'test'],
-            'age' => [DummyReturnOperation::name(), 22]
+            'name' => DummyReturnOperation::op('test'),
+            'age' => DummyReturnOperation::op(22)
         ]);
 
-        $this->assertResult([], []);
-    }
-
-    protected function assertResult($expectedResult, $object)
-    {
-        $op = new ObjectOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $this->assertEquals($expectedResult, $op->evaluate($parser, [ObjectOp::name(), $object]));
+        $this->assertEvaluated([], []);
     }
 }

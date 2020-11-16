@@ -18,121 +18,80 @@
 namespace tests\Parser\Ops;
 
 use ArekX\RestFn\Parser\Ops\AndOp;
-use ArekX\RestFn\Parser\Parser;
 use tests\Parser\_mock\DummyCalledOperation;
 use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyOperation;
 use tests\Parser\_mock\DummyReturnOperation;
-use tests\TestCase;
 
 class AndOpTest extends OpTestCase
 {
+    public $opClass = AndOp::class;
+
     public function testValidateEmptyValue()
     {
-        $andOp = new AndOp();
-        $this->assertEquals(null, $andOp->validate($this->getParser(), [AndOp::name()]));
+        $this->assertValidated(null);
     }
 
     public function testValidateSubItemsInAnd()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser([
-            DummyFailOperation::class
-        ]);
-
-        $this->assertEquals([
-            'op_errors' => [1 => DummyFailOperation::errorValue()]
-        ], $andOp->validate($parser, [
-            AndOp::name(),
-            [DummyFailOperation::name()],
-        ]));
+        $this->assertValidated([
+            'op_errors' => [1 => DummyFailOperation::error()]
+        ], DummyFailOperation::op());
     }
 
     public function testValidateInBetweenAnd()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser([
-            DummyFailOperation::class,
-            DummyOperation::class
-        ]);
-
-        $this->assertEquals([
+        $this->assertValidated([
             'op_errors' => [
-                1 => DummyFailOperation::errorValue(),
-                3 => DummyFailOperation::errorValue(),
+                1 => DummyFailOperation::error(),
+                3 => DummyFailOperation::error(),
             ]
-        ], $andOp->validate($parser, [
-            AndOp::name(),
-            [DummyFailOperation::name()],
-            [DummyOperation::name()],
-            [DummyFailOperation::name()],
-        ]));
+        ],
+            DummyFailOperation::op(),
+            DummyOperation::op(),
+            DummyFailOperation::op()
+        );
     }
 
     public function testAllSucceed()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser([
-            DummyFailOperation::class,
-            DummyOperation::class
-        ]);
-
-        $this->assertEquals(null, $andOp->validate($parser, [
-            AndOp::name(),
-            [DummyOperation::name()],
-            [DummyOperation::name()],
-            [DummyOperation::name()],
-            [DummyOperation::name()],
-        ]));
+        $this->assertValidated(null,
+            DummyOperation::op(),
+            DummyOperation::op(),
+            DummyOperation::op(),
+            DummyOperation::op(),
+        );
     }
 
     public function testEvaluateEmpty()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser();
-        $this->assertEquals(false, $andOp->evaluate($parser, [AndOp::name()]));
+        $this->assertEvaluated(false);
     }
 
     public function testEvaluateTrue()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $this->assertEquals(true, $andOp->evaluate($parser, [AndOp::name(), [DummyReturnOperation::name(), true]]));
+        $this->assertEvaluated(true, DummyReturnOperation::op(true));
     }
 
     public function testFailFast()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser([
-            DummyReturnOperation::class,
-            DummyCalledOperation::class
-        ]);
+        $this->assertEvaluated(false,
+            DummyReturnOperation::op(true),
+            DummyReturnOperation::op(false),
+            DummyCalledOperation::op(true),
+        );
 
         DummyCalledOperation::$evaluated = false;
-        $this->assertEquals(false, $andOp->evaluate($parser, [AndOp::name(),
-            [DummyReturnOperation::name(), true],
-            [DummyReturnOperation::name(), false],
-            [DummyCalledOperation::name(), true],
-        ]));
-
         $this->assertFalse(DummyCalledOperation::$evaluated);
     }
 
     public function testEvaluateAll()
     {
-        $andOp = new AndOp();
-        $parser = $this->getParser([
-            DummyReturnOperation::class,
-            DummyCalledOperation::class
-        ]);
-
-        DummyCalledOperation::$evaluated = false;
-        $this->assertEquals(true, $andOp->evaluate($parser, [AndOp::name(),
-            [DummyReturnOperation::name(), true],
-            [DummyReturnOperation::name(), true],
-            [DummyCalledOperation::name(), true],
-        ]));
+        $this->assertEvaluated(true,
+            DummyReturnOperation::op(true),
+            DummyReturnOperation::op(true),
+            DummyCalledOperation::op(true),
+        );
 
         $this->assertTrue(DummyCalledOperation::$evaluated);
     }

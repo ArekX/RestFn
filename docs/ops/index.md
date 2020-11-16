@@ -19,3 +19,4 @@ You can find all the supported operations below:
 | [Map](map.md) | `["map", <key: string, expression(string)>, <value: string, expression(string)>, <result: expression(array)>]` <br><br>  Maps `result` to key-value list where key is specified by `key` and value is specified by `value` |
 | [Object](object.md) | `["object", <object: array[key -> expression(any)]>]` <br><br>  Evaluates all expressions in an object and returns the result with same populated keys. |
 | [Coalesce](coalesce.md) | `["coalesce", <result1: expression(any)>, ...<resultN: expression(any)>]` <br><br>  Evaluates results sequentially one by one and stops and returns on first non-null result. |
+| [Merge](merge.md) | `["merge", <result1: expression(array)>, ...<resultN: expression(array)>]` <br><br>  Merges resulting arrays in `result1, ..., resultN` into one array. |

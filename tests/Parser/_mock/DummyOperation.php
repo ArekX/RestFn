@@ -37,4 +37,9 @@ class DummyOperation implements Operation
     {
         return 'test';
     }
+
+    public static function op()
+    {
+        return [DummyOperation::name()];
+    }
 }

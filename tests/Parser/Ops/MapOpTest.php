@@ -24,133 +24,91 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class MapOpTest extends OpTestCase
 {
+    public $opClass = MapOp::class;
+
     public function testValidateParameters()
     {
-        $op = new MapOp();
-        $parser = $this->getParser([DummyOperation::class]);
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, []));
+        $parameterError = ['min_parameters' => 4, 'max_parameters' => 4];
 
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [MapOp::name()]));
-
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [MapOp::name(), [DummyOperation::name()]]));
-
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [MapOp::name(), [DummyOperation::name()], [DummyOperation::name()]]));
-
-        $this->assertEquals(null, $op->validate($parser, [MapOp::name(), [DummyOperation::name()], [DummyOperation::name()], [DummyOperation::name()]]));
+        $this->assertValidated($parameterError);
+        $this->assertValidated($parameterError, DummyOperation::op());
+        $this->assertValidated($parameterError, DummyOperation::op(), DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), DummyOperation::op(), DummyOperation::op());
     }
 
     public function testValidateFromValues()
     {
-        $op = new MapOp();
-        $parser = $this->getParser([DummyOperation::class, DummyFailOperation::class]);
+        $this->assertValidated(null, 'key', DummyOperation::op(), DummyOperation::op());
 
-        $this->assertEquals(null, $op->validate($parser, [MapOp::name(), 'key', [DummyOperation::name()], [DummyOperation::name()]]));
-        $this->assertEquals([
+        $this->assertValidated([
             'invalid_from_value' => 23
-        ], $op->validate($parser, [MapOp::name(), 23, [DummyOperation::name()], [DummyOperation::name()]]));
+        ], 23, DummyOperation::op(), DummyOperation::op());
 
-        $this->assertEquals([
-            'invalid_from_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [MapOp::name(), [DummyFailOperation::name()], [DummyOperation::name()], [DummyOperation::name()]]));
+        $this->assertValidated([
+            'invalid_from_expression' => DummyFailOperation::error()
+        ], DummyFailOperation::op(), DummyOperation::op(), DummyOperation::op());
     }
 
     public function testValidateToValues()
     {
-        $op = new MapOp();
-        $parser = $this->getParser([DummyOperation::class, DummyFailOperation::class]);
+        $this->assertValidated(null, DummyOperation::op(), 'key', DummyOperation::op());
 
-        $this->assertEquals(null, $op->validate($parser, [MapOp::name(), [DummyOperation::name()], 'key', [DummyOperation::name()]]));
-        $this->assertEquals([
+        $this->assertValidated([
             'invalid_to_value' => 23
-        ], $op->validate($parser, [MapOp::name(), [DummyOperation::name()], 23, [DummyOperation::name()]]));
+        ], DummyOperation::op(), 23, DummyOperation::op());
 
-        $this->assertEquals([
-            'invalid_to_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [MapOp::name(), [DummyOperation::name()], [DummyFailOperation::name()], [DummyOperation::name()]]));
+        $this->assertValidated([
+            'invalid_to_expression' => DummyFailOperation::error()
+        ], DummyOperation::op(), DummyFailOperation::op(), DummyOperation::op());
     }
 
     public function testEvaluate()
     {
-        $this->assertResult([
+        $this->assertEvaluated([
             'john' => 'doe',
             'mark' => 'twain'
-        ], 'first', 'last', [
-            DummyReturnOperation::name(),
-            [
-                ['first' => 'john', 'last' => 'doe'],
-                ['first' => 'mark', 'last' => 'twain'],
-            ]
-        ]);
+        ], 'first', 'last', DummyReturnOperation::op([
+            ['first' => 'john', 'last' => 'doe'],
+            ['first' => 'mark', 'last' => 'twain'],
+        ]));
 
-        $this->assertResult([
+        $this->assertEvaluated([
             'john' => 'doe',
             'mark' => 'twain'
-        ], [DummyReturnOperation::name(), 'first'], 'last', [
-            DummyReturnOperation::name(),
-            [
-                ['first' => 'john', 'last' => 'doe'],
-                ['first' => 'mark', 'last' => 'twain'],
-            ]
-        ]);
+        ], DummyReturnOperation::op('first'), 'last', DummyReturnOperation::op([
+            ['first' => 'john', 'last' => 'doe'],
+            ['first' => 'mark', 'last' => 'twain'],
+        ]));
 
-        $this->assertResult([
+        $this->assertEvaluated([
             'john' => 'doe',
             'mark' => 'twain'
-        ], [DummyReturnOperation::name(), 'first'], [DummyReturnOperation::name(), 'last'], [
-            DummyReturnOperation::name(),
-            [
-                ['first' => 'john', 'last' => 'doe'],
-                ['first' => 'mark', 'last' => 'twain'],
-            ]
-        ]);
-    }
-
-    protected function assertResult($expectedResult, $from, $to, $expression)
-    {
-        $op = new MapOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $this->assertEquals($expectedResult, $op->evaluate($parser, [MapOp::name(), $from, $to, $expression]));
+        ], DummyReturnOperation::op('first'), DummyReturnOperation::op('last'), DummyReturnOperation::op([
+            ['first' => 'john', 'last' => 'doe'],
+            ['first' => 'mark', 'last' => 'twain'],
+        ]));
     }
 
     public function testEvaluateWalkingThroughAnArray()
     {
-        $this->assertResult([
+        $this->assertEvaluated([
             'john' => 'doe',
             'mark' => 'twain'
-        ], 'first.name', 'last.name', [
-            DummyReturnOperation::name(),
-            [
-                ['first' => ['name' => 'john'], 'last' => ['name' => 'doe']],
-                ['first' => ['name' => 'mark'], 'last' => ['name' => 'twain']],
-            ]
-        ]);
+        ], 'first.name', 'last.name', DummyReturnOperation::op([
+            ['first' => ['name' => 'john'], 'last' => ['name' => 'doe']],
+            ['first' => ['name' => 'mark'], 'last' => ['name' => 'twain']],
+        ]));
     }
 
     public function testEvaluateInvalidKey()
     {
         $this->expectException(\Exception::class);
-        $this->assertResult([
+        $this->assertEvaluated([
             'john' => 'doe',
             'mark' => 'twain'
-        ], 'first.name', 'last.name', [
-            DummyReturnOperation::name(),
-            [
-                ['last' => ['name' => 'doe']],
-                ['last' => ['name' => 'twain']],
-            ]
-        ]);
+        ], 'first.name', 'last.name', DummyReturnOperation::op([
+            ['last' => ['name' => 'doe']],
+            ['last' => ['name' => 'twain']],
+        ]));
     }
 }

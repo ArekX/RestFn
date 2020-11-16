@@ -24,108 +24,85 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class CompareOpTest extends OpTestCase
 {
+    public $opClass = CompareOp::class;
+
     public function testValidateParameters()
     {
-        $op = new CompareOp();
-        $parser = $this->getParser([DummyOperation::class]);
-        $dummyOp = [DummyOperation::name()];
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [CompareOp::name()]));
+        $error = ['min_parameters' => 4, 'max_parameters' => 4];
 
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [CompareOp::name(), $dummyOp]));
-
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [CompareOp::name(), $dummyOp, '=']));
-
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '=', $dummyOp]));
+        $this->assertValidated($error, DummyOperation::op());
+        $this->assertValidated($error, DummyOperation::op(), '=');
+        $this->assertValidated(null, DummyOperation::op(), '=', DummyOperation::op());
     }
 
     public function testValidateOperation()
     {
-        $op = new CompareOp();
-        $parser = $this->getParser([DummyOperation::class, DummyFailOperation::class]);
-        $dummyOp = [DummyOperation::name()];
+        $this->assertValidated(null, DummyOperation::op(), DummyOperation::op(), DummyOperation::op());
 
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, [DummyOperation::name()], $dummyOp]));
+        $this->assertValidated([
+            'invalid_operation_expression' => DummyFailOperation::error()
+        ], DummyOperation::op(), DummyFailOperation::op(), DummyOperation::op());
 
-        $this->assertEquals([
-            'invalid_operation_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [CompareOp::name(), $dummyOp, [DummyFailOperation::name()], $dummyOp]));
-
-        $this->assertEquals([
+        $this->assertValidated([
             'invalid_operation' => 'a'
-        ], $op->validate($parser, [CompareOp::name(), $dummyOp, 'a', $dummyOp]));
+        ], DummyOperation::op(), 'a', DummyOperation::op());
 
-        $this->assertEquals([
+        $this->assertValidated([
             'invalid_operation' => '*'
-        ], $op->validate($parser, [CompareOp::name(), $dummyOp, '*', $dummyOp]));
+        ], DummyOperation::op(), '*', DummyOperation::op());
 
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '=', $dummyOp]));
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '!=', $dummyOp]));
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '>', $dummyOp]));
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '<', $dummyOp]));
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '<=', $dummyOp]));
-        $this->assertEquals(null, $op->validate($parser, [CompareOp::name(), $dummyOp, '>=', $dummyOp]));
+        $this->assertValidated(null, DummyOperation::op(), '=', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '==', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '!=', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '!==', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '>', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '<', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '<=', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), '>=', DummyOperation::op());
     }
 
     public function testFailedExpressions()
     {
-        $op = new CompareOp();
-        $parser = $this->getParser([DummyOperation::class, DummyFailOperation::class]);
+        $this->assertValidated([
+            'invalid_left_expression' => DummyFailOperation::error()
+        ], DummyFailOperation::op(), '=', DummyOperation::op());
 
-
-        $this->assertEquals([
-            'invalid_left_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [CompareOp::name(), [DummyFailOperation::name()], '=', [DummyOperation::name()]]));
-
-
-        $this->assertEquals([
-            'invalid_right_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [CompareOp::name(), [DummyOperation::name()], '=', [DummyFailOperation::name()]]));
+        $this->assertValidated([
+            'invalid_right_expression' => DummyFailOperation::error()
+        ], DummyOperation::op(), '=', DummyFailOperation::op());
     }
 
     public function testEvaluate()
     {
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 1], '=', [DummyReturnOperation::name(), 1]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '=', [DummyReturnOperation::name(), 2]);
+        $this->assertEvaluated(true, DummyReturnOperation::op(1), '=', DummyReturnOperation::op(1));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '=', DummyReturnOperation::op(2));
 
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '!=', [DummyReturnOperation::name(), 1]);
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 1], '!=', [DummyReturnOperation::name(), 2]);
+        $this->assertEvaluated(true, DummyReturnOperation::op(1), '==', DummyReturnOperation::op(1));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '==', DummyReturnOperation::op(')'));
 
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 2], '>', [DummyReturnOperation::name(), 1]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '>', [DummyReturnOperation::name(), 2]);
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '!=', DummyReturnOperation::op(1));
+        $this->assertEvaluated(true, DummyReturnOperation::op(1), '!=', DummyReturnOperation::op(2));
 
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 1], '<', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 2], '<', [DummyReturnOperation::name(), 1]);
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '!==', DummyReturnOperation::op(1));
+        $this->assertEvaluated(true, DummyReturnOperation::op(1), '!==', DummyReturnOperation::op(')'));
 
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 1], '<=', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 2], '<=', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 2], '<=', [DummyReturnOperation::name(), 1]);
+        $this->assertEvaluated(true, DummyReturnOperation::op(2), '>', DummyReturnOperation::op(1));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '>', DummyReturnOperation::op(2));
 
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 2], '>=', [DummyReturnOperation::name(), 1]);
-        $this->assertCompareResult(true, [DummyReturnOperation::name(), 2], '>=', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '>=', [DummyReturnOperation::name(), 2]);
+        $this->assertEvaluated(true, DummyReturnOperation::op(1), '<', DummyReturnOperation::op(2));
+        $this->assertEvaluated(false, DummyReturnOperation::op(2), '<', DummyReturnOperation::op(1));
 
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '*', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '/', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '+', [DummyReturnOperation::name(), 2]);
-        $this->assertCompareResult(false, [DummyReturnOperation::name(), 1], '-', [DummyReturnOperation::name(), 2]);
-    }
+        $this->assertEvaluated(true, DummyReturnOperation::op(1), '<=', DummyReturnOperation::op(2));
+        $this->assertEvaluated(true, DummyReturnOperation::op(2), '<=', DummyReturnOperation::op(2));
+        $this->assertEvaluated(false, DummyReturnOperation::op(2), '<=', DummyReturnOperation::op(1));
 
-    protected function assertCompareResult($expectedResult, $a, $opValue, $b)
-    {
-        $op = new CompareOp();
-        $parser = $this->getParser([
-            DummyReturnOperation::class
-        ]);
+        $this->assertEvaluated(true, DummyReturnOperation::op(2), '>=', DummyReturnOperation::op(1));
+        $this->assertEvaluated(true, DummyReturnOperation::op(2), '>=', DummyReturnOperation::op(2));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '>=', DummyReturnOperation::op(2));
 
-        $this->assertEquals($expectedResult, $op->evaluate($parser, [CompareOp::name(), $a, $opValue, $b]));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '*', DummyReturnOperation::op(2));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '/', DummyReturnOperation::op(2));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '+', DummyReturnOperation::op(2));
+        $this->assertEvaluated(false, DummyReturnOperation::op(1), '-', DummyReturnOperation::op(2));
     }
 }

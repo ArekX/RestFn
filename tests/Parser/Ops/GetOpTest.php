@@ -25,186 +25,109 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class GetOpTest extends OpTestCase
 {
+    public $opClass = GetOp::class;
+
     public function testValidateEmptyValue()
     {
-        $op = new GetOp();
-        $this->assertEquals(['min_parameters' => 2], $op->validate($this->getParser(), []));
-        $this->assertEquals(['min_parameters' => 2], $op->validate($this->getParser(), [GetOp::name()]));
-        $this->assertEquals(['min_parameters' => 2], $op->validate($this->getParser(), [GetOp::name(), 'test']));
+        $error = ['min_parameters' => 3];
+
+        $this->assertValidated($error);
+        $this->assertValidated($error, 'test');
     }
 
     public function testValidateParamGetter()
     {
-        $op = new GetOp();
-        $parser = $this->getParser([]);
-        $this->assertEquals(['invalid_getter_value' => 2], $op->validate($parser, [
-            GetOp::name(),
-            2,
-            null
-        ]));
+        $this->assertValidated(['invalid_getter_value' => 2], 2, null);
     }
 
     public function testValidateParamGetterCanBeStringOrExpression()
     {
-        $op = new GetOp();
-        $parser = $this->getParser([
-            DummyOperation::class,
-            DummyFailOperation::class
-        ]);
-        $this->assertEquals(null, $op->validate($parser, [
-            GetOp::name(),
-            'string',
-            [DummyOperation::name()]
-        ]));
-
-        $this->assertEquals(null, $op->validate($parser, [
-            GetOp::name(),
-            [DummyOperation::name()],
-            [DummyOperation::name()]
-        ]));
-
-        $this->assertEquals([
-            'invalid_getter_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [
-            GetOp::name(),
-            [DummyFailOperation::name()],
-            [DummyOperation::name()]
-        ]));
+        $this->assertValidated(null, 'string', DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), DummyOperation::op());
+        $this->assertValidated(['invalid_getter_expression' => DummyFailOperation::error()], DummyFailOperation::op(), DummyOperation::op());
     }
 
     public function testValidateFromExpression()
     {
-        $op = new GetOp();
-        $parser = $this->getParser([
-            DummyOperation::class,
-            DummyFailOperation::class,
-            DummyReturnOperation::class
-        ]);
+        $this->assertValidated([
+            'invalid_value_expression' => DummyFailOperation::error()
+        ], 'value', DummyFailOperation::op());
 
-        $this->assertEquals([
-            'invalid_value_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [
-            GetOp::name(),
-            'value',
-            [DummyFailOperation::name()]
-        ]));
-
-        $this->assertEquals([
-            'invalid_value_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [
-            GetOp::name(),
-            [DummyReturnOperation::name(), 'value'],
-            [DummyFailOperation::name()]
-        ]));
+        $this->assertValidated([
+            'invalid_value_expression' => DummyFailOperation::error()
+        ], DummyReturnOperation::op('value'), DummyFailOperation::op());
     }
 
     public function testValidateDefaultExpression()
     {
-        $op = new GetOp();
-        $parser = $this->getParser([
-            DummyOperation::class,
-            DummyFailOperation::class,
-            DummyReturnOperation::class
-        ]);
+        $this->assertValidated([
+            'invalid_default_expression' => DummyFailOperation::error()
+        ], 'value', DummyOperation::op(), DummyFailOperation::op());
 
-        $this->assertEquals([
-            'invalid_default_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [
-            GetOp::name(),
-            'value',
-            [DummyOperation::name()],
-            [DummyFailOperation::name()]
-        ]));
-
-        $this->assertEquals([
-            'invalid_default_expression' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [
-            GetOp::name(),
-            [DummyReturnOperation::name(), 'value'],
-            [DummyOperation::name()],
-            [DummyFailOperation::name()]
-        ]));
+        $this->assertValidated([
+            'invalid_default_expression' => DummyFailOperation::error()
+        ], DummyReturnOperation::op('value'), DummyOperation::op(), DummyFailOperation::op());
     }
 
     public function testEvaluateDirectName()
     {
-        $this->assertEvaluatedResult('value1', 'path.to.item', [
+        $this->assertEvaluated('value1', 'path.to.item', DummyReturnOperation::op([
             'path.to.item' => 'value1',
             'path' => [
                 'to' => [
                     'item' => 'value2'
                 ]
             ]
-        ]);
-    }
-
-    protected function assertEvaluatedResult($expectedResult, $path, $data, $default = null)
-    {
-        $op = new GetOp();
-        $parser = $this->getParser([
-            DummyReturnOperation::class,
-            DummyCalledOperation::class
-        ]);
-
-        DummyCalledOperation::$evaluated = false;
-
-        $expression = [GetOp::name(), $path, [DummyReturnOperation::name(), $data]];
-
-        if ($default) {
-            $expression[] = $default;
-        }
-
-        $result = $op->evaluate($parser, $expression);
-        $this->assertEquals($expectedResult, $result);
+        ]));
     }
 
     public function testEvaluateExpressionName()
     {
-        $this->assertEvaluatedResult('value1', [DummyReturnOperation::name(), 'path.to.item'], [
+        $this->assertEvaluated('value1', DummyReturnOperation::op('path.to.item'), DummyReturnOperation::op([
             'path.to.item' => 'value1',
             'path' => [
                 'to' => [
                     'item' => 'value2'
                 ]
             ]
-        ]);
+        ]));
     }
 
     public function testWalkThroughArray()
     {
-        $this->assertEvaluatedResult('value', [DummyReturnOperation::name(), 'path.to.item'], [
+        $this->assertEvaluated('value', DummyReturnOperation::op('path.to.item'), DummyReturnOperation::op([
             'path' => [
                 'to' => [
                     'item' => 'value'
                 ]
             ]
-        ]);
+        ]));
     }
 
     public function testDefaultValue()
     {
-        $this->assertEvaluatedResult('default', 'path.to.item.value', [
+        $this->assertEvaluated('default', 'path.to.item.value', DummyReturnOperation::op([
             'path' => [
                 'to' => 'item.value'
             ]
-        ], [DummyReturnOperation::name(), 'default']);
+        ]), DummyReturnOperation::op('default'));
     }
 
     public function testDefaultValueNotEvaluatedUntilRequired()
     {
-        $this->assertEvaluatedResult('default', 'non.existing.path', [
+        $this->assertEvaluated('default', 'non.existing.path', DummyReturnOperation::op([
             'path' => [
                 'to' => 'value'
             ]
-        ], [DummyCalledOperation::name(), 'default']);
+        ]), DummyCalledOperation::op('default'));
 
         $this->assertTrue(DummyCalledOperation::$evaluated);
 
-        $this->assertEvaluatedResult('value', 'path.to', [
+        $this->assertEvaluated('value', 'path.to', DummyReturnOperation::op([
             'path' => [
                 'to' => 'value'
             ]
-        ], [DummyCalledOperation::name(), 'default']);
+        ]), DummyCalledOperation::op('default'));
 
         $this->assertFalse(DummyCalledOperation::$evaluated);
     }

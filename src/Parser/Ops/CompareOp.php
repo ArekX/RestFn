@@ -72,11 +72,15 @@ class CompareOp implements Operation
             switch ($operation) {
                 case '=':
                     break;
+                case '==':
+                    break;
                 case '>':
                     break;
                 case '<':
                     break;
                 case '!=':
+                    break;
+                case '!==':
                     break;
                 case '>=':
                     break;
@@ -102,12 +106,16 @@ class CompareOp implements Operation
         switch ($value[2]) {
             case '=':
                 return $leftResult == $rightResult;
+            case '==':
+                return $leftResult === $rightResult;
             case '>':
                 return $leftResult > $rightResult;
             case '<':
                 return $leftResult < $rightResult;
             case '!=':
                 return $leftResult != $rightResult;
+            case '!==':
+                return $leftResult !== $rightResult;
             case '>=':
                 return $leftResult >= $rightResult;
             case '<=':

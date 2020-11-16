@@ -24,68 +24,36 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class IfElseOpTest extends OpTestCase
 {
+    public $opClass = IfElseOp::class;
+
     public function testValidate()
     {
-        $op = new IfElseOp();
-        $parser = $this->getParser([DummyOperation::class]);
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, []));
+        $error = ['min_parameters' => 4, 'max_parameters' => 4];
 
-
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [IfElseOp::name()]));
-
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()]]));
-
-        $this->assertEquals([
-            'min_parameters' => 4,
-            'max_parameters' => 4
-        ], $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()], [DummyOperation::name()]]));
-
-        $this->assertEquals(null, $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()], [DummyOperation::name()], [DummyOperation::name()]]));
+        $this->assertValidated($error);
+        $this->assertValidated($error, DummyOperation::op());
+        $this->assertValidated($error, DummyOperation::op(), DummyOperation::op());
+        $this->assertValidated(null, DummyOperation::op(), DummyOperation::op(), DummyOperation::op());
     }
 
     public function testSubParamValidate()
     {
-        $op = new IfElseOp();
-        $parser = $this->getParser([DummyFailOperation::class, DummyOperation::class]);
+        $this->assertValidated([
+            'if_expression_invalid' => DummyFailOperation::error()
+        ], DummyFailOperation::op(), DummyOperation::op(), DummyOperation::op());
 
-        $this->assertEquals([
-            'if_expression_invalid' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [IfElseOp::name(), [DummyFailOperation::name()], [DummyOperation::name()], [DummyOperation::name()]]));
+        $this->assertValidated([
+            'true_expression_invalid' => DummyFailOperation::error()
+        ], DummyOperation::op(), DummyFailOperation::op(), DummyOperation::op());
 
-        $this->assertEquals([
-            'true_expression_invalid' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()], [DummyFailOperation::name()], [DummyOperation::name()]]));
-
-
-        $this->assertEquals([
-            'false_expression_invalid' => DummyFailOperation::errorValue()
-        ], $op->validate($parser, [IfElseOp::name(), [DummyOperation::name()], [DummyOperation::name()], [DummyFailOperation::name()]]));
+        $this->assertValidated([
+            'false_expression_invalid' => DummyFailOperation::error()
+        ], DummyOperation::op(), DummyOperation::op(), DummyFailOperation::op());
     }
 
-    public function testEvaluateTruthy()
+    public function testEvaluate()
     {
-        $op = new IfElseOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $expression = [IfElseOp::name(), [DummyReturnOperation::name(), true], [DummyReturnOperation::name(), 'trueValue'], [DummyReturnOperation::name(), 'falseValue']];
-        $this->assertEquals('trueValue', $op->evaluate($parser, $expression));
-    }
-
-    public function testEvaluateFalsy()
-    {
-        $op = new IfElseOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $expression = [IfElseOp::name(), [DummyReturnOperation::name(), false], [DummyReturnOperation::name(), 'trueValue'], [DummyReturnOperation::name(), 'falseValue']];
-        $this->assertEquals('falseValue', $op->evaluate($parser, $expression));
+        $this->assertEvaluated('trueValue', DummyReturnOperation::op(true), DummyReturnOperation::op('trueValue'), DummyReturnOperation::op('falseValue'));
+        $this->assertEvaluated('falseValue', DummyReturnOperation::op(false), DummyReturnOperation::op('trueValue'), DummyReturnOperation::op('falseValue'));
     }
 }

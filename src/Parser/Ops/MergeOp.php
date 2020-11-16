@@ -15,36 +15,63 @@
  * limitations under the License.
  **/
 
-namespace tests\Parser\_mock;
+namespace ArekX\RestFn\Parser\Ops;
 
 
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
-class DummyFailOperation implements Operation
+/**
+ * Class MergeOp
+ * @package ArekX\RestFn\Parser\Ops
+ *
+ * Represents Join operation
+ */
+class MergeOp implements Operation
 {
-    public static function error()
-    {
-        return [DummyFailOperation::name(), ['failed' => true]];
-    }
-
+    /**
+     * @inheritDoc
+     */
     public static function name(): string
     {
-        return 'fail';
+        return 'merge';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function validate(Evaluator $evaluator, $value)
     {
-        return ['failed' => true];
+        $max = count($value);
+        if ($max < 2) {
+            return ['min_parameters' => 2];
+        }
+
+        $errors = [];
+
+        for ($i = 1; $i < $max; $i++) {
+            $result = $evaluator->validate($value[$i]);
+            if ($result) {
+                $errors[$i] = $result;
+            }
+        }
+
+        return !empty($errors) ? ['op_errors' => $errors] : null;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function evaluate(Evaluator $evaluator, $value)
     {
-        return null;
-    }
+        $result = [];
 
-    public static function op()
-    {
-        return [DummyFailOperation::name()];
+        $max = count($value);
+        for ($i = 1; $i < $max; $i++) {
+            $result = array_merge($result, $evaluator->evaluate($value[$i]));
+
+        }
+
+        return $result;
     }
 }

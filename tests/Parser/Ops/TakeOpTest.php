@@ -24,127 +24,60 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class TakeOpTest extends OpTestCase
 {
+    const TEST_ARRAY = [1, 22, 3, 456];
+
+    public $opClass = TakeOp::class;
+
     public function testParameterValidation()
     {
-        $takeOp = new TakeOp();
+        $parameterError = ['min_parameters' => 3, 'max_parameters' => 3];
 
-        $this->assertEquals(['min_parameters' => 3, 'max_parameters' => 3], $takeOp->validate($this->createParser(), []));
-        $this->assertEquals(['min_parameters' => 3, 'max_parameters' => 3], $takeOp->validate($this->createParser(), [TakeOp::name()]));
-        $this->assertEquals(['min_parameters' => 3, 'max_parameters' => 3], $takeOp->validate($this->createParser(), [TakeOp::name(), 1]));
-        $this->assertEquals(null, $takeOp->validate($this->createParser(), [TakeOp::name(), 1, [DummyOperation::name()]]));
-    }
-
-    protected function createParser()
-    {
-        return $this->getParser([
-            DummyOperation::class,
-            DummyFailOperation::class,
-            DummyReturnOperation::class
-        ]);
+        $this->assertValidated($parameterError);
+        $this->assertValidated($parameterError, 1);
+        $this->assertValidated(null, 1, DummyOperation::op());
     }
 
     public function testNonNumericAmount()
     {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals(['invalid_amount' => 'not_a_number'], $takeOp->validate(
-            $this->createParser(),
-            [TakeOp::name(), 'not_a_number', [DummyFailOperation::name()]])
-        );
-
-        $this->assertEquals(['invalid_amount' => false], $takeOp->validate(
-            $this->createParser(),
-            [TakeOp::name(), false, [DummyFailOperation::name()]])
-        );
+        $this->assertValidated(['invalid_amount' => 'not_a_number'], 'not_a_number', DummyOperation::op());
+        $this->assertValidated(['invalid_amount' => false], false, DummyOperation::op());
+        $this->assertValidated(['invalid_amount' => true], true, DummyOperation::op());
+        $this->assertValidated(['invalid_amount' => null], null, DummyOperation::op());
     }
-
 
     public function testValueExpressionValid()
     {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals(null, $takeOp->validate(
-            $this->createParser(),
-            [TakeOp::name(), [DummyOperation::name()], [DummyOperation::name()]])
-        );
-
-        $this->assertEquals([
-            'invalid_amount_expression' => DummyFailOperation::errorValue()
-        ], $takeOp->validate(
-            $this->createParser(),
-            [TakeOp::name(), [DummyFailOperation::name()], [DummyOperation::name()]])
-        );
+        $this->assertValidated(null, DummyOperation::op(), DummyOperation::op());
+        $this->assertValidated([
+            'invalid_amount_expression' => DummyFailOperation::error()
+        ], DummyFailOperation::op(), DummyOperation::op());
     }
 
     public function testValueValid()
     {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals(['value_error' => DummyFailOperation::errorValue()], $takeOp->validate(
-            $this->createParser(),
-            [TakeOp::name(), 1, [DummyFailOperation::name()]])
-        );
+        $this->assertValidated(['value_error' => DummyFailOperation::error()], 1, DummyFailOperation::op());
     }
 
     public function testTake()
     {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals([1, 22], $takeOp->evaluate(
-            $this->createParser(),
-            [TakeOp::name(), 2, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
-        );
-    }
-
-    public function testTakeExpression()
-    {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals([1, 22], $takeOp->evaluate(
-            $this->createParser(),
-            [TakeOp::name(), [DummyReturnOperation::name(), 2], [DummyReturnOperation::name(), [1, 22, 3, 456]]])
-        );
-    }
-
-    public function testTakeNone()
-    {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals([], $takeOp->evaluate(
-            $this->createParser(),
-            [TakeOp::name(), 0, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
-        );
+        $this->assertEvaluated([1, 22], 2, DummyReturnOperation::op(self::TEST_ARRAY));
+        $this->assertEvaluated([1, 22], DummyReturnOperation::op(2), DummyReturnOperation::op(self::TEST_ARRAY));
+        $this->assertEvaluated([], DummyReturnOperation::op(0), DummyReturnOperation::op(self::TEST_ARRAY));
     }
 
     public function testTakeRight()
     {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals([3, 456], $takeOp->evaluate(
-            $this->createParser(),
-            [TakeOp::name(), -2, [DummyReturnOperation::name(), [1, 22, 3, 456]]])
-        );
+        $this->assertEvaluated([3, 456], -2, DummyReturnOperation::op(self::TEST_ARRAY));
     }
 
     public function testTakeMore()
     {
-        $takeOp = new TakeOp();
-
-        $this->assertEquals([1, 2, 3], $takeOp->evaluate(
-            $this->createParser(),
-            [TakeOp::name(), 50, [DummyReturnOperation::name(), [1, 2, 3]]])
-        );
+        $this->assertEvaluated(self::TEST_ARRAY, 50, DummyReturnOperation::op(self::TEST_ARRAY));
     }
 
     public function testException()
     {
-        $takeOp = new TakeOp();
-
         $this->expectException(\Exception::class);
-
-        $takeOp->evaluate(
-            $this->createParser(),
-            [TakeOp::name(), 2, [DummyReturnOperation::name(), null]]
-        );
+        $this->assertEvaluated(null, 2, DummyReturnOperation::op(null));
     }
 }

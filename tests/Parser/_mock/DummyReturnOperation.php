@@ -37,4 +37,9 @@ class DummyReturnOperation implements Operation
     {
         return 'return';
     }
+
+    public static function op($return)
+    {
+        return [DummyReturnOperation::name(), $return];
+    }
 }

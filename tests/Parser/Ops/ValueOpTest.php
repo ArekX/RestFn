@@ -21,23 +21,26 @@ use ArekX\RestFn\Parser\Ops\ValueOp;
 
 class ValueOpTest extends OpTestCase
 {
+    public $opClass = ValueOp::class;
+
     public function testValidateEmptyValue()
     {
-        $valueOp = new ValueOp();
-        $this->assertEquals(['min_parameters' => 2, 'max_parameters' => 2], $valueOp->validate($this->getParser(), []));
-        $this->assertEquals(['min_parameters' => 2, 'max_parameters' => 2], $valueOp->validate($this->getParser(), [ValueOp::name()]));
+        $this->assertValidated(['min_parameters' => 2, 'max_parameters' => 2]);
     }
 
     public function testValidatePassing()
     {
-        $valueOp = new ValueOp();
-        $this->assertEquals(null, $valueOp->validate($this->getParser(), [ValueOp::name(), 1]));
+        $this->assertValidated(null, 1);
     }
 
     public function testAlwaysReturnsSetValue()
     {
-        $rule = [ValueOp::name(), rand(1, 2000)];
-        $valueOp = new ValueOp();
-        $this->assertEquals($rule[1], $valueOp->evaluate($this->getParser(), $rule));
+        $rand = rand(1, 2000);
+        $this->assertEvaluated($rand, $rand);
+        $this->assertEvaluated(10, 10);
+        $this->assertEvaluated('a', 'a');
+        $this->assertEvaluated(null, null);
+        $this->assertEvaluated(true, true);
+        $this->assertEvaluated(false, false);
     }
 }

@@ -24,46 +24,29 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class NotOpTest extends OpTestCase
 {
+    public $opClass = NotOp::class;
+
     public function testValidateEmptyValue()
     {
-        $op = new NotOp();
-        $this->assertEquals([
+        $this->assertValidated([
             'min_parameters' => 2,
             'max_parameters' => 2
-        ], $op->validate($this->getParser(), [NotOp::name()]));
+        ]);
     }
 
     public function testValidateOneFailingExpression()
     {
-        $op = new NotOp();
-        $parser = $this->getParser([DummyFailOperation::class]);
-
-        $this->assertEquals([
-            'op_error' => [DummyFailOperation::name(), ['failed' => true]]
-        ], $op->validate($parser, [NotOp::name(), [DummyFailOperation::name()]]));
+        $this->assertValidated(['op_error' => DummyFailOperation::error()], DummyFailOperation::op());
     }
 
     public function testValidateOneSuccessfulExpression()
     {
-        $op = new NotOp();
-        $parser = $this->getParser([DummyOperation::class]);
-
-        $this->assertEquals(null, $op->validate($parser, [NotOp::name(), [DummyOperation::name()]]));
+        $this->assertValidated(null, DummyOperation::op());
     }
 
-    public function testEvaluateTruthy()
+    public function testEvaluate()
     {
-        $op = new NotOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $this->assertSame(false, $op->evaluate($parser, [NotOp::name(), [DummyReturnOperation::name(), true]]));
-    }
-
-    public function testEvaluateFalsy()
-    {
-        $op = new NotOp();
-        $parser = $this->getParser([DummyReturnOperation::class]);
-
-        $this->assertSame(true, $op->evaluate($parser, [NotOp::name(), [DummyReturnOperation::name(), false]]));
+        $this->assertEvaluated(false, DummyReturnOperation::op(true));
+        $this->assertEvaluated(true, DummyReturnOperation::op(false));
     }
 }

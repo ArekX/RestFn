@@ -25,43 +25,31 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class CoalesceOpTest extends OpTestCase
 {
+    public $opClass = CoalesceOp::class;
+
     public function testValidateErrorValues()
     {
-        $op = new CoalesceOp();
-        $this->assertEquals([
+        $this->assertValidated([
             'op_errors' => [
-                1 => DummyFailOperation::errorValue(),
-                3 => DummyFailOperation::errorValue()
+                1 => DummyFailOperation::error(),
+                3 => DummyFailOperation::error()
             ]
-        ], $op->validate($this->getParser([DummyFailOperation::class, DummyOperation::class]), [CoalesceOp::name(),
-            [DummyFailOperation::name()],
-            [DummyOperation::name()],
-            [DummyFailOperation::name()]
-        ]));
+        ], DummyFailOperation::op(), DummyOperation::op(), DummyFailOperation::op());
     }
 
     public function testEvaluate()
     {
-        $this->assertResult('first', [DummyReturnOperation::name(), 'first'], [DummyReturnOperation::name(), 'second']);
-        $this->assertResult('second', [DummyReturnOperation::name(), null], [DummyReturnOperation::name(), 'second']);
-        $this->assertResult(null, [DummyReturnOperation::name(), null], [DummyReturnOperation::name(), null]);
+        $this->assertEvaluated('first', DummyReturnOperation::op('first'), DummyReturnOperation::op('second'));
+        $this->assertEvaluated('second', DummyReturnOperation::op(null), DummyReturnOperation::op('second'));
+        $this->assertEvaluated(null, DummyReturnOperation::op(null), DummyReturnOperation::op(null));
     }
 
 
     public function testNonEvaluatedIfNotNeeded()
     {
-        $this->assertResult('first', [DummyReturnOperation::name(), 'first'], [DummyCalledOperation::name(), 'second']);
+        $this->assertEvaluated('first', DummyReturnOperation::op('first'), DummyCalledOperation::op('second'));
         $this->assertFalse(DummyCalledOperation::$evaluated);
-        $this->assertResult('second', [DummyReturnOperation::name(), null], [DummyCalledOperation::name(), 'second']);
+        $this->assertEvaluated('second', DummyReturnOperation::op(null), DummyCalledOperation::op('second'));
         $this->assertTrue(DummyCalledOperation::$evaluated);
-    }
-
-    public function assertResult($expectedResult, ...$values)
-    {
-        $op = new CoalesceOp();
-        $parser = $this->getParser([DummyReturnOperation::class, DummyCalledOperation::class]);
-
-        DummyCalledOperation::$evaluated = false;
-        $this->assertEquals($expectedResult, $op->evaluate($parser, [CoalesceOp::name(), ...$values]));
     }
 }

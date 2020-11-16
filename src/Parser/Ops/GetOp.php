@@ -44,7 +44,7 @@ class GetOp implements Operation
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) < 3) {
-            return ['min_parameters' => 2];
+            return ['min_parameters' => 3];
         }
 
         if (!is_string($value[1]) && !is_array($value[1])) {

@@ -18,15 +18,62 @@
 namespace tests\Parser\Ops;
 
 
+use ArekX\RestFn\Parser\Contracts\Operation;
 use ArekX\RestFn\Parser\Parser;
+use tests\Parser\_mock\DummyCalledOperation;
+use tests\Parser\_mock\DummyFailOperation;
+use tests\Parser\_mock\DummyOperation;
+use tests\Parser\_mock\DummyReturnOperation;
 use tests\TestCase;
 
 class OpTestCase extends TestCase
 {
+    public $opClass;
+
+    public function assertValidated($expectedResult, ...$opParams)
+    {
+        $parser = $this->createStandardParser();
+
+        /** @var Operation $op */
+        $op = $this->opClass;
+
+        /** @var Operation $instance */
+        $instance = new $op();
+
+        DummyCalledOperation::$validated = false;
+
+        $this->assertEquals($expectedResult, $instance->validate($parser, [$op::name(), ...$opParams]));
+    }
+
     public function getParser($ops = [])
     {
         $parser = new Parser();
         $parser->configure(['ops' => $ops]);
         return $parser;
+    }
+
+    public function assertEvaluated($expectedResult, ...$opParams)
+    {
+        $parser = $this->createStandardParser();
+
+        /** @var Operation $op */
+        $op = $this->opClass;
+
+        /** @var Operation $instance */
+        $instance = new $op();
+
+        DummyCalledOperation::$evaluated = false;
+
+        $this->assertEquals($expectedResult, $instance->evaluate($parser, [$op::name(), ...$opParams]));
+    }
+
+    protected function createStandardParser(): Parser
+    {
+        return $this->getParser([
+            DummyOperation::class,
+            DummyFailOperation::class,
+            DummyReturnOperation::class,
+            DummyCalledOperation::class
+        ]);
     }
 }
