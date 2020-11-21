@@ -20,3 +20,4 @@ You can find all the supported operations below:
 | [Object](object.md) | `["object", <object: array[key -> expression(any)]>]` <br><br>  Evaluates all expressions in an object and returns the result with same populated keys. |
 | [Coalesce](coalesce.md) | `["coalesce", <result1: expression(any)>, ...<resultN: expression(any)>]` <br><br>  Evaluates results sequentially one by one and stops and returns on first non-null result. |
 | [Merge](merge.md) | `["merge", <result1: expression(array)>, ...<resultN: expression(array)>]` <br><br>  Merges resulting arrays in `result1, ..., resultN` into one array. |
+| [Sort](sort.md) |`["sort", <by: expression(string, int), string, int>, <direction: expression(string), string>, <from: expression(array)>]` or <br> `["sort", <direction: expression(string), string>, <from: expression(array)>]` <br><br>  Sorts result in ascending or descending order. |
