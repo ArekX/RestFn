@@ -150,9 +150,6 @@ class SortOp implements Operation
     public function evaluate(Evaluator $evaluator, $value)
     {
         $max = count($value);
-        $byValue = null;
-        $direction = null;
-        $from = null;
 
         if ($max === 4) {
             $byValue = is_string($value[1]) || is_int($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
