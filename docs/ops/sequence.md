@@ -11,7 +11,9 @@ Definition: `["sequence", <item1: expression(any)>, ...<itemN: expression(any)>]
 
 Request:
 
-This sequence 
+In this example request this sequence will create a user, 
+create a group with that user and link the group to the user's main group.
+
 ```json
 ["sequence", 
    ["var", "user", ["run", "createUser", ["value", {
