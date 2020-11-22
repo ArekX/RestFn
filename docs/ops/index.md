@@ -25,3 +25,4 @@ You can find all the supported operations below:
 | [Var](var.md)           | `["var", <name: expression(string), string> [, <value: expression(any)>]]` <br><br>  Gets or sets a variable to be used during a request. |
 | [Cast](cast.md)         | `["cast", <into: expression(string), string>, <from: expression(any)>]` <br><br>  Converts one value into another. |
 | [Run](run.md)           | `["run", <name: expression(string), string>, <data: expression(any), string, int, float, null, bool>]` <br><br> Runs one action and returns it's result. |
+| [List](list.md)           | `["list", <name: expression(string), string>, <data: expression(array)>]`<br><br> Runs list action returning paginated data. |
