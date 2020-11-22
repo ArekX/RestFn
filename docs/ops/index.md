@@ -23,3 +23,4 @@ You can find all the supported operations below:
 | [Sort](sort.md) |`["sort", <by: expression(string, int), string, int>, <direction: expression(string), string>, <from: expression(array)>]` or <br> `["sort", <direction: expression(string), string>, <from: expression(array)>]` <br><br>  Sorts result in ascending or descending order. |
 | [Sequence](sequence.md) | `["sequence", <item1: expression(any)>, ...<itemN: expression(any)>]` <br><br>  Evaluates all items in a sequence and returns the result of the last item. |
 | [Var](var.md) | `["var", <name: expression(string), string> [, <value: expression(any)>]]` <br><br>  Gets or sets a variable to be used during a request. |
+| [Cast](cast.md) | `["cast", <into: expression(string), string>, <from: expression(any)>]` <br><br>  Converts one value into another. |
