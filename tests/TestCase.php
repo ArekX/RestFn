@@ -17,7 +17,12 @@
 
 namespace tests;
 
+use ArekX\RestFn\DI\Injector;
+
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-
+    public function getInjector()
+    {
+        return new Injector();
+    }
 }

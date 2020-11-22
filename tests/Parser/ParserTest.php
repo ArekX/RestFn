@@ -48,16 +48,14 @@ class ParserTest extends TestCase
 
     public function testEmptyArrayPassedToRule()
     {
-        $parser = new Parser();
-        $parser->ops = [];
+        $parser = $this->getParser();
 
         $this->assertEquals([], $parser->evaluate([]));
     }
 
     public function testInvalidRulePassedToParser()
     {
-        $parser = new Parser();
-        $parser->ops = [];
+        $parser = $this->getParser();
 
         $this->expectException(InvalidValueFormatException::class);
 
@@ -66,8 +64,7 @@ class ParserTest extends TestCase
 
     public function testInvalidOperationThrowsException()
     {
-        $parser = new Parser();
-        $parser->ops = [];
+        $parser = $this->getParser();
 
         $this->expectException(InvalidOperation::class);
 
@@ -81,6 +78,7 @@ class ParserTest extends TestCase
         ];
 
         $parser = new Parser();
+        $parser->injector = $this->getInjector();
         $parser->configure([
             'ops' => [DummyOperation::class]
         ]);
@@ -91,22 +89,19 @@ class ParserTest extends TestCase
 
     public function testOperationIsEvaluated()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyOperation::class
+        ]);
 
         $this->assertEquals(1, $parser->evaluate(['test']));
     }
 
     public function testNestedOperationsIsEvaluated()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyNestedOperation::name() => DummyNestedOperation::class,
-            DummyOperation::name() => DummyOperation::class
-        ];
-
+        $parser = $this->getParser([
+            DummyNestedOperation::class,
+            DummyOperation::class
+        ]);
 
         $this->assertEquals('nested-1', $parser->evaluate(['nested', ['test']]));
     }
@@ -114,40 +109,41 @@ class ParserTest extends TestCase
 
     public function testValidateEmpty()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyOperation::class
+        ]);
 
         $this->assertEquals(null, $parser->validate([]));
     }
 
     public function testValidateSuccess()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyOperation::class
+        ]);
 
         $this->assertEquals(null, $parser->validate(['test']));
     }
 
     public function testValidateFail()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyFailOperation::name() => DummyFailOperation::class
-        ];
+        $parser = $this->getParser([DummyFailOperation::class]);
 
         $this->assertEquals([DummyFailOperation::name(), ['failed' => true]], $parser->validate([DummyFailOperation::name()]));
     }
 
+    public function getParser($ops = [])
+    {
+        $parser = new Parser();
+        $parser->injector = $this->getInjector();
+
+        $parser->configure(['ops' => $ops]);
+        return $parser;
+    }
 
     public function testInvalidValidationError()
     {
-        $parser = new Parser();
-        $parser->ops = [];
-
+        $parser = $this->getParser();
         $this->expectException(InvalidValueFormatException::class);
 
         $parser->validate('invalidrule');
@@ -155,22 +151,19 @@ class ParserTest extends TestCase
 
     public function testInvalidOpValidation()
     {
-        $parser = new Parser();
-        $parser->ops = [];
+        $parser = $this->getParser();
 
         $this->expectException(InvalidOperation::class);
 
         $this->assertEquals(null, $parser->validate(['test']));
     }
 
-
     public function testNestedValidationFail()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyNestedOperation::name() => DummyNestedOperation::class,
-            DummyFailOperation::name() => DummyFailOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyNestedOperation::class,
+            DummyFailOperation::class
+        ]);
 
         $this->assertEquals(
             [DummyNestedOperation::name(), [DummyFailOperation::name(), ['failed' => true]]],
@@ -180,14 +173,11 @@ class ParserTest extends TestCase
 
     public function testNestedValidationSuccess()
     {
-        $parser = new Parser();
-        $parser->ops = [
-            DummyNestedOperation::name() => DummyNestedOperation::class,
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->getParser([
+            DummyNestedOperation::class,
+            DummyOperation::class
+        ]);
 
         $this->assertEquals(null, $parser->validate(['nested', ['test']]));
     }
-
-
 }

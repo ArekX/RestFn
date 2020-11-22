@@ -20,6 +20,7 @@ namespace ArekX\RestFn\Parser;
 
 use ArekX\RestFn\DI\Contracts\Configurable;
 use ArekX\RestFn\DI\Contracts\Injectable;
+use ArekX\RestFn\DI\Injector;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
@@ -33,6 +34,13 @@ use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
  */
 class Parser implements Injectable, Configurable, Evaluator
 {
+    /**
+     * Injected injector used to create operations.
+     *
+     * @var Injector
+     */
+    public Injector $injector;
+
     /**
      * Operation handlers where each operation is mapped to a class
      *
@@ -115,7 +123,8 @@ class Parser implements Injectable, Configurable, Evaluator
         }
 
         $operationClass = $this->ops[$ruleName];
-        return new $operationClass();
+
+        return $this->injector->make($operationClass);
     }
 
     protected function getRuleName($value): string

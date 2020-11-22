@@ -18,6 +18,7 @@
 namespace tests\Parser\Ops;
 
 
+use ArekX\RestFn\DI\Injector;
 use ArekX\RestFn\Parser\Contracts\Operation;
 use ArekX\RestFn\Parser\Parser;
 use tests\Parser\_mock\DummyCalledOperation;
@@ -48,6 +49,8 @@ class OpTestCase extends TestCase
     public function getParser($ops = [])
     {
         $parser = new Parser();
+        $parser->injector = $this->getInjector();
+
         $parser->configure(['ops' => $ops]);
         return $parser;
     }
@@ -58,7 +61,7 @@ class OpTestCase extends TestCase
         $op = $this->opClass;
 
         /** @var Operation $instance */
-        $instance = new $op();
+        $instance = $this->getInjector()->make($op);
 
         DummyCalledOperation::$evaluated = false;
 
