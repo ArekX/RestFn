@@ -31,17 +31,18 @@ interface Evaluator
      * This is specific data which can be used by ops to help
      * resolve their rules.
      *
-     * @param mixed $context Metadata to be set to evaluator.
+     * @param string $key Name of the value to set in current context.
+     * @param mixed $value Value which will be set.
      * @return $this
      */
-    public function setContext(array $context);
+    public function setContext(string $key, $value);
 
     /**
-     * Returns currently set context data.
+     * Returns currently set context data by key.
      *
      * @return mixed
      */
-    public function getContext();
+    public function getContext(string $key);
 
     /**
      * Validates rules sent rules against a value.

@@ -30,5 +30,5 @@ Response:
 
 ## Typical Usage
 
-You can use this operation in conjuction with other expresison to result key-value lists which you can use in 
+You can use this operation in conjunction with other expression to result key-value lists which you can use in 
 applications for filtering, validation or just list showing.

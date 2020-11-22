@@ -52,10 +52,8 @@ class OpTestCase extends TestCase
         return $parser;
     }
 
-    public function assertEvaluated($expectedResult, ...$opParams)
+    public function assertEvaluatedWithParser($parser, $expectedResult, ...$opParams)
     {
-        $parser = $this->createStandardParser();
-
         /** @var Operation $op */
         $op = $this->opClass;
 
@@ -65,6 +63,11 @@ class OpTestCase extends TestCase
         DummyCalledOperation::$evaluated = false;
 
         $this->assertEquals($expectedResult, $instance->evaluate($parser, [$op::name(), ...$opParams]));
+    }
+
+    public function assertEvaluated($expectedResult, ...$opParams)
+    {
+        $this->assertEvaluatedWithParser($this->createStandardParser(), $expectedResult, ...$opParams);
     }
 
     protected function createStandardParser(): Parser

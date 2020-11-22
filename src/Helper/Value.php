@@ -22,7 +22,7 @@ class Value
 {
     public static function get($getter, $from, $default = null)
     {
-        if (array_key_exists($getter, $from)) {
+        if (is_array($from) && array_key_exists($getter, $from)) {
             return $from[$getter];
         }
 

@@ -21,3 +21,5 @@ You can find all the supported operations below:
 | [Coalesce](coalesce.md) | `["coalesce", <result1: expression(any)>, ...<resultN: expression(any)>]` <br><br>  Evaluates results sequentially one by one and stops and returns on first non-null result. |
 | [Merge](merge.md) | `["merge", <result1: expression(array)>, ...<resultN: expression(array)>]` <br><br>  Merges resulting arrays in `result1, ..., resultN` into one array. |
 | [Sort](sort.md) |`["sort", <by: expression(string, int), string, int>, <direction: expression(string), string>, <from: expression(array)>]` or <br> `["sort", <direction: expression(string), string>, <from: expression(array)>]` <br><br>  Sorts result in ascending or descending order. |
+| [Sequence](sequence.md) | `["sequence", <item1: expression(any)>, ...<itemN: expression(any)>]` <br><br>  Evaluates all items in a sequence and returns the result of the last item. |
+| [Var](var.md) | `["var", <name: expression(string), string> [, <value: expression(any)>]]` <br><br>  Gets or sets a variable to be used during a request. |

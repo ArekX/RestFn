@@ -36,13 +36,13 @@ class ParserTest extends TestCase
         ];
 
         $parser = new Parser();
-        $parser->setContext($context);
-        $this->assertSame($context, $parser->getContext());
+        $parser->setContext('testContext', $context);
+        $this->assertSame($context, $parser->getContext('testContext'));
     }
 
     public function testNoSetContextReturnsEmptyArray()
     {
-        $this->assertSame([], (new Parser())->getContext());
+        $this->assertSame(null, (new Parser())->getContext('testContext'));
     }
 
 

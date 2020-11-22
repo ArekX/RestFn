@@ -41,7 +41,7 @@ class Parser implements Injectable, Configurable, Evaluator
     public $ops = [];
 
     /**
-     * Represents current context.
+     * Represents current context.p
      *
      * Contexts is an arbitrary data which is is stored inside a Parser
      * purpose of the context is to have a centralized data store which is accessible
@@ -66,30 +66,6 @@ class Parser implements Injectable, Configurable, Evaluator
         foreach ($ops as $op) {
             $this->ops[$op::name()] = $op;
         }
-    }
-
-    /**
-     * Returns currently set context.
-     *
-     * If there is no context set an empty array is returned.
-     *
-     * @return array
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
-     * Sets current context.
-     *
-     * Expected context for this parser is in array format.
-     *
-     * @param array $context
-     */
-    public function setContext($context)
-    {
-        $this->context = $context;
     }
 
     /**
@@ -142,6 +118,11 @@ class Parser implements Injectable, Configurable, Evaluator
         return new $operationClass();
     }
 
+    protected function getRuleName($value): string
+    {
+        return $value[0] ?? '';
+    }
+
     /**
      * Evaluates a value and returns a result.
      *
@@ -159,8 +140,15 @@ class Parser implements Injectable, Configurable, Evaluator
         return $this->getOperation($value)->evaluate($this, $value);
     }
 
-    protected function getRuleName($value): string
+    public function getContext(string $key)
     {
-        return $value[0] ?? '';
+        return $this->context[$key] ?? null;
+    }
+
+    public function setContext(string $key, $value)
+    {
+        $this->context[$key] = $value;
+
+        return $this;
     }
 }
