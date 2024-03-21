@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -21,7 +22,7 @@ use ArekX\RestFn\Parser\Ops\ValueOp;
 
 class ValueOpTest extends OpTestCase
 {
-    public $opClass = ValueOp::class;
+    public ?string $opClass = ValueOp::class;
 
     public function testValidateEmptyValue()
     {

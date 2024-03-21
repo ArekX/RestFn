@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -24,7 +25,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class SortOpTest extends OpTestCase
 {
-    public $opClass = SortOp::class;
+    public ?string $opClass = SortOp::class;
 
     public function testValidateEmptyValue()
     {
@@ -93,19 +94,19 @@ class SortOpTest extends OpTestCase
 
     public function testEvaluateBySignature()
     {
-        $expectedAscending = fn() => [
+        $expectedAscending = fn () => [
             ['name' => 'mark', 'age' => 9],
             ['name' => 'john', 'age' => 10],
             ['name' => 'jeanne', 'age' => 55],
         ];
 
-        $expectedDescending = fn() => [
+        $expectedDescending = fn () => [
             ['name' => 'jeanne', 'age' => 55],
             ['name' => 'john', 'age' => 10],
             ['name' => 'mark', 'age' => 9],
         ];
 
-        $input = fn() => [
+        $input = fn () => [
             ['name' => 'john', 'age' => 10],
             ['name' => 'mark', 'age' => 9],
             ['name' => 'jeanne', 'age' => 55],
@@ -119,16 +120,15 @@ class SortOpTest extends OpTestCase
         $this->assertEvaluated($expectedDescending(), 'age', 'desc', DummyReturnOperation::op($input()));
         $this->assertEvaluated($expectedDescending(), DummyReturnOperation::op('age'), 'desc', DummyReturnOperation::op($input()));
         $this->assertEvaluated($expectedDescending(), DummyReturnOperation::op('age'), DummyReturnOperation::op('desc'), DummyReturnOperation::op($input()));
-
     }
 
     public function testEvaluateNormalSignature()
     {
-        $expectedAscending = fn() => [4, 5, 12, 22];
+        $expectedAscending = fn () => [4, 5, 12, 22];
 
-        $expectedDescending = fn() => [22, 12, 5, 4];
+        $expectedDescending = fn () => [22, 12, 5, 4];
 
-        $input = fn() => [5, 22, 4, 12];
+        $input = fn () => [5, 22, 4, 12];
 
         $this->assertEvaluated($expectedAscending(), 'asc', DummyReturnOperation::op($input()));
         $this->assertEvaluated($expectedAscending(), 'asc', DummyReturnOperation::op($input()));

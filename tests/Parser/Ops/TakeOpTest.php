@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -26,7 +27,7 @@ class TakeOpTest extends OpTestCase
 {
     const TEST_ARRAY = [1, 22, 3, 456];
 
-    public $opClass = TakeOp::class;
+    public ?string $opClass = TakeOp::class;
 
     public function testParameterValidation()
     {

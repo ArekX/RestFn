@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -24,7 +25,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class CastOpTest extends OpTestCase
 {
-    public $opClass = CastOp::class;
+    public ?string $opClass = CastOp::class;
 
     public function testValidateEmptyValue()
     {

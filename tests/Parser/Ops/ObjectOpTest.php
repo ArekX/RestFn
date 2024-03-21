@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -24,7 +25,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class ObjectOpTest extends OpTestCase
 {
-    public $opClass = ObjectOp::class;
+    public ?string $opClass = ObjectOp::class;
 
     public function testValidateParameters()
     {

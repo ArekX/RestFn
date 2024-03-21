@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -24,7 +25,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class CompareOpTest extends OpTestCase
 {
-    public $opClass = CompareOp::class;
+    public ?string $opClass = CompareOp::class;
 
     public function testValidateParameters()
     {

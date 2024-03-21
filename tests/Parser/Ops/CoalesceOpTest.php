@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -25,7 +26,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class CoalesceOpTest extends OpTestCase
 {
-    public $opClass = CoalesceOp::class;
+    public ?string $opClass = CoalesceOp::class;
 
     public function testValidateErrorValues()
     {

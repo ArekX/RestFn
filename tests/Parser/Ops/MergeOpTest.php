@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -24,7 +25,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class MergeOpTest extends OpTestCase
 {
-    public $opClass = MergeOp::class;
+    public ?string $opClass = MergeOp::class;
 
     public function testValidate()
     {

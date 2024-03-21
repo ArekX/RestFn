@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -27,7 +28,7 @@ use tests\TestCase;
 
 class OrOpTest extends OpTestCase
 {
-    public $opClass = OrOp::class;
+    public ?string $opClass = OrOp::class;
 
     public function testValidateEmptyValue()
     {
@@ -43,12 +44,13 @@ class OrOpTest extends OpTestCase
 
     public function testValidateInBetweenAnd()
     {
-        $this->assertValidated([
-            'op_errors' => [
-                1 => DummyFailOperation::error(),
-                3 => DummyFailOperation::error(),
-            ]
-        ],
+        $this->assertValidated(
+            [
+                'op_errors' => [
+                    1 => DummyFailOperation::error(),
+                    3 => DummyFailOperation::error(),
+                ]
+            ],
             DummyFailOperation::op(),
             DummyOperation::op(),
             DummyFailOperation::op()
@@ -57,7 +59,8 @@ class OrOpTest extends OpTestCase
 
     public function testAllSucceed()
     {
-        $this->assertValidated(null,
+        $this->assertValidated(
+            null,
             DummyOperation::op(),
             DummyOperation::op(),
             DummyOperation::op(),
@@ -77,7 +80,8 @@ class OrOpTest extends OpTestCase
 
     public function testFailFast()
     {
-        $this->assertEvaluated(true,
+        $this->assertEvaluated(
+            true,
             DummyReturnOperation::op(true),
             DummyReturnOperation::op(false),
             DummyCalledOperation::op(true),
@@ -89,7 +93,8 @@ class OrOpTest extends OpTestCase
 
     public function testEvaluateAll()
     {
-        $this->assertEvaluated(true,
+        $this->assertEvaluated(
+            true,
             DummyReturnOperation::op(false),
             DummyReturnOperation::op(false),
             DummyCalledOperation::op(true),

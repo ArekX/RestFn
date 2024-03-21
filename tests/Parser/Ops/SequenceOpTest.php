@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -25,7 +26,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class SequenceOpTest extends OpTestCase
 {
-    public $opClass = SequenceOp::class;
+    public ?string $opClass = SequenceOp::class;
 
     public function testValidateEmptyValue()
     {

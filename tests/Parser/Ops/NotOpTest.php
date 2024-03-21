@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -24,7 +25,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class NotOpTest extends OpTestCase
 {
-    public $opClass = NotOp::class;
+    public ?string $opClass = NotOp::class;
 
     public function testValidateEmptyValue()
     {

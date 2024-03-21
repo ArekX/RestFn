@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -18,7 +19,6 @@
 namespace tests\Parser\Ops;
 
 
-use ArekX\RestFn\DI\Injector;
 use ArekX\RestFn\Parser\Contracts\Operation;
 use ArekX\RestFn\Parser\Parser;
 use tests\Parser\_mock\DummyCalledOperation;
@@ -29,21 +29,18 @@ use tests\TestCase;
 
 class OpTestCase extends TestCase
 {
-    public $opClass;
+    public ?string $opClass;
 
     public function assertValidated($expectedResult, ...$opParams)
     {
         $parser = $this->createStandardParser();
 
-        /** @var Operation $op */
-        $op = $this->opClass;
-
         /** @var Operation $instance */
-        $instance = new $op();
+        $instance = new $this->opClass();
 
         DummyCalledOperation::$validated = false;
 
-        $this->assertEquals($expectedResult, $instance->validate($parser, [$op::name(), ...$opParams]));
+        $this->assertEquals($expectedResult, $instance->validate($parser, [$this->opClass::name(), ...$opParams]));
     }
 
     public function getParser($ops = [])
@@ -57,7 +54,6 @@ class OpTestCase extends TestCase
 
     public function assertEvaluatedWithParser($parser, $expectedResult, ...$opParams)
     {
-        /** @var Operation $op */
         $op = $this->opClass;
 
         /** @var Operation $instance */

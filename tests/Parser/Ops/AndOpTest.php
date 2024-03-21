@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Aleksandar Panic
  *
@@ -25,7 +26,7 @@ use tests\Parser\_mock\DummyReturnOperation;
 
 class AndOpTest extends OpTestCase
 {
-    public $opClass = AndOp::class;
+    public ?string $opClass = AndOp::class;
 
     public function testValidateEmptyValue()
     {
@@ -41,12 +42,13 @@ class AndOpTest extends OpTestCase
 
     public function testValidateInBetweenAnd()
     {
-        $this->assertValidated([
-            'op_errors' => [
-                1 => DummyFailOperation::error(),
-                3 => DummyFailOperation::error(),
-            ]
-        ],
+        $this->assertValidated(
+            [
+                'op_errors' => [
+                    1 => DummyFailOperation::error(),
+                    3 => DummyFailOperation::error(),
+                ]
+            ],
             DummyFailOperation::op(),
             DummyOperation::op(),
             DummyFailOperation::op()
@@ -55,7 +57,8 @@ class AndOpTest extends OpTestCase
 
     public function testAllSucceed()
     {
-        $this->assertValidated(null,
+        $this->assertValidated(
+            null,
             DummyOperation::op(),
             DummyOperation::op(),
             DummyOperation::op(),
@@ -75,7 +78,8 @@ class AndOpTest extends OpTestCase
 
     public function testFailFast()
     {
-        $this->assertEvaluated(false,
+        $this->assertEvaluated(
+            false,
             DummyReturnOperation::op(true),
             DummyReturnOperation::op(false),
             DummyCalledOperation::op(true),
@@ -87,7 +91,8 @@ class AndOpTest extends OpTestCase
 
     public function testEvaluateAll()
     {
-        $this->assertEvaluated(true,
+        $this->assertEvaluated(
+            true,
             DummyReturnOperation::op(true),
             DummyReturnOperation::op(true),
             DummyCalledOperation::op(true),
