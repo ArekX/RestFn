@@ -18,28 +18,16 @@ declare(strict_types=1);
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\Helper;
+namespace ArekX\RestFn\Parser\Exceptions;
 
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
-class Value
+class InvalidEvaluation extends \Exception
 {
-    public static function get($getter, $from, $default = null)
+    public function __construct(OperationInterface $op, string $message)
     {
-        if (is_array($from) && array_key_exists($getter, $from)) {
-            return $from[$getter]; // @mago-ignore analysis:mixed-array-index
-        }
+        $name = $op::name();
 
-        $parts = explode('.', $getter);
-        $walker = $from;
-
-        foreach ($parts as $key) {
-            if (!is_array($walker) || !array_key_exists($key, $walker)) {
-                return $default;
-            }
-
-            $walker = $walker[$key];
-        }
-
-        return $walker;
+        parent::__construct("Could not evaluate {$name}: {$message}");
     }
 }

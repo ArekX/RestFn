@@ -83,7 +83,7 @@ class ListOp implements OperationInterface, InjectableInterface
         return null;
     }
 
-    protected function validateActionNameValue(EvaluatorInterface $evaluator, $actionValue)
+    protected function validateActionNameValue(EvaluatorInterface $evaluator, $actionValue): ?array
     {
         if (is_array($actionValue)) {
             $byResult = $evaluator->validate($actionValue);

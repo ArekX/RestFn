@@ -23,6 +23,7 @@ namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 
 /**
  * Class IfElseOp
@@ -52,6 +53,10 @@ class IfElseOp implements OperationInterface
                 'min_parameters' => 4,
                 'max_parameters' => 4,
             ];
+        }
+
+        if (!is_array($value[1]) || !is_array($value[2]) || !is_array($value[3])) {
+            return ['all_if_expressions_must_be_arrays' => true];
         }
 
         $ifResult = $evaluator->validate($value[1]);

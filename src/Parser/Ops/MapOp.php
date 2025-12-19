@@ -24,6 +24,7 @@ namespace ArekX\RestFn\Parser\Ops;
 use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 
 /**
  * Class MapOp
@@ -98,6 +99,10 @@ class MapOp implements OperationInterface
         $to = is_string($value[2]) ? $value[2] : $evaluator->evaluate($value[2]);
 
         $result = $evaluator->evaluate($value[3]);
+
+        if (!is_array($result)) {
+            throw new InvalidEvaluation($this, "Expected result to be an array.");
+        }
 
         $mapped = [];
 

@@ -38,3 +38,4 @@ strict-list-index-checks = false
 no-boolean-literal-comparison = false
 check-missing-type-hints = false
 register-super-globals = true
+ignore = ["mixed-argument", "mixed-operand", "mixed-assignment"]

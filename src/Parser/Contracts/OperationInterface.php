@@ -44,7 +44,7 @@ interface OperationInterface
     /**
      * Evaluates rules against a value.
      *
-     * @param mixed $value Value to be evaluated against.
+     * @param array $value Value to be evaluated against.
      * @param EvaluatorInterface $evaluator Evaluator which created this rule.
      * @return mixed Evaluated result
      */
