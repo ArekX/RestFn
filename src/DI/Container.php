@@ -29,17 +29,19 @@ use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
 use Psr\Container\ContainerInterface;
 
 /**
- * Class Injector
+ * Class Container
  * @package ArekX\RestFn\DI
  * @since 1.0.0
  *
- * Represents class for an injector handling dependency injection.
+ * Represents class for a container handling dependency injection.
  */
+// @mago-ignore lint:cyclomatic-complexity
+// @mago-ignore lint:kan-defect
 class Container implements ContainerInterface
 {
     /**
      * Contains key => value storage which is a list of current shared instances
-     * in this injector.
+     * in this container.
      *
      * @var SharedInstanceInterface[]
      */
@@ -82,7 +84,7 @@ class Container implements ContainerInterface
     protected $enabledFactories = [];
 
     /**
-     * Injector constructor
+     * container constructor
      *
      * @param array $configMap Configuration map to be passed for classes implementing Configurable
      * @see ConfigurableInterface::configure()
@@ -211,7 +213,7 @@ class Container implements ContainerInterface
      * factory class's function create.
      *
      * Instances created through factory's create method will NOT go through the injection process
-     * so if you need them to go through it you need to call Injector::make() from within that
+     * so if you need them to go through it you need to call container::make() from within that
      * factory class.
      *
      * Classes need to implement Factory to be used as factories.

@@ -30,7 +30,7 @@ use ArekX\RestFn\DI\Container;
  * Classes which implement Factory will have create() called so that they
  * can handle resolution on what will be created.
  *
- * Classes will not be auto-wired unless instantiated through call to Injector::make()
+ * Classes will not be auto-wired unless instantiated through call to container::make()
  *
  * @see Container::make()
  */

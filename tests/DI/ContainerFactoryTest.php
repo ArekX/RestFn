@@ -33,20 +33,20 @@ class ContainerFactoryTest extends TestCase
      */
     public function testFactoryMakeWorks()
     {
-        $injector = new Container([
+        $container = new Container([
             'factories' => [
                 DummyClass::class => MockFactory::class
             ],
         ]);
 
         /** @var MockFactory $factory */
-        $factory = $injector->make(MockFactory::class);
+        $factory = $container->make(MockFactory::class);
 
 
         $this->assertFalse($factory->wasCalled());
 
         /** @var DummyClass $newInstance */
-        $newInstance = $injector->make(DummyClass::class);
+        $newInstance = $container->make(DummyClass::class);
 
         $this->assertInstanceOf(DummyClass::class, $newInstance);
         $this->assertTrue($factory->wasCalled());
@@ -58,18 +58,18 @@ class ContainerFactoryTest extends TestCase
      */
     public function testFactoryMakeWorksFromMethod()
     {
-        $injector = new Container();
+        $container = new Container();
 
-        $injector->factory(DummyClass::class, MockFactory::class);
+        $container->factory(DummyClass::class, MockFactory::class);
 
         /** @var MockFactory $factory */
-        $factory = $injector->make(MockFactory::class);
+        $factory = $container->make(MockFactory::class);
 
 
         $this->assertFalse($factory->wasCalled());
 
         /** @var DummyClass $newInstance */
-        $newInstance = $injector->make(DummyClass::class);
+        $newInstance = $container->make(DummyClass::class);
 
         $this->assertInstanceOf(DummyClass::class, $newInstance);
         $this->assertTrue($factory->wasCalled());
@@ -81,19 +81,19 @@ class ContainerFactoryTest extends TestCase
      */
     public function testFactoryMakeWorksWithArguments()
     {
-        $injector = new Container([
+        $container = new Container([
             'factories' => [
                 DummyClassWithArgs::class => MockFactory::class
             ],
         ]);
 
         /** @var MockFactory $factory */
-        $factory = $injector->make(MockFactory::class);
+        $factory = $container->make(MockFactory::class);
 
         $this->assertFalse($factory->wasCalled());
 
         /** @var DummyClassWithArgs $newInstance */
-        $newInstance = $injector->make(DummyClassWithArgs::class, 'a', 'b');
+        $newInstance = $container->make(DummyClassWithArgs::class, 'a', 'b');
 
         $this->assertInstanceOf(DummyClassWithArgs::class, $newInstance);
         $this->assertEquals('a', $newInstance->arg1);
@@ -108,19 +108,19 @@ class ContainerFactoryTest extends TestCase
      */
     public function testFactoryNotCalledIfNotMapped()
     {
-        $injector = new Container([
+        $container = new Container([
             'factories' => [
                 DummyClassWithArgs::class => MockFactory::class
             ],
         ]);
 
         /** @var MockFactory $factory */
-        $factory = $injector->make(MockFactory::class);
+        $factory = $container->make(MockFactory::class);
 
         $this->assertFalse($factory->wasCalled());
 
         /** @var DummyClass $newInstance */
-        $newInstance = $injector->make(DummyClass::class);
+        $newInstance = $container->make(DummyClass::class);
 
         $this->assertInstanceOf(DummyClass::class, $newInstance);
         $this->assertFalse($factory->wasCalled());
@@ -133,21 +133,21 @@ class ContainerFactoryTest extends TestCase
      */
     public function testDisabledFactoryNotCalled()
     {
-        $injector = new Container([
+        $container = new Container([
             'factories' => [
                 DummyClass::class => MockFactory::class
             ],
         ]);
 
-        $injector->disableFactory(MockFactory::class);
+        $container->disableFactory(MockFactory::class);
 
         /** @var MockFactory $factory */
-        $factory = $injector->make(MockFactory::class);
+        $factory = $container->make(MockFactory::class);
 
         $this->assertFalse($factory->wasCalled());
 
         /** @var DummyClass $newInstance */
-        $injector->make(DummyClass::class);
+        $container->make(DummyClass::class);
 
         $this->assertFalse($factory->wasCalled());
     }
@@ -158,23 +158,23 @@ class ContainerFactoryTest extends TestCase
      */
     public function testDisabledThenEnabledFactoryIsCalled()
     {
-        $injector = new Container([
+        $container = new Container([
             'factories' => [
                 DummyClass::class => MockFactory::class
             ],
         ]);
 
-        $injector->disableFactory(MockFactory::class);
+        $container->disableFactory(MockFactory::class);
 
         /** @var MockFactory $factory */
-        $factory = $injector->make(MockFactory::class);
+        $factory = $container->make(MockFactory::class);
 
         $this->assertFalse($factory->wasCalled());
 
-        $injector->enableFactory(MockFactory::class);
+        $container->enableFactory(MockFactory::class);
 
         /** @var DummyClass $newInstance */
-        $injector->make(DummyClass::class);
+        $container->make(DummyClass::class);
 
         $this->assertTrue($factory->wasCalled());
     }

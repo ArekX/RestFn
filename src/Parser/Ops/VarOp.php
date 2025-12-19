@@ -65,7 +65,7 @@ class VarOp implements OperationInterface
                     'invalid_name_expression' => $result,
                 ];
             }
-        } else if (!is_string($value[1])) {
+        } elseif (!is_string($value[1])) {
             return [
                 'invalid_name_value' => $value[1],
             ];

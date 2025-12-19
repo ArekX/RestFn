@@ -22,7 +22,7 @@ use ArekX\RestFn\DI\Container;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    public function getInjector()
+    public function getcontainer()
     {
         return new Container();
     }

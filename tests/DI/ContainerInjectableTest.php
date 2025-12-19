@@ -33,13 +33,13 @@ class ContainerInjectableTest extends TestCase
      */
     public function testCreateInjectable()
     {
-        $injector = new Container();
+        $container = new Container();
 
         /** @var DummyInjectableClass $value */
-        $value = $injector->make(DummyInjectableClass::class);
+        $value = $container->make(DummyInjectableClass::class);
 
         /** @var DummyInjectableClass $value2 */
-        $value2 = $injector->make(DummyInjectableClass::class);
+        $value2 = $container->make(DummyInjectableClass::class);
 
         $this->assertNotSame($value, $value2);
         $this->assertNotSame($value2->dummyClass, $value->dummyClass);
@@ -60,10 +60,10 @@ class ContainerInjectableTest extends TestCase
      */
     public function testNonInjectablesDoNotGetClassesAutoWired()
     {
-        $injector = new Container();
+        $container = new Container();
 
         /** @var DummyNonInjectableClass $test */
-        $test = $injector->make(DummyNonInjectableClass::class);
+        $test = $container->make(DummyNonInjectableClass::class);
 
         $this->assertNull($test->dummyClass);
     }

@@ -37,11 +37,11 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
 class RunOp implements OperationInterface, InjectableInterface
 {
     /**
-     * Injected injector used to make actions
+     * Injected container used to make actions
      *
      * @var Container
      */
-    public Container $injector;
+    public Container $container;
 
     /**
      * @inheritDoc
@@ -90,7 +90,7 @@ class RunOp implements OperationInterface, InjectableInterface
                     'invalid_action_expression' => $byResult,
                 ];
             }
-        } else if (!is_string($actionValue)) {
+        } elseif (!is_string($actionValue)) {
             return [
                 'invalid_action_value' => $actionValue,
             ];
@@ -130,7 +130,7 @@ class RunOp implements OperationInterface, InjectableInterface
         }
 
         /** @var ActionInterface $action */
-        $action = $this->injector->make($actionClass);
+        $action = $this->container->make($actionClass);
 
         return $action->run($data);
     }

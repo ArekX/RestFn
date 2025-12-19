@@ -20,6 +20,11 @@ integrations = ["phpunit"]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 7000 }
+no-empty = { enabled = false }
+no-else-clause = { enabled = false }
+too-many-methods = { enabled = false }
+identity-comparison = { enabled = false }
+no-shorthand-ternary = { enabled = false }
 
 [analyzer]
 find-unused-definitions = true

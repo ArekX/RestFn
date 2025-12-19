@@ -9,17 +9,17 @@ classes by looking at the class metadata.
 
 ## Usage
 
-Injector is initialized by specifying:
+container is initialized by specifying:
 
 ```php
-$injector = new \ArekX\RestFn\DI\Injector();
+$container = new \ArekX\RestFn\DI\container();
 ```
 
-In order to initalize a class by using an injector you need to call
+In order to initalize a class by using an container you need to call
 `make()` function.
 
 ```php
-$instance = $injector->make(\MyClass::class);
+$instance = $container->make(\MyClass::class);
 // Do something with your instance.
 ```
 
@@ -55,7 +55,7 @@ to ensure nothing can be done before they are available.
 
 This DI system does not inject dependencies into a constructor. This system uses a feature of
 PHP 7.4 called property types. When you set a property type of a class this DI system resolves
-it to a valid dependency class, calls `Injector::make()` to make that dependency or load a shared
+it to a valid dependency class, calls `container::make()` to make that dependency or load a shared
 instance if needed and wires it in.
 
 These dependencies are injected in public properties before the `__construct()` is called so you
@@ -82,18 +82,18 @@ class Class1 implements \ArekX\RestFn\DI\Contracts\Injectable {
     }
 }
 
-$injector = new \ArekX\RestFn\DI\Injector();
-$class1 = $injector->make(Class1::class, 'valuePassedToArg1');
+$container = new \ArekX\RestFn\DI\container();
+$class1 = $container->make(Class1::class, 'valuePassedToArg1');
 ```
 
-Injector first creates the instance of this class, wires the dependencies then calls `__construct()`
+container first creates the instance of this class, wires the dependencies then calls `__construct()`
 on the created the class, passing any arguments necessary.
 
 ## Shared instances (Singletons)
 
-Instances can be shared on the Injector across all calls to `Injector::make()` which 
+Instances can be shared on the container across all calls to `container::make()` which 
 includes time when you are auto-wiring dependencies. These classes are instantiated only once and their reference is 
-shared across all subsequent calls to `Injector::make()`.
+shared across all subsequent calls to `container::make()`.
 
 ### Sharing as an instance
 
@@ -101,27 +101,27 @@ You can share an instance by calling:
 
 ```php
 $instance = new \MyClass();
-$injector->share($instance);
+$container->share($instance);
 
 
-$shared = $injector->make(\MyClass::class);
+$shared = $container->make(\MyClass::class);
 
 echo $shared === $instance ? 'Same classes' : 'Not same'; // Will output: Same classes
 ```
 
-This class will be automatically shared across all calls to `Injector::make()`
+This class will be automatically shared across all calls to `container::make()`
 
 ### Sharing as a class name
 
 If you share a class as string (by calling `MyClass::class` or passing a string), this function 
-will first instantiate this class by calling the `Injector::make()` function before making this class shared.
+will first instantiate this class by calling the `container::make()` function before making this class shared.
 
 ```php
-$injector->share(\MyClass::class);
+$container->share(\MyClass::class);
 
 
-$sharedA = $injector->make(\MyClass::class);
-$sharedB = $injector->make(\MyClass::class);
+$sharedA = $container->make(\MyClass::class);
+$sharedB = $container->make(\MyClass::class);
 
 echo $sharedA === $sharedB ? 'Same classes' : 'Not same'; // Will output: Same classes
 ```
@@ -136,25 +136,25 @@ services which need to be only instantiated once.
 ```php
 class MyClass implements \ArekX\RestFn\DI\Contracts\SharedInstance {}
 
-$sharedA = $injector->make(\MyClass::class);
-$sharedB = $injector->make(\MyClass::class);
+$sharedA = $container->make(\MyClass::class);
+$sharedB = $container->make(\MyClass::class);
 
 echo $sharedA === $sharedB ? 'Same classes' : 'Not same'; // Will output: Same classes
 ``` 
 
 ## Configurable Instances
 
-Instances can have configurations passed to them by the injector itself. In order for
+Instances can have configurations passed to them by the container itself. In order for
 instances to get the configuration passed to them they need to implement `ArekX\RestFn\DI\Contracts\Configurable`
 interface.
 
-To these interfaces, injector will pass the array config to them before their `__construct()` is called. This is done in a 
+To these interfaces, container will pass the array config to them before their `__construct()` is called. This is done in a 
 way to ensure that the class you instantiate has everything ready for it before it can do any work.
 
-Configuration is passed per class in an array during Injector creation or by a call to `Injector::configure()`:
+Configuration is passed per class in an array during container creation or by a call to `container::configure()`:
 
 ```php
-$injector = new \ArekX\RestFn\DI\Injector([
+$container = new \ArekX\RestFn\DI\container([
     'configurations' => [
          \MyConfigurableClass::class => [
                 'key1' => 'value',
@@ -180,19 +180,19 @@ class MyConfigurableClass implements ArekX\RestFn\DI\Contracts\Configurable {
     }
 }
 
-$instance = $injector->make(MyConfigurableClass::class);
+$instance = $container->make(MyConfigurableClass::class);
 ```
 
-If there is no configuration specified for the instance in the injector itself. Injector will throw an error.
+If there is no configuration specified for the instance in the container itself. container will throw an error.
 
-You can also manually pass the configuration for a specific class by calling `Injector::configure()`.
+You can also manually pass the configuration for a specific class by calling `container::configure()`.
 
 ## Aliasing
 
 Classes can be aliased so that you can set an interface and inject the implementation of that interface
 to every class which implements `Injectable` interface.
 
-Aliasing can be setup by calling `Injector::alias()` or by passing the constructor configuration.
+Aliasing can be setup by calling `container::alias()` or by passing the constructor configuration.
 
 ```php
 interface MyInterface {}
@@ -203,19 +203,19 @@ class MyClass2 implements \ArekX\RestFn\DI\Contracts\Injectable {
     public MyInterface $interface;
 }
 
-$injector = new \ArekX\RestFn\DI\Injector([
+$container = new \ArekX\RestFn\DI\container([
     'aliases' => [
         \MyInterface::class => \MyClass::class
     ]
 ]);
 
-$instance = $injector->make(MyClass2::class); // Creates instance of MyClass2 with MyClass injected into $interface.
+$instance = $container->make(MyClass2::class); // Creates instance of MyClass2 with MyClass injected into $interface.
 ```
 
 ## Factories
 
-Factory classes are classes to which injector delegates instance creation. When a `make()` function is called,
-injector first checks if there are factory classes set for that specific class and if there are it instantiates
+Factory classes are classes to which container delegates instance creation. When a `make()` function is called,
+container first checks if there are factory classes set for that specific class and if there are it instantiates
 the factory classes using `make()` method and then calls the factory's `create()` method, passing the desired
 class and arguments.
 
@@ -233,59 +233,59 @@ class MyFactory implements \ArekX\RestFn\DI\Contracts\Factory {
 
 class MyClass {}
 
-$injector = new \ArekX\RestFn\DI\Injector([
+$container = new \ArekX\RestFn\DI\container([
     'factories' => [
         \MyClass::class => \MyFactory::class
     ]
 ]);
 
 // Instance will be created by using MyFactory::create() method.
-$instance = $injector->make(MyClass::class);
+$instance = $container->make(MyClass::class);
 ```
 
 Please note that instances created through factory's `create()` method will not go through the injection process
 which means that they will not be auto-wired or shared by default. If you need this functionality then you
-need to inject the injector in the factory function.
+need to inject the container in the factory function.
 
 Example:
 ```php
 class MyFactory implements \ArekX\RestFn\DI\Contracts\Factory {
   
-  public \ArekX\RestFn\DI\Injector $injector;
+  public \ArekX\RestFn\DI\container $container;
 
   public function create(string $definition,array $args) {
-      // Injector calls disableFactory() for this class before calling this create() function
+      // container calls disableFactory() for this class before calling this create() function
       // so its safe to directly call make() here.
-      return $this->injector->make($definition, ...$args);
+      return $this->container->make($definition, ...$args);
   }
 }
 
 class MyClass {}
 
-$injector = new \ArekX\RestFn\DI\Injector([
+$container = new \ArekX\RestFn\DI\container([
     'factories' => [
         \MyClass::class => \MyFactory::class
     ]
 ]);
 
-$injector->share($this);
+$container->share($this);
 
 
 // Instance will be created by using MyFactory::create() method.
-$instance = $injector->make(MyClass::class);
+$instance = $container->make(MyClass::class);
 ```
 
 ## Considerations
 
-### Injector is NOT a service locator
+### container is NOT a service locator
 
 For most of your use-cases RestFn will handle all injection for you. However you can
-request na injector by specifying the `Injector` as a public property in your classes 
+request na container by specifying the `container` as a public property in your classes 
 which implement `Injectable` interface.
 
-But this injector should **never** be used for loading services directly by passing definitions. 
+But this container should **never** be used for loading services directly by passing definitions. 
 
 This makes the DI system a Service Locator, which is an anti-pattern and you should only 
-use the injector directly when  you need to resolve  or map classes manually through some 
+use the container directly when  you need to resolve  or map classes manually through some 
 logic such as mapping a request value to a specific class, or to handle some specific 
 injection use cases.

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -78,7 +79,7 @@ class ParserTest extends TestCase
         ];
 
         $parser = new Parser();
-        $parser->injector = $this->getInjector();
+        $parser->container = $this->getcontainer();
         $parser->configure([
             'ops' => [DummyOperation::class]
         ]);
@@ -135,7 +136,7 @@ class ParserTest extends TestCase
     public function getParser($ops = [])
     {
         $parser = new Parser();
-        $parser->injector = $this->getInjector();
+        $parser->container = $this->getcontainer();
 
         $parser->configure(['ops' => $ops]);
         return $parser;

@@ -36,8 +36,8 @@ class ContainerMakeTest extends TestCase
      */
     public function testMakeCreatesAnInstance()
     {
-        $injector = new Container();
-        $value = $injector->make(DummyClass::class);
+        $container = new Container();
+        $value = $container->make(DummyClass::class);
         $this->assertInstanceOf(DummyClass::class, $value, 'Created is of type of DummyClass.');
     }
 
@@ -47,10 +47,10 @@ class ContainerMakeTest extends TestCase
      */
     public function testMakeWithConstructorArguments()
     {
-        $injector = new Container();
+        $container = new Container();
 
         /** @var DummyClassWithArgs $value */
-        $value = $injector->make(DummyClassWithArgs::class, 'test1', 'test2');
+        $value = $container->make(DummyClassWithArgs::class, 'test1', 'test2');
 
         $this->assertEquals('test1', $value->arg1, 'Arg1 is set.');
         $this->assertEquals('test2', $value->arg2, 'Arg2 is set.');
@@ -65,14 +65,14 @@ class ContainerMakeTest extends TestCase
         $testConfig = [
             'test' => 1
         ];
-        $injector = new Container([
+        $container = new Container([
             'configurations' => [
                 DummyConfigurableClass::class => $testConfig
             ]
         ]);
 
         /** @var DummyConfigurableClass $value */
-        $value = $injector->make(DummyConfigurableClass::class);
+        $value = $container->make(DummyConfigurableClass::class);
 
         $this->assertInstanceOf(DummyConfigurableClass::class, $value, 'Created is of type of DummyClass.');
         $this->assertEquals($value->passedConfig, $testConfig, 'Config is passed correctly.');
@@ -87,14 +87,14 @@ class ContainerMakeTest extends TestCase
         $testConfig = [
             'test' => 1
         ];
-        $injector = new Container([
+        $container = new Container([
             'configurations' => [
                 DummyConfigurableClass::class => $testConfig
             ]
         ]);
 
         /** @var DummyConfigurableClass $value */
-        $value = $injector->make(DummyConfigurableClass::class);
+        $value = $container->make(DummyConfigurableClass::class);
 
         $this->assertEquals($value->callStack, [
             'tests\DI\_mock\DummyConfigurableClass::configure',
@@ -111,14 +111,14 @@ class ContainerMakeTest extends TestCase
         $testConfig = [
             'test' => 1
         ];
-        $injector = new Container([
+        $container = new Container([
             'configurations' => [
                 DummyConfigurableClassWithArgs::class => $testConfig
             ]
         ]);
 
         /** @var DummyConfigurableClassWithArgs $value */
-        $value = $injector->make(DummyConfigurableClassWithArgs::class, 'arg1', 'arg2');
+        $value = $container->make(DummyConfigurableClassWithArgs::class, 'arg1', 'arg2');
 
         $this->assertInstanceOf(DummyConfigurableClassWithArgs::class, $value, 'Created is of type of DummyClassWithArgs.');
         $this->assertEquals($value->passedConfig, $testConfig, 'Config is passed correctly.');
@@ -132,11 +132,11 @@ class ContainerMakeTest extends TestCase
      */
     public function testMakeConfigurableWithNoMappedConfiguration()
     {
-        $injector = new Container([]);
+        $container = new Container([]);
 
         $this->expectException(ConfigNotSpecifiedException::class);
 
-        $injector->make(DummyConfigurableClass::class, 'arg1', 'arg2');
+        $container->make(DummyConfigurableClass::class, 'arg1', 'arg2');
     }
 
     /**
@@ -145,13 +145,13 @@ class ContainerMakeTest extends TestCase
      */
     public function testPassConfigThroughMethod()
     {
-        $injector = new Container([]);
+        $container = new Container([]);
 
         $testConfig = ['test1' => 'config1'];
-        $injector->configure(DummyConfigurableClass::class, $testConfig);
+        $container->configure(DummyConfigurableClass::class, $testConfig);
 
         /** @var DummyConfigurableClass $value */
-        $value = $injector->make(DummyConfigurableClass::class, 'arg1', 'arg2');
+        $value = $container->make(DummyConfigurableClass::class, 'arg1', 'arg2');
 
         $this->assertInstanceOf(DummyConfigurableClass::class, $value, 'Created is of type of DummyClassWithArgs.');
         $this->assertEquals($value->passedConfig, $testConfig, 'Config is passed correctly.');
@@ -163,12 +163,12 @@ class ContainerMakeTest extends TestCase
      */
     public function testAliasedClasses()
     {
-        $injector = new Container([
+        $container = new Container([
             'aliases' => [DummyClass::class => DummyOverrideClass::class]
         ]);
 
         /** @var DummyClass $value */
-        $value = $injector->make(DummyClass::class, 'arg1', 'arg2');
+        $value = $container->make(DummyClass::class, 'arg1', 'arg2');
 
         $this->assertInstanceOf(DummyOverrideClass::class, $value, 'Created is of type of DummyOverrideClass.');
     }
@@ -180,12 +180,12 @@ class ContainerMakeTest extends TestCase
      */
     public function testAliasingThroughAliasCall()
     {
-        $injector = new Container();
+        $container = new Container();
 
-        $injector->alias(DummyClass::class, DummyOverrideClass::class);
+        $container->alias(DummyClass::class, DummyOverrideClass::class);
 
         /** @var DummyClass $value */
-        $value = $injector->make(DummyClass::class, 'arg1', 'arg2');
+        $value = $container->make(DummyClass::class, 'arg1', 'arg2');
 
         $this->assertInstanceOf(DummyOverrideClass::class, $value, 'Created is of type of DummyOverrideClass.');
     }

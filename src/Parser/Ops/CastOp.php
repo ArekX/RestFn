@@ -79,7 +79,7 @@ class CastOp implements OperationInterface
                     'invalid_type_expression' => $byResult,
                 ];
             }
-        } else if ($typeValue !== 'bool' && $typeValue !== 'int' && $typeValue !== 'float' && $typeValue !== 'string') {
+        } elseif ($typeValue !== 'bool' && $typeValue !== 'int' && $typeValue !== 'float' && $typeValue !== 'string') {
             return [
                 'invalid_type_value' => $typeValue,
             ];

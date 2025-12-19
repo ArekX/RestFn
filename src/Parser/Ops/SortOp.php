@@ -31,6 +31,7 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  *
  * Represents Sorting operation
  */
+// @mago-ignore lint:cyclomatic-complexity
 class SortOp implements OperationInterface
 {
     /**
@@ -93,7 +94,7 @@ class SortOp implements OperationInterface
                     'invalid_by_expression' => $byResult,
                 ];
             }
-        } else if (!is_string($byValue) && !is_int($byValue)) {
+        } elseif (!is_string($byValue) && !is_int($byValue)) {
             return [
                 'invalid_by_value' => $byValue,
             ];
@@ -112,7 +113,7 @@ class SortOp implements OperationInterface
                     'invalid_direction_expression' => $byResult,
                 ];
             }
-        } else if ($directionValue !== 'asc' && $directionValue !== 'desc') {
+        } elseif ($directionValue !== 'asc' && $directionValue !== 'desc') {
             return [
                 'invalid_direction_value' => $directionValue,
             ];

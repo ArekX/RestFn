@@ -46,7 +46,7 @@ class OpTestCase extends TestCase
     public function getParser($ops = [])
     {
         $parser = new Parser();
-        $parser->injector = $this->getInjector();
+        $parser->container = $this->getcontainer();
 
         $parser->configure(['ops' => $ops]);
         return $parser;
@@ -57,7 +57,7 @@ class OpTestCase extends TestCase
         $op = $this->opClass;
 
         /** @var OperationInterface $instance */
-        $instance = $this->getInjector()->make($op);
+        $instance = $this->getcontainer()->make($op);
 
         DummyCalledOperation::$evaluated = false;
 

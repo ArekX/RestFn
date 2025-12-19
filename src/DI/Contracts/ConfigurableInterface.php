@@ -24,7 +24,7 @@ namespace ArekX\RestFn\DI\Contracts;
  * Interface Configurable
  * @package ArekX\RestFn\DI\Contracts
  *
- * Class which implement this interface will receive config from Injector::getConfig()
+ * Class which implement this interface will receive config from container::getConfig()
  */
 interface ConfigurableInterface
 {

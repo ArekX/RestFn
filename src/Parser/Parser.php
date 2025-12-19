@@ -38,11 +38,11 @@ use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
 class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInterface
 {
     /**
-     * Injected injector used to create operations.
+     * Injected container used to create operations.
      *
      * @var Container
      */
-    public Container $injector;
+    public Container $container;
 
     /**
      * Operation handlers where each operation is mapped to a class
@@ -129,7 +129,7 @@ class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInt
 
         $operationClass = $this->ops[$ruleName];
 
-        return $this->injector->make($operationClass);
+        return $this->container->make($operationClass);
     }
 
     protected function getRuleName($value): string

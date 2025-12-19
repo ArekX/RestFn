@@ -33,13 +33,13 @@ class ContainerSharedTest extends TestCase
      */
     public function testShareInstance()
     {
-        $injector = new Container();
+        $container = new Container();
 
         $test = new DummyClass();
 
-        $injector->share($test);
+        $container->share($test);
 
-        $newInstance = $injector->make(DummyClass::class);
+        $newInstance = $container->make(DummyClass::class);
 
         $this->assertSame($test, $newInstance, 'New instance is same for singleton.');
     }
@@ -50,12 +50,12 @@ class ContainerSharedTest extends TestCase
      */
     public function testShareClassName()
     {
-        $injector = new Container();
+        $container = new Container();
 
-        $injector->share(DummyClass::class);
+        $container->share(DummyClass::class);
 
-        $test = $injector->make(DummyClass::class);
-        $newInstance = $injector->make(DummyClass::class);
+        $test = $container->make(DummyClass::class);
+        $newInstance = $container->make(DummyClass::class);
 
         $this->assertSame($test, $newInstance, 'New instance is same for singleton.');
     }
@@ -66,10 +66,10 @@ class ContainerSharedTest extends TestCase
      */
     public function testInstancesImplementingSharedAreAutomaticallyShared()
     {
-        $injector = new Container();
+        $container = new Container();
 
-        $test = $injector->make(DummySharedClass::class);
-        $newInstance = $injector->make(DummySharedClass::class);
+        $test = $container->make(DummySharedClass::class);
+        $newInstance = $container->make(DummySharedClass::class);
 
         $this->assertSame($test, $newInstance, 'New instance is same for singleton.');
     }
@@ -81,14 +81,14 @@ class ContainerSharedTest extends TestCase
      */
     public function testShareClassNameIsBeingAlwaysAliased()
     {
-        $injector = new Container();
+        $container = new Container();
 
-        $injector->alias(DummyClass::class, DummyOverrideClass::class);
+        $container->alias(DummyClass::class, DummyOverrideClass::class);
 
-        $injector->share(DummyClass::class);
+        $container->share(DummyClass::class);
 
-        $test = $injector->make(DummyClass::class);
-        $newInstance = $injector->make(DummyClass::class);
+        $test = $container->make(DummyClass::class);
+        $newInstance = $container->make(DummyClass::class);
 
         $this->assertInstanceOf(DummyOverrideClass::class, $test);
         $this->assertInstanceOf(DummyOverrideClass::class, $newInstance);

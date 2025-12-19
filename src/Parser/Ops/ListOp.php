@@ -38,11 +38,11 @@ use ArekX\RestFn\Parser\Data\ListRequest;
 class ListOp implements OperationInterface, InjectableInterface
 {
     /**
-     * Injected injector used to make actions
+     * Injected container used to make actions
      *
      * @var Container
      */
-    public Container $injector;
+    public Container $container;
 
     /**
      * @inheritDoc
@@ -93,7 +93,7 @@ class ListOp implements OperationInterface, InjectableInterface
                     'invalid_action_expression' => $byResult,
                 ];
             }
-        } else if (!is_string($actionValue)) {
+        } elseif (!is_string($actionValue)) {
             return [
                 'invalid_action_value' => $actionValue,
             ];
@@ -124,7 +124,7 @@ class ListOp implements OperationInterface, InjectableInterface
         }
 
         /** @var ListActionInterface $action */
-        $action = $this->injector->make($actionClass);
+        $action = $this->container->make($actionClass);
 
         $result = $action->run($request);
 
