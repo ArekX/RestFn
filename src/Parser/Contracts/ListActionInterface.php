@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -15,19 +18,24 @@
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\DI\Contracts;
+namespace ArekX\RestFn\Parser\Contracts;
 
+
+use ArekX\RestFn\Parser\Data\ListRequest;
+use ArekX\RestFn\Parser\Data\ListResult;
 
 /**
- * Interface Injectable
- * @package ArekX\RestFn\DI\Contracts
+ * Interface ListAction
+ * @package ArekX\RestFn\Parser\Contracts
  *
- * Classes which implement injectable will have all their public typed classes auto-wired.
- *
- * Properties must be public and have a type set to be injected.
- *
- * All properties will be injected before __construct() is called.
+ * Represents one action to be ran in ListOp.
  */
-interface Injectable
+interface ListActionInterface
 {
+    /**
+     * Runs list operation and returns the data.
+     *
+     * @return ListResult
+     */
+    public function run(ListRequest $request): ListResult;
 }

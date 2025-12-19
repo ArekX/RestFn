@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,9 +19,9 @@
 namespace tests\Parser\_mock;
 
 
-use ArekX\RestFn\Parser\Contracts\Action;
+use ArekX\RestFn\Parser\Contracts\ActionInterface;
 
-class DummyAction implements Action
+class DummyAction implements ActionInterface
 {
     public $result = ['result' => 1];
     public $data = null;

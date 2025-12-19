@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,8 +21,8 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class ValueOp
@@ -28,7 +31,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  * Represents one value operation
  *
  */
-class ValueOp implements Operation
+class ValueOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -43,7 +46,7 @@ class ValueOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 2) {
             return [
@@ -59,7 +62,7 @@ class ValueOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         return $value[1];
     }

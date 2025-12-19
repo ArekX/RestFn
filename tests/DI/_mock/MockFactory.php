@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,10 +19,10 @@
 namespace tests\DI\_mock;
 
 
-use ArekX\RestFn\DI\Contracts\Factory;
-use ArekX\RestFn\DI\Contracts\SharedInstance;
+use ArekX\RestFn\DI\Contracts\FactoryInterface;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 
-class MockFactory implements Factory, SharedInstance
+class MockFactory implements FactoryInterface, SharedInstanceInterface
 {
     protected $wasCalled = false;
 

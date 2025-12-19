@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,10 +19,10 @@
 namespace tests\Parser\_mock;
 
 
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
-class DummyCalledOperation implements Operation
+class DummyCalledOperation implements OperationInterface
 {
     public static $validated = false;
     public static $evaluated = false;
@@ -31,13 +32,13 @@ class DummyCalledOperation implements Operation
         return 'called';
     }
 
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         static::$validated = true;
         return null;
     }
 
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         static::$evaluated = true;
         return $value[1];

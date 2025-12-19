@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,11 +19,11 @@
 namespace tests\Parser\_mock;
 
 
-use ArekX\RestFn\Parser\Contracts\ListAction;
+use ArekX\RestFn\Parser\Contracts\ListActionInterface;
 use ArekX\RestFn\Parser\Data\ListRequest;
 use ArekX\RestFn\Parser\Data\ListResult;
 
-class DummyListAction implements ListAction
+class DummyListAction implements ListActionInterface
 {
     public $result = [
         ['test' => 1]

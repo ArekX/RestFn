@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -23,28 +27,28 @@ namespace ArekX\RestFn\Parser\Contracts;
  *
  * Represents one rule operation.
  */
-interface Operation
+interface OperationInterface
 {
     /**
      * Validate rules and value.
      *
      * Validate a rule against a value and return errors if any.
      *
-     * @param mixed $value Value to be validated.
-     * @param Evaluator $evaluator Evaluator which created the operation.
+     * @param array $value Value to be validated.
+     * @param EvaluatorInterface $evaluator Evaluator which created the operation.
      *
      * @return null|array Returns null if rules and value are valid, array of errors otherwise.
      */
-    public function validate(Evaluator $evaluator, $value);
+    public function validate(EvaluatorInterface $evaluator, array $value);
 
     /**
      * Evaluates rules against a value.
      *
      * @param mixed $value Value to be evaluated against.
-     * @param Evaluator $evaluator Evaluator which created this rule.
+     * @param EvaluatorInterface $evaluator Evaluator which created this rule.
      * @return mixed Evaluated result
      */
-    public function evaluate(Evaluator $evaluator, $value);
+    public function evaluate(EvaluatorInterface $evaluator, array $value);
 
     /**
      * Returns a name of the operation

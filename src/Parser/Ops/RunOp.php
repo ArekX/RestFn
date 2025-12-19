@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,11 +22,11 @@
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\DI\Contracts\Injectable;
+use ArekX\RestFn\DI\Contracts\InjectableInterface;
 use ArekX\RestFn\Helper\Value;
-use ArekX\RestFn\Parser\Contracts\Action;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\ActionInterface;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class RunOp
@@ -31,7 +34,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents Run operation
  */
-class RunOp implements Operation, Injectable
+class RunOp implements OperationInterface, InjectableInterface
 {
     /**
      * Injected injector used to make actions
@@ -53,7 +56,7 @@ class RunOp implements Operation, Injectable
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 3) {
             return [
@@ -77,7 +80,7 @@ class RunOp implements Operation, Injectable
         return null;
     }
 
-    protected function validateActionNameValue(Evaluator $evaluator, $actionValue)
+    protected function validateActionNameValue(EvaluatorInterface $evaluator, $actionValue)
     {
         if (is_array($actionValue)) {
             $byResult = $evaluator->validate($actionValue);
@@ -96,7 +99,7 @@ class RunOp implements Operation, Injectable
         return null;
     }
 
-    protected function validateDataValue(Evaluator $evaluator, $actionValue)
+    protected function validateDataValue(EvaluatorInterface $evaluator, $actionValue)
     {
         if (is_array($actionValue)) {
             $byResult = $evaluator->validate($actionValue);
@@ -115,7 +118,7 @@ class RunOp implements Operation, Injectable
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $actionName = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
         $data = is_array($value[2]) ? $evaluator->evaluate($value[2]) : $value[2];
@@ -126,7 +129,7 @@ class RunOp implements Operation, Injectable
             throw new \Exception('Invalid action: ' . $actionName);
         }
 
-        /** @var Action $action */
+        /** @var ActionInterface $action */
         $action = $this->injector->make($actionClass);
 
         return $action->run($data);

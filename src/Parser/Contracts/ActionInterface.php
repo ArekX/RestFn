@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -15,17 +19,22 @@
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\DI\Contracts;
+namespace ArekX\RestFn\Parser\Contracts;
+
 
 /**
- * Interface SharedInstance
- * @package ArekX\RestFn\DI\Contracts
+ * Interface Action
+ * @package ArekX\RestFn\Parser\Contracts
  *
- * Classes which implement this interface will be instantiated only once and then
- * shared across all other classes which implement Injectable.
- *
- * @see Injectable
+ * Represents one action to be ran in RunOp.
  */
-interface SharedInstance
+interface ActionInterface
 {
+    /**
+     * Runs action and returns array data.
+     *
+     * @param mixed $data Data passed to the action as a part of the third parameter in RunOp.
+     * @return array Result of the action.
+     */
+    public function run(mixed $data): array;
 }

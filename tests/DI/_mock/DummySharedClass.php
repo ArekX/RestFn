@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,8 +19,6 @@
 namespace tests\DI\_mock;
 
 
-use ArekX\RestFn\DI\Contracts\SharedInstance;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 
-class DummySharedClass implements SharedInstance
-{
-}
+class DummySharedClass implements SharedInstanceInterface {}

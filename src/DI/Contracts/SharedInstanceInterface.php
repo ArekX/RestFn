@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,19 +21,12 @@
 namespace ArekX\RestFn\DI\Contracts;
 
 /**
- * Interface Configurable
+ * Interface SharedInstance
  * @package ArekX\RestFn\DI\Contracts
  *
- * Class which implement this interface will receive config from Injector::getConfig()
+ * Classes which implement this interface will be instantiated only once and then
+ * shared across all other classes which implement Injectable.
+ *
+ * @see InjectableInterface
  */
-interface Configurable
-{
-    /**
-     * Performs configuration on this class.
-     *
-     * Classes implementing configure will have this function called right after the constructor is called.
-     *
-     * @param array $config Array containing keys and values of configuration data.
-     */
-    public function configure(array $config);
-}
+interface SharedInstanceInterface {}

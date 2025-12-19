@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,8 +21,8 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class CompareOp
@@ -27,7 +30,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents Comparison operation
  */
-class CompareOp implements Operation
+class CompareOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -42,7 +45,7 @@ class CompareOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 4) {
             return [
@@ -100,7 +103,7 @@ class CompareOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $leftResult = $evaluator->evaluate($value[1]);
         $rightResult = $evaluator->evaluate($value[3]);

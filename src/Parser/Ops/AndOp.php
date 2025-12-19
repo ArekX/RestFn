@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,8 +21,8 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class AndOp
@@ -27,7 +30,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents AND operation
  */
-class AndOp implements Operation
+class AndOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -42,7 +45,7 @@ class AndOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         $max = count($value);
 
@@ -62,14 +65,16 @@ class AndOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $max = count($value);
 
         for ($i = 1; $i < $max; $i++) {
-            if (!$evaluator->evaluate($value[$i])) {
-                return false;
+            if ($evaluator->evaluate($value[$i])) {
+                continue;
             }
+
+            return false;
         }
 
         return $max > 1;

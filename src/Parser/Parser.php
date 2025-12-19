@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,10 +22,10 @@
 namespace ArekX\RestFn\Parser;
 
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\DI\Contracts\Configurable;
-use ArekX\RestFn\DI\Contracts\Injectable;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\DI\Contracts\ConfigurableInterface;
+use ArekX\RestFn\DI\Contracts\InjectableInterface;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
 use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
 
@@ -32,7 +35,7 @@ use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
  *
  * This class represents a parser which is used to handle the requests.
  */
-class Parser implements Injectable, Configurable, Evaluator
+class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInterface
 {
     /**
      * Injected injector used to create operations.
@@ -67,7 +70,7 @@ class Parser implements Injectable, Configurable, Evaluator
     #[\Override]
     public function configure(array $config)
     {
-        /** @var Operation[] $ops */
+        /** @var OperationInterface[] $ops */
         $ops = $config['ops'];
 
         $this->ops = [];
@@ -108,7 +111,7 @@ class Parser implements Injectable, Configurable, Evaluator
      * Returns operation based on a value
      *
      * @param $value
-     * @return Operation
+     * @return OperationInterface
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
      */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,9 +19,9 @@
 namespace tests\DI\_mock;
 
 
-use ArekX\RestFn\DI\Contracts\Configurable;
+use ArekX\RestFn\DI\Contracts\ConfigurableInterface;
 
-class DummyConfigurableClassWithArgs implements Configurable
+class DummyConfigurableClassWithArgs implements ConfigurableInterface
 {
     public $passedConfig;
     public $arg1;

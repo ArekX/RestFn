@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,11 +22,11 @@
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\DI\Contracts\Injectable;
+use ArekX\RestFn\DI\Contracts\InjectableInterface;
 use ArekX\RestFn\Helper\Value;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\ListAction;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\ListActionInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Data\ListRequest;
 
 /**
@@ -32,7 +35,7 @@ use ArekX\RestFn\Parser\Data\ListRequest;
  *
  * Represents List operation
  */
-class ListOp implements Operation, Injectable
+class ListOp implements OperationInterface, InjectableInterface
 {
     /**
      * Injected injector used to make actions
@@ -54,7 +57,7 @@ class ListOp implements Operation, Injectable
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 3) {
             return [
@@ -80,7 +83,7 @@ class ListOp implements Operation, Injectable
         return null;
     }
 
-    protected function validateActionNameValue(Evaluator $evaluator, $actionValue)
+    protected function validateActionNameValue(EvaluatorInterface $evaluator, $actionValue)
     {
         if (is_array($actionValue)) {
             $byResult = $evaluator->validate($actionValue);
@@ -103,7 +106,7 @@ class ListOp implements Operation, Injectable
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $actionName = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
         $data = $evaluator->evaluate($value[2]);
@@ -120,7 +123,7 @@ class ListOp implements Operation, Injectable
             throw new \Exception('Invalid list action: ' . $actionName);
         }
 
-        /** @var ListAction $action */
+        /** @var ListActionInterface $action */
         $action = $this->injector->make($actionClass);
 
         $result = $action->run($request);

@@ -19,7 +19,7 @@
 namespace tests\Parser\Ops;
 
 
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Parser;
 use tests\Parser\_mock\DummyCalledOperation;
 use tests\Parser\_mock\DummyFailOperation;
@@ -35,7 +35,7 @@ class OpTestCase extends TestCase
     {
         $parser = $this->createStandardParser();
 
-        /** @var Operation $instance */
+        /** @var OperationInterface $instance */
         $instance = new $this->opClass();
 
         DummyCalledOperation::$validated = false;
@@ -56,7 +56,7 @@ class OpTestCase extends TestCase
     {
         $op = $this->opClass;
 
-        /** @var Operation $instance */
+        /** @var OperationInterface $instance */
         $instance = $this->getInjector()->make($op);
 
         DummyCalledOperation::$evaluated = false;

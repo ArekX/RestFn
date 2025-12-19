@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -23,7 +27,7 @@ namespace ArekX\RestFn\Parser\Contracts;
  *
  * Represents one rule parser.
  */
-interface Evaluator
+interface EvaluatorInterface
 {
     /**
      * Sets context for this evaluator.
@@ -35,7 +39,7 @@ interface Evaluator
      * @param mixed $value Value which will be set.
      * @return $this
      */
-    public function setContext(string $key, $value);
+    public function setContext(string $key, mixed $value);
 
     /**
      * Returns currently set context data by key.
@@ -47,16 +51,16 @@ interface Evaluator
     /**
      * Validates rules sent rules against a value.
      *
-     * @param mixed $value Value to be validated with rules.
+     * @param array $value Value to be validated with rules.
      * @return null|array Returns list of errors if validation fails, or null if validation is successful.
      */
-    public function validate($value): ?array;
+    public function validate(array $value): ?array;
 
     /**
      * Evaluates a value.
      *
-     * @param mixed $value Value to be evaluated.
+     * @param array $value Value to be evaluated.
      * @return mixed Returns a result from evaluated value.
      */
-    public function evaluate($value);
+    public function evaluate(array $value);
 }

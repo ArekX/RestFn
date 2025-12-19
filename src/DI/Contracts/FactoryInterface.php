@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -31,7 +34,7 @@ use ArekX\RestFn\DI\Container;
  *
  * @see Container::make()
  */
-interface Factory
+interface FactoryInterface
 {
     /**
      * Resolves instance creation on the factory instance.

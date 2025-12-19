@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -15,22 +18,17 @@
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\Parser\Contracts;
+namespace ArekX\RestFn\DI\Contracts;
 
 
 /**
- * Interface Action
- * @package ArekX\RestFn\Parser\Contracts
+ * Interface Injectable
+ * @package ArekX\RestFn\DI\Contracts
  *
- * Represents one action to be ran in RunOp.
+ * Classes which implement injectable will have all their public typed classes auto-wired.
+ *
+ * Properties must be public and have a type set to be injected.
+ *
+ * All properties will be injected before __construct() is called.
  */
-interface Action
-{
-    /**
-     * Runs action and returns array data.
-     *
-     * @param mixed $data Data passed to the action as a part of the third parameter in RunOp.
-     * @return array Result of the action.
-     */
-    public function run($data): array;
-}
+interface InjectableInterface {}

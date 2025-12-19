@@ -19,11 +19,11 @@
 namespace tests\DI\_mock;
 
 
-use ArekX\RestFn\DI\Contracts\Factory;
-use ArekX\RestFn\DI\Contracts\SharedInstance;
+use ArekX\RestFn\DI\Contracts\FactoryInterface;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 use ArekX\RestFn\DI\Container;
 
-class MockContainerFactory implements Factory, SharedInstance
+class MockContainerFactory implements FactoryInterface, SharedInstanceInterface
 {
     public Container $container;
 

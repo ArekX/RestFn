@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,8 +22,8 @@
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class VarOp
@@ -28,7 +31,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents setting or getting a variable operation
  */
-class VarOp implements Operation
+class VarOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -43,7 +46,7 @@ class VarOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         $max = count($value);
 
@@ -85,7 +88,7 @@ class VarOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $max = count($value);
 

@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,8 +22,8 @@
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class GetOp
@@ -29,7 +32,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  * Represents one get operation
  *
  */
-class GetOp implements Operation
+class GetOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -44,7 +47,7 @@ class GetOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) < 3) {
             return ['min_parameters' => 3];
@@ -79,7 +82,7 @@ class GetOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $result = $evaluator->evaluate($value[2]);
 

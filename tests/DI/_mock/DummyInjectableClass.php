@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,9 +19,9 @@
 namespace tests\DI\_mock;
 
 
-use ArekX\RestFn\DI\Contracts\Injectable;
+use ArekX\RestFn\DI\Contracts\InjectableInterface;
 
-class DummyInjectableClass implements Injectable
+class DummyInjectableClass implements InjectableInterface
 {
     public DummyClass $dummyClass;
     public $test;

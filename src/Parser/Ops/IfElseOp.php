@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,8 +21,8 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class IfElseOp
@@ -27,7 +30,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents If ELSE operation
  */
-class IfElseOp implements Operation
+class IfElseOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -42,7 +45,7 @@ class IfElseOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 4) {
             return [
@@ -73,7 +76,7 @@ class IfElseOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $result = $evaluator->evaluate($value[1]);
         return $evaluator->evaluate($value[$result ? 2 : 3]);

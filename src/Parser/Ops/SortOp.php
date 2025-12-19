@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,8 +22,8 @@
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class SortOp
@@ -28,7 +31,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents Sorting operation
  */
-class SortOp implements Operation
+class SortOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -43,7 +46,7 @@ class SortOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         $max = count($value);
         if ($max > 4 || $max < 3) {
@@ -60,7 +63,7 @@ class SortOp implements Operation
         return $this->validateNormalSignature($evaluator, $value);
     }
 
-    protected function validateBySignature(Evaluator $evaluator, $value)
+    protected function validateBySignature(EvaluatorInterface $evaluator, $value)
     {
         $result = $this->validateByValue($evaluator, $value[1]);
         if ($result) {
@@ -80,7 +83,7 @@ class SortOp implements Operation
         return null;
     }
 
-    protected function validateByValue(Evaluator $evaluator, $byValue)
+    protected function validateByValue(EvaluatorInterface $evaluator, $byValue)
     {
         if (is_array($byValue)) {
             $byResult = $evaluator->validate($byValue);
@@ -99,7 +102,7 @@ class SortOp implements Operation
         return null;
     }
 
-    protected function validateDirectionValue(Evaluator $evaluator, $directionValue)
+    protected function validateDirectionValue(EvaluatorInterface $evaluator, $directionValue)
     {
         if (is_array($directionValue)) {
             $byResult = $evaluator->validate($directionValue);
@@ -118,7 +121,7 @@ class SortOp implements Operation
         return null;
     }
 
-    protected function validateFromValue(Evaluator $evaluator, $fromValue)
+    protected function validateFromValue(EvaluatorInterface $evaluator, $fromValue)
     {
         $byResult = $evaluator->validate($fromValue);
 
@@ -131,7 +134,7 @@ class SortOp implements Operation
         return null;
     }
 
-    protected function validateNormalSignature(Evaluator $evaluator, $value)
+    protected function validateNormalSignature(EvaluatorInterface $evaluator, $value)
     {
         $result = $this->validateDirectionValue($evaluator, $value[1]);
         if ($result) {
@@ -150,7 +153,7 @@ class SortOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $max = count($value);
 
@@ -160,9 +163,9 @@ class SortOp implements Operation
             $from = $evaluator->evaluate($value[3]);
 
             if ($direction === 'asc') {
-                usort($from, fn($a, $b) => Value::get($byValue, $a) <=> Value::get($byValue, $b));
+                usort($from, static fn($a, $b) => Value::get($byValue, $a) <=> Value::get($byValue, $b));
             } else {
-                usort($from, fn($a, $b) => Value::get($byValue, $b) <=> Value::get($byValue, $a));
+                usort($from, static fn($a, $b) => Value::get($byValue, $b) <=> Value::get($byValue, $a));
             }
 
             return $from;
@@ -172,9 +175,9 @@ class SortOp implements Operation
         $from = $evaluator->evaluate($value[2]);
 
         if ($direction === 'asc') {
-            usort($from, fn($a, $b) => $a <=> $b);
+            usort($from, static fn($a, $b) => $a <=> $b);
         } else {
-            usort($from, fn($a, $b) => $b <=> $a);
+            usort($from, static fn($a, $b) => $b <=> $a);
         }
 
         return $from;

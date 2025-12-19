@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -15,24 +18,22 @@
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\Parser\Contracts;
-
-
-use ArekX\RestFn\Parser\Data\ListRequest;
-use ArekX\RestFn\Parser\Data\ListResult;
+namespace ArekX\RestFn\DI\Contracts;
 
 /**
- * Interface ListAction
- * @package ArekX\RestFn\Parser\Contracts
+ * Interface Configurable
+ * @package ArekX\RestFn\DI\Contracts
  *
- * Represents one action to be ran in ListOp.
+ * Class which implement this interface will receive config from Injector::getConfig()
  */
-interface ListAction
+interface ConfigurableInterface
 {
     /**
-     * Runs list operation and returns the data.
+     * Performs configuration on this class.
      *
-     * @return ListResult
+     * Classes implementing configure will have this function called right after the constructor is called.
+     *
+     * @param array $config Array containing keys and values of configuration data.
      */
-    public function run(ListRequest $request): ListResult;
+    public function configure(array $config);
 }

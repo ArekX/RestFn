@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,8 +21,8 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class CastOp
@@ -27,7 +30,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents an operation to convert one type to another
  */
-class CastOp implements Operation
+class CastOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -42,7 +45,7 @@ class CastOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 3) {
             return [
@@ -66,7 +69,7 @@ class CastOp implements Operation
         return null;
     }
 
-    protected function validateTypeValue(Evaluator $evaluator, $typeValue)
+    protected function validateTypeValue(EvaluatorInterface $evaluator, $typeValue)
     {
         if (is_array($typeValue)) {
             $byResult = $evaluator->validate($typeValue);
@@ -89,7 +92,7 @@ class CastOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $cast = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
         $from = $evaluator->evaluate($value[2]);

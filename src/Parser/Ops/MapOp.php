@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -19,8 +22,8 @@
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
-use ArekX\RestFn\Parser\Contracts\Evaluator;
-use ArekX\RestFn\Parser\Contracts\Operation;
+use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
  * Class MapOp
@@ -28,7 +31,7 @@ use ArekX\RestFn\Parser\Contracts\Operation;
  *
  * Represents Map operation
  */
-class MapOp implements Operation
+class MapOp implements OperationInterface
 {
     /**
      * @inheritDoc
@@ -43,7 +46,7 @@ class MapOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function validate(Evaluator $evaluator, $value)
+    public function validate(EvaluatorInterface $evaluator, array $value)
     {
         if (count($value) !== 4) {
             return [
@@ -89,7 +92,7 @@ class MapOp implements Operation
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(Evaluator $evaluator, $value)
+    public function evaluate(EvaluatorInterface $evaluator, array $value)
     {
         $from = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
         $to = is_string($value[2]) ? $value[2] : $evaluator->evaluate($value[2]);

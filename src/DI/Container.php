@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Copyright 2025 Aleksandar Panic
  *
@@ -18,10 +21,10 @@
 
 namespace ArekX\RestFn\DI;
 
-use ArekX\RestFn\DI\Contracts\Configurable;
-use ArekX\RestFn\DI\Contracts\Factory;
-use ArekX\RestFn\DI\Contracts\Injectable;
-use ArekX\RestFn\DI\Contracts\SharedInstance;
+use ArekX\RestFn\DI\Contracts\ConfigurableInterface;
+use ArekX\RestFn\DI\Contracts\FactoryInterface;
+use ArekX\RestFn\DI\Contracts\InjectableInterface;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
 use Psr\Container\ContainerInterface;
 
@@ -38,7 +41,7 @@ class Container implements ContainerInterface
      * Contains key => value storage which is a list of current shared instances
      * in this injector.
      *
-     * @var SharedInstance[]
+     * @var SharedInstanceInterface[]
      */
     protected $shared = [];
 
@@ -48,7 +51,7 @@ class Container implements ContainerInterface
      *
      * During creation this config will be passed to instances configure() function.
      *
-     * @see Configurable::configure()
+     * @see ConfigurableInterface::configure()
      * @var array
      */
     protected $configMap = [];
@@ -82,7 +85,7 @@ class Container implements ContainerInterface
      * Injector constructor
      *
      * @param array $configMap Configuration map to be passed for classes implementing Configurable
-     * @see Configurable::configure()
+     * @see ConfigurableInterface::configure()
      * @see Container::$configMap
      */
     public function __construct(array $config = [])
@@ -153,10 +156,10 @@ class Container implements ContainerInterface
      * @throws ConfigNotSpecifiedException
      *
      * @see Container::makeFromBlueprint()
-     * @see Factory For classes which are factory providers
-     * @see Injectable For classes which should be instantiated only once
-     * @see SharedInstance For classes which should be instantiated only once
-     * @see Configurable For classes to be auto-wired
+     * @see FactoryInterface For classes which are factory providers
+     * @see InjectableInterface For classes which should be instantiated only once
+     * @see SharedInstanceInterface For classes which should be instantiated only once
+     * @see ConfigurableInterface For classes to be auto-wired
      *
      */
     public function make(string $definition, ...$args)
@@ -215,7 +218,7 @@ class Container implements ContainerInterface
      *
      * @param string $forClass class for which
      * @param string $factoryClass Factory class which will be set.
-     * @see Factory
+     * @see FactoryInterface
      * @see Container::make()
      */
     public function factory(string $forClass, string $factoryClass)
@@ -255,7 +258,7 @@ class Container implements ContainerInterface
      *
      * @param string $definition Class which will be configured.
      * @param array $config Configuration to be passed to classes configure method.
-     * @see Configurable
+     * @see ConfigurableInterface
      */
     public function configure($definition, array $config)
     {
@@ -340,17 +343,17 @@ class Container implements ContainerInterface
         /** @var object $instance */
         $instance = $reflection->newInstanceWithoutConstructor();
 
-        if ($instance instanceof SharedInstance) {
+        if ($instance instanceof SharedInstanceInterface) {
             $this->share($instance);
         }
 
-        if ($instance instanceof Injectable) {
+        if ($instance instanceof InjectableInterface) {
             foreach ($blueprint['dependencies'] as $property => $type) {
                 $instance->{$property} = $this->make($type);
             }
         }
 
-        if ($instance instanceof Configurable) {
+        if ($instance instanceof ConfigurableInterface) {
             if (empty($this->configMap[$class])) {
                 throw new ConfigNotSpecifiedException($class);
             }
@@ -382,7 +385,7 @@ class Container implements ContainerInterface
             return $this->makeFromBlueprint($definition, $args);
         }
 
-        /** @var Factory $factory */
+        /** @var FactoryInterface $factory */
         $factory = $this->make($factoryClass, $args);
 
         $this->disableFactory($factoryClass);
