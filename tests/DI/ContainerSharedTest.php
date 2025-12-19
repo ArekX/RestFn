@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +19,13 @@
 namespace tests\DI;
 
 
-use ArekX\RestFn\DI\Injector;
+use ArekX\RestFn\DI\Container;
 use tests\DI\_mock\DummyClass;
 use tests\DI\_mock\DummyOverrideClass;
 use tests\DI\_mock\DummySharedClass;
 use tests\TestCase;
 
-class InjectorSharedTest extends TestCase
+class ContainerSharedTest extends TestCase
 {
     /**
      * @throws \ReflectionException
@@ -32,7 +33,7 @@ class InjectorSharedTest extends TestCase
      */
     public function testShareInstance()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         $test = new DummyClass();
 
@@ -49,7 +50,7 @@ class InjectorSharedTest extends TestCase
      */
     public function testShareClassName()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         $injector->share(DummyClass::class);
 
@@ -65,7 +66,7 @@ class InjectorSharedTest extends TestCase
      */
     public function testInstancesImplementingSharedAreAutomaticallyShared()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         $test = $injector->make(DummySharedClass::class);
         $newInstance = $injector->make(DummySharedClass::class);
@@ -80,7 +81,7 @@ class InjectorSharedTest extends TestCase
      */
     public function testShareClassNameIsBeingAlwaysAliased()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         $injector->alias(DummyClass::class, DummyOverrideClass::class);
 

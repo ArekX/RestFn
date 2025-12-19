@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
@@ -32,6 +32,7 @@ class CastOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'cast';
@@ -40,6 +41,7 @@ class CastOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 3) {
@@ -71,12 +73,12 @@ class CastOp implements Operation
 
             if ($byResult !== null) {
                 return [
-                    'invalid_type_expression' => $byResult
+                    'invalid_type_expression' => $byResult,
                 ];
             }
         } else if ($typeValue !== 'bool' && $typeValue !== 'int' && $typeValue !== 'float' && $typeValue !== 'string') {
             return [
-                'invalid_type_value' => $typeValue
+                'invalid_type_value' => $typeValue,
             ];
         }
 
@@ -86,6 +88,7 @@ class CastOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $cast = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
@@ -93,13 +96,13 @@ class CastOp implements Operation
 
         switch ($cast) {
             case 'bool':
-                return (bool)$from;
+                return (bool) $from;
             case 'int':
-                return (int)$from;
+                return (int) $from;
             case 'string':
-                return (string)$from;
+                return (string) $from;
             case 'float':
-                return (float)$from;
+                return (float) $from;
         }
 
         throw new \Exception('Invalid cast name:' . $cast);

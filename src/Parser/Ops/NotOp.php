@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
@@ -32,6 +32,7 @@ class NotOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'not';
@@ -40,12 +41,13 @@ class NotOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 2) {
             return [
                 'min_parameters' => 2,
-                'max_parameters' => 2
+                'max_parameters' => 2,
             ];
         }
 
@@ -61,6 +63,7 @@ class NotOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         return !$evaluator->evaluate($value[1]);

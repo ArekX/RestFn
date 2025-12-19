@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +18,8 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
+use ArekX\RestFn\DI\Container;
 use ArekX\RestFn\DI\Contracts\Injectable;
-use ArekX\RestFn\DI\Injector;
 use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Contracts\Action;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
@@ -36,13 +36,14 @@ class RunOp implements Operation, Injectable
     /**
      * Injected injector used to make actions
      *
-     * @var Injector
+     * @var Container
      */
-    public Injector $injector;
+    public Container $injector;
 
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'run';
@@ -51,12 +52,13 @@ class RunOp implements Operation, Injectable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 3) {
             return [
                 'min_parameters' => 3,
-                'max_parameters' => 3
+                'max_parameters' => 3,
             ];
         }
 
@@ -82,12 +84,12 @@ class RunOp implements Operation, Injectable
 
             if ($byResult !== null) {
                 return [
-                    'invalid_action_expression' => $byResult
+                    'invalid_action_expression' => $byResult,
                 ];
             }
         } else if (!is_string($actionValue)) {
             return [
-                'invalid_action_value' => $actionValue
+                'invalid_action_value' => $actionValue,
             ];
         }
 
@@ -101,7 +103,7 @@ class RunOp implements Operation, Injectable
 
             if ($byResult !== null) {
                 return [
-                    'invalid_data_expression' => $byResult
+                    'invalid_data_expression' => $byResult,
                 ];
             }
         }
@@ -112,6 +114,7 @@ class RunOp implements Operation, Injectable
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $actionName = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);

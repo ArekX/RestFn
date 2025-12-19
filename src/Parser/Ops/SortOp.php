@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
@@ -33,6 +33,7 @@ class SortOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'sort';
@@ -41,13 +42,14 @@ class SortOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         $max = count($value);
         if ($max > 4 || $max < 3) {
             return [
                 'min_parameters' => 3,
-                'max_parameters' => 4
+                'max_parameters' => 4,
             ];
         }
 
@@ -85,12 +87,12 @@ class SortOp implements Operation
 
             if ($byResult !== null) {
                 return [
-                    'invalid_by_expression' => $byResult
+                    'invalid_by_expression' => $byResult,
                 ];
             }
         } else if (!is_string($byValue) && !is_int($byValue)) {
             return [
-                'invalid_by_value' => $byValue
+                'invalid_by_value' => $byValue,
             ];
         }
 
@@ -104,12 +106,12 @@ class SortOp implements Operation
 
             if ($byResult !== null) {
                 return [
-                    'invalid_direction_expression' => $byResult
+                    'invalid_direction_expression' => $byResult,
                 ];
             }
         } else if ($directionValue !== 'asc' && $directionValue !== 'desc') {
             return [
-                'invalid_direction_value' => $directionValue
+                'invalid_direction_value' => $directionValue,
             ];
         }
 
@@ -122,7 +124,7 @@ class SortOp implements Operation
 
         if ($byResult !== null) {
             return [
-                'invalid_from_expression' => $byResult
+                'invalid_from_expression' => $byResult,
             ];
         }
 
@@ -147,6 +149,7 @@ class SortOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $max = count($value);

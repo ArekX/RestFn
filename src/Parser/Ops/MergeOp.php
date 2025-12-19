@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
@@ -32,6 +32,7 @@ class MergeOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'merge';
@@ -40,6 +41,7 @@ class MergeOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         $max = count($value);
@@ -62,6 +64,7 @@ class MergeOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $result = [];
@@ -69,7 +72,6 @@ class MergeOp implements Operation
         $max = count($value);
         for ($i = 1; $i < $max; $i++) {
             $result = array_merge($result, $evaluator->evaluate($value[$i]));
-
         }
 
         return $result;

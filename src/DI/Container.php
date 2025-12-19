@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ use ArekX\RestFn\DI\Contracts\Factory;
 use ArekX\RestFn\DI\Contracts\Injectable;
 use ArekX\RestFn\DI\Contracts\SharedInstance;
 use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class Injector
@@ -30,7 +32,7 @@ use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
  *
  * Represents class for an injector handling dependency injection.
  */
-class Injector
+class Container implements ContainerInterface
 {
     /**
      * Contains key => value storage which is a list of current shared instances
@@ -61,7 +63,7 @@ class Injector
     /**
      * Contains key, value map of factories for specific classes.
      *
-     * @see Injector::factory()
+     * @see Container::factory()
      * @var array
      */
     protected $factoryMap = [];
@@ -81,7 +83,7 @@ class Injector
      *
      * @param array $configMap Configuration map to be passed for classes implementing Configurable
      * @see Configurable::configure()
-     * @see Injector::$configMap
+     * @see Container::$configMap
      */
     public function __construct(array $config = [])
     {
@@ -99,15 +101,58 @@ class Injector
     }
 
     /**
+     * Gets an instance from the container.
+     *
+     * @param string $id Identifier of the entry to look for.
+     * @return mixed Entry.
+     * @throws \ReflectionException
+     * @throws ConfigNotSpecifiedException
+     * @see Container::make()
+     */
+    #[\Override]
+    public function get(string $id)
+    {
+        return $this->make($id);
+    }
+
+    /**
+     * Checks if the container can return an entry for the given identifier.
+     *
+     * This method checks if the identifier exists in shared instances, has a registered factory,
+     * or if the class/interface exists.
+     *
+     * @param string $id Identifier of the entry to look for.
+     * @return bool True if the container can provide the entry, false otherwise.
+     * @see Container::make()
+     * @see Container::resolveAlias()
+     */
+    #[\Override]
+    public function has(string $id): bool
+    {
+        $definition = $this->resolveAlias($id);
+
+        if (!empty($this->shared[$definition])) {
+            return true;
+        }
+
+        if (!empty($this->factoryMap[$definition])) {
+            return true;
+        }
+
+        return class_exists($definition) || interface_exists($definition);
+    }
+
+    /**
      * Creates instance from a class.
      *
      * @param string $definition Class which will be resolved to create instance from.
      * @param mixed ...$args Constructor arguments passed to the class constructor.
      * @return mixed Created instance or existing instance if the class implements SharedInstance
-     * @throws \ReflectionException*@throws ConfigNotSpecifiedException
+     * @throws \ReflectionException
+     *
      * @throws ConfigNotSpecifiedException
      *
-     * @see Injector::makeFromBlueprint()
+     * @see Container::makeFromBlueprint()
      * @see Factory For classes which are factory providers
      * @see Injectable For classes which should be instantiated only once
      * @see SharedInstance For classes which should be instantiated only once
@@ -141,7 +186,7 @@ class Injector
      * @return object Passed or created definition.
      * @throws \ReflectionException
      * @throws ConfigNotSpecifiedException
-     * @see Injector::make()
+     * @see Container::make()
      */
     public function share($definition, ...$args)
     {
@@ -171,7 +216,7 @@ class Injector
      * @param string $forClass class for which
      * @param string $factoryClass Factory class which will be set.
      * @see Factory
-     * @see Injector::make()
+     * @see Container::make()
      */
     public function factory(string $forClass, string $factoryClass)
     {
@@ -183,7 +228,7 @@ class Injector
      * Disables factory from being resolved for a class during calls to make().
      *
      * @param string $factoryClass
-     * @see Injector::make()
+     * @see Container::make()
      */
     public function disableFactory(string $factoryClass)
     {
@@ -194,7 +239,7 @@ class Injector
      * Enables factory so it's being resolved for a class during calls to make().
      *
      * @param string $factoryClass
-     * @see Injector::make()
+     * @see Container::make()
      */
     public function enableFactory(string $factoryClass)
     {
@@ -216,7 +261,6 @@ class Injector
     {
         $this->configMap[$definition] = $config;
     }
-
 
     /**
      * Sets alias definition between definitions.
@@ -270,7 +314,7 @@ class Injector
         return $cache[$class] = [
             'reflection' => $reflection,
             'construct' => $reflection->getConstructor() !== null,
-            'dependencies' => $dependencyMap
+            'dependencies' => $dependencyMap,
         ];
     }
 
@@ -283,8 +327,8 @@ class Injector
      *
      * @throws ConfigNotSpecifiedException
      * @throws \ReflectionException
-     * @see Injector::resolveDefinition() For how definitions are resolved.
-     * @see Injector::resolveBlueprint() For how class blueprint for injectables are resolved.
+     * @see Container::resolveDefinition() For how definitions are resolved.
+     * @see Container::resolveBlueprint() For how class blueprint for injectables are resolved.
      */
     protected function makeFromBlueprint(string $class, $args): object
     {
@@ -320,7 +364,6 @@ class Injector
 
         return $instance;
     }
-
 
     /**
      * Creates instance by using a factory class.

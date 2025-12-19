@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +34,7 @@ class GetOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'get';
@@ -41,6 +43,7 @@ class GetOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) < 3) {
@@ -75,6 +78,7 @@ class GetOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $result = $evaluator->evaluate($value[2]);

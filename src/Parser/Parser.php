@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +18,9 @@
 
 namespace ArekX\RestFn\Parser;
 
-
+use ArekX\RestFn\DI\Container;
 use ArekX\RestFn\DI\Contracts\Configurable;
 use ArekX\RestFn\DI\Contracts\Injectable;
-use ArekX\RestFn\DI\Injector;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
@@ -37,9 +37,9 @@ class Parser implements Injectable, Configurable, Evaluator
     /**
      * Injected injector used to create operations.
      *
-     * @var Injector
+     * @var Container
      */
-    public Injector $injector;
+    public Container $injector;
 
     /**
      * Operation handlers where each operation is mapped to a class
@@ -49,7 +49,7 @@ class Parser implements Injectable, Configurable, Evaluator
     public $ops = [];
 
     /**
-     * Represents current context.p
+     * Represents current context.
      *
      * Contexts is an arbitrary data which is is stored inside a Parser
      * purpose of the context is to have a centralized data store which is accessible
@@ -64,6 +64,7 @@ class Parser implements Injectable, Configurable, Evaluator
      *
      * @param array $config
      */
+    #[\Override]
     public function configure(array $config)
     {
         /** @var Operation[] $ops */
@@ -87,7 +88,8 @@ class Parser implements Injectable, Configurable, Evaluator
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
      */
-    public function validate($value): ?array
+    #[\Override]
+    public function validate($value): null|array
     {
         if (empty($value)) {
             return null;
@@ -106,7 +108,7 @@ class Parser implements Injectable, Configurable, Evaluator
      * Returns operation based on a value
      *
      * @param $value
-     * @return mixed
+     * @return Operation
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
      */
@@ -140,6 +142,7 @@ class Parser implements Injectable, Configurable, Evaluator
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
      */
+    #[\Override]
     public function evaluate($value)
     {
         if (empty($value)) {
@@ -149,11 +152,13 @@ class Parser implements Injectable, Configurable, Evaluator
         return $this->getOperation($value)->evaluate($this, $value);
     }
 
+    #[\Override]
     public function getContext(string $key)
     {
         return $this->context[$key] ?? null;
     }
 
+    #[\Override]
     public function setContext(string $key, $value)
     {
         $this->context[$key] = $value;

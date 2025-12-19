@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
 
@@ -32,6 +32,7 @@ class CompareOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'compare';
@@ -40,12 +41,13 @@ class CompareOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 4) {
             return [
                 'min_parameters' => 4,
-                'max_parameters' => 4
+                'max_parameters' => 4,
             ];
         }
 
@@ -68,36 +70,36 @@ class CompareOp implements Operation
             if ($operationResult) {
                 return ['invalid_operation_expression' => $operationResult];
             }
-        } else {
-            switch ($operation) {
-                case '=':
-                    break;
-                case '==':
-                    break;
-                case '>':
-                    break;
-                case '<':
-                    break;
-                case '!=':
-                    break;
-                case '!==':
-                    break;
-                case '>=':
-                    break;
-                case '<=':
-                    break;
-                default:
-                    return ['invalid_operation' => $operation];
-            }
+
+            return null;
         }
 
-
-        return null;
+        switch ($operation) {
+            case '=':
+                break;
+            case '==':
+                break;
+            case '>':
+                break;
+            case '<':
+                break;
+            case '!=':
+                break;
+            case '!==':
+                break;
+            case '>=':
+                break;
+            case '<=':
+                break;
+            default:
+                return ['invalid_operation' => $operation];
+        }
     }
 
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $leftResult = $evaluator->evaluate($value[1]);

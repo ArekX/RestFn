@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +19,13 @@
 namespace tests\DI;
 
 
-use ArekX\RestFn\DI\Injector;
+use ArekX\RestFn\DI\Container;
 use tests\DI\_mock\DummyClass;
 use tests\DI\_mock\DummyClassWithArgs;
 use tests\DI\_mock\MockFactory;
 use tests\TestCase;
 
-class InjectorFactoryTest extends TestCase
+class ContainerFactoryTest extends TestCase
 {
     /**
      * @throws \ReflectionException
@@ -32,7 +33,7 @@ class InjectorFactoryTest extends TestCase
      */
     public function testFactoryMakeWorks()
     {
-        $injector = new Injector([
+        $injector = new Container([
             'factories' => [
                 DummyClass::class => MockFactory::class
             ],
@@ -49,7 +50,6 @@ class InjectorFactoryTest extends TestCase
 
         $this->assertInstanceOf(DummyClass::class, $newInstance);
         $this->assertTrue($factory->wasCalled());
-
     }
 
     /**
@@ -58,7 +58,7 @@ class InjectorFactoryTest extends TestCase
      */
     public function testFactoryMakeWorksFromMethod()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         $injector->factory(DummyClass::class, MockFactory::class);
 
@@ -73,7 +73,6 @@ class InjectorFactoryTest extends TestCase
 
         $this->assertInstanceOf(DummyClass::class, $newInstance);
         $this->assertTrue($factory->wasCalled());
-
     }
 
     /**
@@ -82,7 +81,7 @@ class InjectorFactoryTest extends TestCase
      */
     public function testFactoryMakeWorksWithArguments()
     {
-        $injector = new Injector([
+        $injector = new Container([
             'factories' => [
                 DummyClassWithArgs::class => MockFactory::class
             ],
@@ -109,7 +108,7 @@ class InjectorFactoryTest extends TestCase
      */
     public function testFactoryNotCalledIfNotMapped()
     {
-        $injector = new Injector([
+        $injector = new Container([
             'factories' => [
                 DummyClassWithArgs::class => MockFactory::class
             ],
@@ -134,7 +133,7 @@ class InjectorFactoryTest extends TestCase
      */
     public function testDisabledFactoryNotCalled()
     {
-        $injector = new Injector([
+        $injector = new Container([
             'factories' => [
                 DummyClass::class => MockFactory::class
             ],
@@ -159,7 +158,7 @@ class InjectorFactoryTest extends TestCase
      */
     public function testDisabledThenEnabledFactoryIsCalled()
     {
-        $injector = new Injector([
+        $injector = new Container([
             'factories' => [
                 DummyClass::class => MockFactory::class
             ],
@@ -178,6 +177,5 @@ class InjectorFactoryTest extends TestCase
         $injector->make(DummyClass::class);
 
         $this->assertTrue($factory->wasCalled());
-
     }
 }

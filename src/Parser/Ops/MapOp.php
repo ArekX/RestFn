@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
@@ -33,6 +33,7 @@ class MapOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'map';
@@ -41,18 +42,19 @@ class MapOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         if (count($value) !== 4) {
             return [
                 'min_parameters' => 4,
-                'max_parameters' => 4
+                'max_parameters' => 4,
             ];
         }
 
         if (!is_string($value[1]) && !is_array($value[1])) {
             return [
-                'invalid_from_value' => $value[1]
+                'invalid_from_value' => $value[1],
             ];
         }
 
@@ -60,14 +62,14 @@ class MapOp implements Operation
             $fromResult = $evaluator->validate($value[1]);
             if ($fromResult) {
                 return [
-                    'invalid_from_expression' => $fromResult
+                    'invalid_from_expression' => $fromResult,
                 ];
             }
         }
 
         if (!is_string($value[2]) && !is_array($value[2])) {
             return [
-                'invalid_to_value' => $value[2]
+                'invalid_to_value' => $value[2],
             ];
         }
 
@@ -75,11 +77,10 @@ class MapOp implements Operation
             $toResult = $evaluator->validate($value[2]);
             if ($toResult) {
                 return [
-                    'invalid_to_expression' => $toResult
+                    'invalid_to_expression' => $toResult,
                 ];
             }
         }
-
 
         return null;
     }
@@ -87,6 +88,7 @@ class MapOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $from = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);

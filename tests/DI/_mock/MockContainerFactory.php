@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +21,13 @@ namespace tests\DI\_mock;
 
 use ArekX\RestFn\DI\Contracts\Factory;
 use ArekX\RestFn\DI\Contracts\SharedInstance;
-use ArekX\RestFn\DI\Injector;
+use ArekX\RestFn\DI\Container;
 
-class MockInjectorFactory implements Factory, SharedInstance
+class MockContainerFactory implements Factory, SharedInstance
 {
-    public Injector $injector;
+    public Container $container;
+
+    protected bool $wasCalled = false;
 
 
     /**

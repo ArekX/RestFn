@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@
 
 namespace ArekX\RestFn\DI\Contracts;
 
-use ArekX\RestFn\DI\Injector;
+use ArekX\RestFn\DI\Container;
 
 /**
  * Interface Factory
@@ -28,7 +29,7 @@ use ArekX\RestFn\DI\Injector;
  *
  * Classes will not be auto-wired unless instantiated through call to Injector::make()
  *
- * @see Injector::make()
+ * @see Container::make()
  */
 interface Factory
 {

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +19,13 @@
 namespace tests\DI;
 
 
-use ArekX\RestFn\DI\Injector;
+use ArekX\RestFn\DI\Container;
 use tests\DI\_mock\DummyClass;
 use tests\DI\_mock\DummyInjectableClass;
 use tests\DI\_mock\DummyNonInjectableClass;
 use tests\TestCase;
 
-class InjectorInjectableTest extends TestCase
+class ContainerInjectableTest extends TestCase
 {
     /**
      * @throws \ReflectionException
@@ -32,7 +33,7 @@ class InjectorInjectableTest extends TestCase
      */
     public function testCreateInjectable()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         /** @var DummyInjectableClass $value */
         $value = $injector->make(DummyInjectableClass::class);
@@ -59,7 +60,7 @@ class InjectorInjectableTest extends TestCase
      */
     public function testNonInjectablesDoNotGetClassesAutoWired()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         /** @var DummyNonInjectableClass $test */
         $test = $injector->make(DummyNonInjectableClass::class);

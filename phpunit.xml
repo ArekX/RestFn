@@ -7,6 +7,9 @@
     <testsuite name="Parser">
       <directory>tests/Parser</directory>
     </testsuite>
+    <testsuite name="Helper">
+      <directory>tests/Helper</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>

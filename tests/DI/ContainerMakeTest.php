@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ namespace tests\DI;
 
 
 use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
-use ArekX\RestFn\DI\Injector;
+use ArekX\RestFn\DI\Container;
 use tests\DI\_mock\DummyClass;
 use tests\DI\_mock\DummyClassWithArgs;
 use tests\DI\_mock\DummyConfigurableClass;
@@ -28,7 +28,7 @@ use tests\DI\_mock\DummyConfigurableClassWithArgs;
 use tests\DI\_mock\DummyOverrideClass;
 use tests\TestCase;
 
-class InjectorMakeTest extends TestCase
+class ContainerMakeTest extends TestCase
 {
     /**
      * @throws \ReflectionException
@@ -36,7 +36,7 @@ class InjectorMakeTest extends TestCase
      */
     public function testMakeCreatesAnInstance()
     {
-        $injector = new Injector();
+        $injector = new Container();
         $value = $injector->make(DummyClass::class);
         $this->assertInstanceOf(DummyClass::class, $value, 'Created is of type of DummyClass.');
     }
@@ -47,7 +47,7 @@ class InjectorMakeTest extends TestCase
      */
     public function testMakeWithConstructorArguments()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         /** @var DummyClassWithArgs $value */
         $value = $injector->make(DummyClassWithArgs::class, 'test1', 'test2');
@@ -65,7 +65,7 @@ class InjectorMakeTest extends TestCase
         $testConfig = [
             'test' => 1
         ];
-        $injector = new Injector([
+        $injector = new Container([
             'configurations' => [
                 DummyConfigurableClass::class => $testConfig
             ]
@@ -87,7 +87,7 @@ class InjectorMakeTest extends TestCase
         $testConfig = [
             'test' => 1
         ];
-        $injector = new Injector([
+        $injector = new Container([
             'configurations' => [
                 DummyConfigurableClass::class => $testConfig
             ]
@@ -111,7 +111,7 @@ class InjectorMakeTest extends TestCase
         $testConfig = [
             'test' => 1
         ];
-        $injector = new Injector([
+        $injector = new Container([
             'configurations' => [
                 DummyConfigurableClassWithArgs::class => $testConfig
             ]
@@ -132,7 +132,7 @@ class InjectorMakeTest extends TestCase
      */
     public function testMakeConfigurableWithNoMappedConfiguration()
     {
-        $injector = new Injector([]);
+        $injector = new Container([]);
 
         $this->expectException(ConfigNotSpecifiedException::class);
 
@@ -145,7 +145,7 @@ class InjectorMakeTest extends TestCase
      */
     public function testPassConfigThroughMethod()
     {
-        $injector = new Injector([]);
+        $injector = new Container([]);
 
         $testConfig = ['test1' => 'config1'];
         $injector->configure(DummyConfigurableClass::class, $testConfig);
@@ -163,7 +163,7 @@ class InjectorMakeTest extends TestCase
      */
     public function testAliasedClasses()
     {
-        $injector = new Injector([
+        $injector = new Container([
             'aliases' => [DummyClass::class => DummyOverrideClass::class]
         ]);
 
@@ -180,7 +180,7 @@ class InjectorMakeTest extends TestCase
      */
     public function testAliasingThroughAliasCall()
     {
-        $injector = new Injector();
+        $injector = new Container();
 
         $injector->alias(DummyClass::class, DummyOverrideClass::class);
 

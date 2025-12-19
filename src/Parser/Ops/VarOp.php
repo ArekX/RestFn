@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2020 Aleksandar Panic
+ * Copyright 2025 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@
 
 namespace ArekX\RestFn\Parser\Ops;
 
-
 use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Contracts\Evaluator;
 use ArekX\RestFn\Parser\Contracts\Operation;
@@ -33,6 +33,7 @@ class VarOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public static function name(): string
     {
         return 'var';
@@ -41,6 +42,7 @@ class VarOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validate(Evaluator $evaluator, $value)
     {
         $max = count($value);
@@ -48,7 +50,7 @@ class VarOp implements Operation
         if ($max < 2 || $max > 3) {
             return [
                 'min_parameters' => 2,
-                'max_parameters' => 3
+                'max_parameters' => 3,
             ];
         }
 
@@ -57,12 +59,12 @@ class VarOp implements Operation
 
             if ($result !== null) {
                 return [
-                    'invalid_name_expression' => $result
+                    'invalid_name_expression' => $result,
                 ];
             }
         } else if (!is_string($value[1])) {
             return [
-                'invalid_name_value' => $value[1]
+                'invalid_name_value' => $value[1],
             ];
         }
 
@@ -71,7 +73,7 @@ class VarOp implements Operation
 
             if ($result !== null) {
                 return [
-                    'invalid_value_expression' => $result
+                    'invalid_value_expression' => $result,
                 ];
             }
         }
@@ -82,6 +84,7 @@ class VarOp implements Operation
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function evaluate(Evaluator $evaluator, $value)
     {
         $max = count($value);
@@ -89,14 +92,14 @@ class VarOp implements Operation
         $getter = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
 
         if ($max === 2) {
-            return Value::get($getter, $evaluator->getContext("variables"));
+            return Value::get($getter, $evaluator->getContext('variables'));
         }
 
         $setValue = $evaluator->evaluate($value[2]);
 
-        $variables = $evaluator->getContext("variables") ?: [];
+        $variables = $evaluator->getContext('variables') ?: [];
         $variables[$getter] = $setValue;
-        $evaluator->setContext("variables", $variables);
+        $evaluator->setContext('variables', $variables);
 
         return $setValue;
     }
