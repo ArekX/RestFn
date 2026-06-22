@@ -1,0 +1,4 @@
+# Documentation build dependencies for Read the Docs.
+# The Cinder theme is vendored under docs/build/cinder (used via theme.custom_dir
+# in mkdocs.yml), so only mkdocs itself needs installing here.
+mkdocs>=1.4,<1.6
