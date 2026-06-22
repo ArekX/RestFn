@@ -19,7 +19,7 @@ declare(strict_types=1);
  * limitations under the License.
  **/
 
-namespace ArekX\RestFn\Runner\Middleware;
+namespace ArekX\RestFn\Services\Auth;
 
 use ArekX\RestFn\DI\Attributes\Config;
 use ArekX\RestFn\Parser\Context;
@@ -31,7 +31,7 @@ use ArekX\RestFn\Services\Auth\Contracts\TokenParserInterface;
 
 /**
  * Class AuthenticationMiddleware
- * @package ArekX\RestFn\Runner\Middleware
+ * @package ArekX\RestFn\Services\Auth
  *
  * Establishes the identity for a request from a bearer token. When a token is
  * present it is parsed and authenticated, and the resulting identity is stored
@@ -51,11 +51,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param string $scheme Authorization scheme prefix.
      */
     public function __construct(
-        protected TokenParserInterface $tokenParser,
-        protected AuthenticatorInterface $authenticator,
-        protected IdentityServiceInterface $identityService,
-        #[Config('auth.header', default: 'Authorization')] protected string $header = 'Authorization',
-        #[Config('auth.scheme', default: 'Bearer')] protected string $scheme = 'Bearer',
+        public TokenParserInterface $tokenParser,
+        public AuthenticatorInterface $authenticator,
+        public IdentityServiceInterface $identityService,
+        #[Config('auth.header', default: 'Authorization')] public string $header = 'Authorization',
+        #[Config('auth.scheme', default: 'Bearer')] public string $scheme = 'Bearer',
     ) {}
 
     /**

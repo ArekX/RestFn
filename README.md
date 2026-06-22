@@ -1,10 +1,17 @@
 # RestFn
 
-RestFn ("REST function") is a PHP library for building a single functional endpoint:
-clients send one composable expression — a tree of operations — that the server
-validates and evaluates to fetch and reshape exactly the data they need. It provides
-the engine (an operation language and a dependency injection container); you wire it
-into your own endpoint.
+RestFn ("REST function") is a PHP library for building a single, functional-style
+endpoint.
+
+Instead of having many REST endpoints, you have one. The client sends a request
+that is a tree of operations, and the server runs that tree to shape the response.
+You write actions for the actual work, and the client composes those actions with
+built-in operations (get, map, sort, run, and so on) to get back the data it needs
+in one request.
+
+RestFn is the engine for this. It gives you the operation language and a dependency
+injection container to wire everything together; you provide the endpoint and the
+actions.
 
 Requires PHP 8.4+.
 

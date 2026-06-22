@@ -36,7 +36,7 @@ use ArekX\RestFn\Runner\Request;
  *
  * What ends up in the response depends on the error and on debug mode:
  *  - Client errors (those implementing ClientExceptionInterface) always show
- *    their message and any client-safe details — they describe a bad request.
+ *    their message and any client-safe details - they describe a bad request.
  *  - Internal errors are hidden behind a generic message in production so no
  *    implementation detail leaks. With debug enabled the real message is shown.
  *  - With debug enabled a `debug` block with the exception type, location and

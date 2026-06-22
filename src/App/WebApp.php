@@ -98,7 +98,7 @@ class WebApp implements ApplicationInterface
 {
     /**
      * Default interface-to-implementation bindings. Override any of them by
-     * passing your own 'aliases' to createDefault() — including
+     * passing your own 'aliases' to createDefault() - including
      * ApplicationInterface to replace the application itself.
      */
     public const DEFAULT_ALIASES = [

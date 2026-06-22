@@ -1,16 +1,15 @@
 # Cookbook
 
-Practical recipes that compose operations to solve common tasks. Each one is a
-complete request body you can send to the endpoint. If you are new to the
-operation language, read [Operations](ops/index.md) first; each recipe links to
-the operations it uses.
+Recipes that compose operations to solve common tasks. Each one is a complete request
+body you can send to the endpoint. If you're new to the operation language, read
+[Operations](ops/index.md) first. Each recipe links to the operations it uses.
 
 ## The one rule to remember
 
-A parameter that is an **array is evaluated as an operation**; anything else is
-taken **literally**. So a scalar passes straight through, but to pass an array or
-object as data you must wrap it in [`value`](ops/value.md) — otherwise it is read
-as an operation and rejected.
+A parameter that's an **array is evaluated as an operation**; anything else is taken
+**literally**. So a scalar passes straight through, but to pass an array or object as
+data you have to wrap it in [`value`](ops/value.md), or it's read as an operation and
+rejected.
 
 ```json
 ["run", "getUser", 1]
@@ -20,8 +19,8 @@ as an operation and rejected.
 ["run", "createUser", ["value", {"email": "ada@example.com", "roles": ["admin"]}]]
 ```
 
-The first passes the literal `1`. The second wraps the object so it is passed as
-data instead of being interpreted as an operation.
+The first passes the literal `1`. The second wraps the object so it's passed as data
+instead of being read as an operation.
 
 ## Reading and reshaping data
 
@@ -51,8 +50,8 @@ Run an action and pull a single field out of its result with [`get`](ops/get.md)
 
 ### Provide a fallback when a field is missing
 
-A third parameter to `get` is the default, returned when the key is absent (it
-would otherwise be `null`).
+A third parameter to `get` is the default, returned when the key is absent (it'd
+otherwise be `null`).
 
 ```json
 ["get", "nickname", ["run", "getUser", 1], ["value", "Anonymous"]]
@@ -60,8 +59,8 @@ would otherwise be `null`).
 
 ### Build a custom response object
 
-[`object`](ops/object.md) evaluates each value, so you can assemble exactly the
-shape you want — pulling from several actions in a single request.
+[`object`](ops/object.md) evaluates each value, so you can assemble the shape you
+want, pulling from several actions in a single request.
 
 ```json
 ["object", {
@@ -94,7 +93,7 @@ object from a list.
 
 ### Take the top N
 
-Sort a result then take from the front. [`sort`](ops/sort.md) with a field and
+Sort a result, then take from the front. [`sort`](ops/sort.md) with a field and
 direction, then [`take`](ops/take.md) for how many.
 
 ```json
@@ -124,8 +123,8 @@ A negative count for `take` counts from the end.
 
 ### Apply defaults to a result
 
-[`merge`](ops/merge.md) shallow-merges arrays left to right, so later values win.
-Put defaults first and the real result second to fill in only what is missing.
+[`merge`](ops/merge.md) shallow-merges arrays left to right, so later values win. Put
+defaults first and the real result second to fill in only what's missing.
 
 ```json
 ["merge",
@@ -139,7 +138,7 @@ Put defaults first and the real result second to fill in only what is missing.
 ### Branch on a comparison
 
 [`ifElse`](ops/ifelse.md) picks one of two expressions based on a check. Here the
-check is a [`compare`](ops/compare.md). All three branches must be expressions, so
+check is a [`compare`](ops/compare.md). All three branches have to be expressions, so
 the literals are wrapped in `value`.
 
 ```json
@@ -162,10 +161,11 @@ the literals are wrapped in `value`.
 true
 ```
 
-### First value that is not null
+### First value that isn't null
 
 [`coalesce`](ops/coalesce.md) returns the first non-null result and stops. Unlike a
-`get` default, the alternatives can be whole actions — handy for a cache fallback.
+`get` default, the alternatives can be whole actions, which is handy for a cache
+fallback.
 
 ```json
 ["coalesce",
@@ -181,8 +181,8 @@ These use [`sequence`](ops/sequence.md) (evaluate each item, return the last) an
 
 ### Fetch once, use many times
 
-Calling an action twice does the work twice. Store it in a variable instead and
-read it back as often as you like.
+Calling an action twice does the work twice. Store it in a variable instead and read
+it back as often as you like.
 
 ```json
 ["sequence",
@@ -218,8 +218,8 @@ The result of a create flows into the next step through a variable.
 
 ## Converting types
 
-[`cast`](ops/cast.md) converts a value to `int`, `float`, `bool`, or `string` —
-useful when an action returns a number as a string.
+[`cast`](ops/cast.md) converts a value to `int`, `float`, `bool`, or `string`, which
+is useful when an action returns a number as a string.
 
 ```json
 ["cast", "int", ["get", "count", ["run", "getStats", "today"]]]
@@ -228,7 +228,7 @@ useful when an action returns a number as a string.
 ## Paginating
 
 [`list`](ops/list.md) runs a list action and returns `{ "total", "result" }`. Its
-data is wrapped in `value` and must include `properties`.
+data is wrapped in `value` and has to include `properties`.
 
 ```json
 ["list", "users", ["value", {
@@ -251,9 +251,9 @@ data is wrapped in `value` and must include `properties`.
 
 ## Putting it together
 
-A single request can do all of the above at once. This fetches a user, then builds
-a dashboard object — their name, their three most-liked posts, and whether they
-are an admin — reusing the stored user along the way.
+A single request can do all of the above at once. This fetches a user, then builds a
+dashboard object (their name, their three most-liked posts, and whether they're an
+admin), reusing the stored user along the way.
 
 ```json
 ["sequence",

@@ -2,7 +2,7 @@
 
 RestFn comes with token-based authentication built in. A client sends a bearer
 token, the framework verifies it and turns it into an identity, and actions that
-require authentication are only run when an identity is present.
+require authentication only run when an identity is present.
 
 By default it uses JWT, but every part is swappable.
 
@@ -12,22 +12,22 @@ Authentication is one middleware and a few services working together:
 
 1. The **authentication middleware** reads the `Authorization: Bearer <token>`
    header from the request.
-2. It passes the raw token to the **token parser**, which verifies it and returns
-   its payload. The default is a JWT parser.
+2. It passes the raw token to the **token parser**, which verifies it and returns its
+   payload. The default is a JWT parser.
 3. It passes the payload to the **authenticator**, which turns it into an
    **identity**. The default reads the identity straight from the token claims.
 4. The identity is stored on the **identity service** for the rest of the request.
-5. When an operation runs an action that is marked as needing authentication, it
-   checks the identity service. If there is no identity, the request is rejected.
+5. When an operation runs an action that's marked as needing authentication, it
+   checks the identity service. If there's no identity, the request is rejected.
 
-The middleware does not reject requests without a token. A request with no token
-just stays unauthenticated, and public actions still run. Authentication is
-enforced per action, not on the whole request.
+The middleware doesn't reject requests without a token. A request with no token just
+stays unauthenticated, and public actions still run. Authentication is enforced per
+action, not on the whole request.
 
 ## Setting it up
 
-The authentication middleware is part of the default stack `createDefault()`
-wires up, so all you need to do is configure the JWT secret:
+The authentication middleware is part of the default stack `createDefault()` wires
+up, so all you have to do is configure the JWT secret:
 
 ```php
 WebApp::createDefault([
@@ -46,7 +46,7 @@ If you set `runner.middleware` yourself you replace the default stack, so includ
 ## Protecting an action
 
 Mark an action as requiring authentication by implementing
-`AuthenticatedActionInterface`. It is a marker — there are no methods to add:
+`AuthenticatedActionInterface`. It's a marker, with no methods to add:
 
 ```php
 use ArekX\RestFn\Parser\Contracts\ActionInterface;
@@ -61,13 +61,13 @@ class GetProfileAction implements ActionInterface, AuthenticatedActionInterface
 }
 ```
 
-When the `run` (or `list`) operation is about to run this action and no identity
-is present, it throws an `AuthenticationRequiredException`. An action without the
-marker runs whether or not the request is authenticated.
+When the `run` (or `list`) operation is about to run this action and there's no
+identity, it throws an `AuthenticationRequiredException`. An action without the marker
+runs whether or not the request is authenticated.
 
 ## Reading the identity
 
-Your action usually needs to know who is calling. Inject the
+Your action usually needs to know who's calling. Inject the
 `IdentityServiceInterface` and read the current identity:
 
 ```php
@@ -76,7 +76,7 @@ use ArekX\RestFn\Services\Auth\Contracts\IdentityServiceInterface;
 class GetProfileAction implements ActionInterface, AuthenticatedActionInterface
 {
     public function __construct(
-        public IdentityServiceInterface $identity,
+        protected IdentityServiceInterface $identity,
     ) {}
 
     public function run(mixed $data): array
@@ -87,25 +87,24 @@ class GetProfileAction implements ActionInterface, AuthenticatedActionInterface
 }
 ```
 
-The identity service is shared, so the same instance the middleware writes to is
-the one your action reads from.
+The identity service is shared, so the same instance the middleware writes to is the
+one your action reads from.
 
 ## Configuration
 
 All settings are read from configuration. Put them under `config.global` so every
 auth service sees them:
 
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `auth.jwt.secret` | `''` | Secret used to verify the JWT signature. Required. |
-| `auth.jwt.algorithm` | `HS256` | Algorithm the token must be signed with. |
-| `auth.header` | `Authorization` | Header the token is read from. |
-| `auth.scheme` | `Bearer` | Scheme prefix before the token. |
-| `auth.identity.idClaim` | `sub` | Claim used as the identity id. |
-| `auth.identity.claims` | `[]` | Extra claims copied into the identity data. |
+| Key                     | Default         | What it does                                       |
+| ----------------------- | --------------- | -------------------------------------------------- |
+| `auth.jwt.secret`       | `''`            | Secret used to verify the JWT signature. Required. |
+| `auth.jwt.algorithm`    | `HS256`         | Algorithm the token must be signed with.           |
+| `auth.header`           | `Authorization` | Header the token is read from.                     |
+| `auth.scheme`           | `Bearer`        | Scheme prefix before the token.                    |
+| `auth.identity.idClaim` | `sub`           | Claim used as the identity id.                     |
+| `auth.identity.claims`  | `[]`            | Extra claims copied into the identity data.        |
 
-The JWT secret must be long enough for the algorithm (at least 32 bytes for
-HS256).
+The JWT secret has to be long enough for the algorithm (at least 32 bytes for HS256).
 
 ```php
 'global' => [
@@ -122,15 +121,15 @@ HS256).
 ],
 ```
 
-With the `claims` above, the identity carries `email` and `role`, which you read
-with `$identity->get('email')`.
+With the `claims` above, the identity carries `email` and `role`, which you read with
+`$identity->get('email')`.
 
 ## The default authenticator
 
-The default `ClaimsAuthenticator` builds the identity from the token claims: it
-reads the id from `auth.identity.idClaim` and copies the claims listed in
-`auth.identity.claims` into the identity data. This is enough when everything you
-need is already in the token.
+The default `ClaimsAuthenticator` builds the identity from the token claims. It reads
+the id from `auth.identity.idClaim` and copies the claims listed in
+`auth.identity.claims` into the identity data. That's enough when everything you need
+is already in the token.
 
 If you need to load a user from your database, write your own authenticator. It
 implements `AuthenticatorInterface` and returns your own identity:
@@ -141,7 +140,7 @@ use ArekX\RestFn\Services\Auth\Contracts\IdentityInterface;
 
 class UserAuthenticator implements AuthenticatorInterface
 {
-    public function __construct(public UserRepository $users) {}
+    public function __construct(protected UserRepository $users) {}
 
     public function authenticate(mixed $payload): ?IdentityInterface
     {
@@ -160,6 +159,6 @@ Bind it when you create the app:
 
 ## Swapping the token format
 
-The token parser is also swappable. To use something other than JWT, bind your own
-`TokenParserInterface`. It takes the raw token string and returns a verified
-payload, or throws `InvalidTokenException` if the token is bad.
+The token parser is swappable too. To use something other than JWT, bind your own
+`TokenParserInterface`. It takes the raw token string and returns a verified payload,
+or throws `InvalidTokenException` if the token is bad.

@@ -1,15 +1,15 @@
 # Middleware
 
-Middleware wrap the handling of a request. They run on the way in, before the
-request is validated and evaluated, and on the way out, after the result is
-produced. You use them for things that apply to the whole request, such as
-authentication, logging, or wrapping the result in an envelope.
+Middleware wrap the handling of a request. They run on the way in, before the request
+is validated and evaluated, and on the way out, after the result is produced. You use
+them for things that apply to the whole request, like authentication, logging, or
+wrapping the result in an envelope.
 
 ## How it works
 
-Middleware form an onion. Each middleware gets the next handler and decides when
-to call it. Code you write before calling `$next` runs on the way in. Code you
-write after runs on the way out.
+Middleware nest like an onion. Each middleware gets the next handler and decides when
+to call it. Code you write before calling `$next` runs on the way in. Code you write
+after runs on the way out.
 
 A middleware implements `MiddlewareInterface`:
 
@@ -33,20 +33,18 @@ class TimingMiddleware implements MiddlewareInterface
 }
 ```
 
-`$next` is the rest of the chain ending in the core handler that validates and
-evaluates the request. It returns the result, which you can return as is or
-change.
+`$next` is the rest of the chain, ending in the core handler that validates and
+evaluates the request. It returns the result, which you can return as is or change.
 
 ## Registering middleware
 
-Middleware are configured on the `Runner` as a list of class names. They are
-resolved through the container, so a middleware can declare its own dependencies
-in its constructor and they will be injected.
+Middleware are configured on the `Runner` as a list of class names. They're resolved
+through the container, so a middleware can declare its own dependencies in its
+constructor and they'll be injected.
 
-`WebApp::createDefault()` wires a default stack for you — `ErrorMiddleware`
-(outermost) and `AuthenticationMiddleware`. Setting the `runner.middleware` config
-value replaces that stack entirely, so include the defaults yourself if you still
-want them:
+`WebApp::createDefault()` wires a default stack for you: `ErrorMiddleware` (outermost)
+and `AuthenticationMiddleware`. Setting the `runner.middleware` config value replaces
+that stack entirely, so include the defaults yourself if you still want them:
 
 ```php
 'global' => ['runner' => ['middleware' => [
@@ -88,7 +86,7 @@ class EnvelopeMiddleware implements MiddlewareInterface
 
 ## Short-circuiting
 
-A middleware does not have to call `$next`. If it returns without calling it, the
+A middleware doesn't have to call `$next`. If it returns without calling it, the
 request is short-circuited and the rest of the chain (including validation and
 evaluation) never runs. This is how you reject a request early:
 
@@ -106,36 +104,36 @@ public function process(Request $request, Context $context, callable $next): mix
 ## A note on errors
 
 The on-the-way-out part of a middleware only runs if `$next` returns normally. If
-validation fails or an action throws, the exception travels up past your
-after-code. If a middleware needs to run no matter what (for logging, for
-example), wrap `$next` in a `try`/`finally`. If it needs to turn an error into a
-result, catch the exception around `$next`.
+validation fails or an action throws, the exception travels up past your after-code.
+If a middleware needs to run no matter what (for logging, say), wrap `$next` in a
+`try`/`finally`. If it needs to turn an error into a result, catch the exception
+around `$next`.
 
-This is exactly what the built-in `ErrorMiddleware` does, which is why it sits
-outermost by default: it catches anything thrown below it and turns it into a
-clean response. See [Error handling](#error-handling) below.
+That's what the built-in `ErrorMiddleware` does, which is why it sits outermost by
+default: it catches anything thrown below it and turns it into a clean response. See
+[Error handling](#error-handling) below.
 
 ## Error handling
 
-`ErrorMiddleware` is the outermost middleware in the default stack. It wraps the
-rest of the pipeline in a `try`/`catch` and turns any thrown error — including a
-malformed request body, which the runner defers into the pipeline for it — into a
-structured JSON response instead of letting it escape as an uncaught exception.
+`ErrorMiddleware` is the outermost middleware in the default stack. It wraps the rest
+of the pipeline in a `try`/`catch` and turns any thrown error into a structured JSON
+response, instead of letting it escape as an uncaught exception. That includes a
+malformed request body, which the runner defers into the pipeline so this middleware
+can handle it too.
 
-What it puts in the response depends on the error and on debug mode:
+What ends up in the response depends on the error and on debug mode:
 
-- **Client errors** — exceptions that implement `ClientExceptionInterface` (a
-  malformed body, failed validation, a missing or invalid token) always show
-  their message and any client-safe `details`, because they describe something
-  the caller can fix.
-- **Internal errors** — anything else (a bug in an action, a failing database
-  call) is hidden behind a generic `"An unexpected error occurred."` message so
-  no implementation detail leaks to the client.
+- Client errors, the ones that implement `ClientExceptionInterface` (a malformed
+  body, failed validation, a missing or invalid token), always show their message
+  and any client-safe `details`, because they describe something the caller can fix.
+- Anything else is an internal error (a bug in an action, a failing database call).
+  It's hidden behind a generic `"An unexpected error occurred."` message so no
+  implementation detail leaks to the client.
 
 ### Debug mode
 
-Debug mode is controlled by the `runner.debug` config value. It is `false` by
-default, and you should keep it that way in production:
+Debug mode is controlled by the `runner.debug` config value. It's `false` by default,
+and you should keep it that way in production:
 
 ```php
 WebApp::createDefault([
@@ -149,23 +147,23 @@ WebApp::createDefault([
 
 The difference is what the client is allowed to see.
 
-**With debug off (production)** internal errors are opaque and nothing leaks. A
-failed validation (a client error) still returns its message and details so the
+With debug off (production), internal errors are opaque and nothing leaks. A failed
+validation is a client error, so it still returns its message and details so the
 caller can fix the request:
 
 ```json
 { "error": "Request validation failed.", "details": ["get", { "0": "missing key" }] }
 ```
 
-But an internal fault does not — it collapses to a generic message:
+But an internal fault doesn't. It collapses to a generic message:
 
 ```json
 { "error": "An unexpected error occurred." }
 ```
 
-**With debug on (development)** every error shows its real message and gains a
-`debug` block with the exception type, the file and line it came from, and the
-stack trace — so the same internal fault becomes:
+With debug on (development), every error shows its real message and gains a `debug`
+block with the exception type, the file and line it came from, and the stack trace.
+So the same internal fault becomes:
 
 ```json
 {
@@ -178,12 +176,11 @@ stack trace — so the same internal fault becomes:
 }
 ```
 
-Because the `debug` block exposes paths and traces, never enable it on a public
+The `debug` block exposes paths and traces, so never enable it on a public
 deployment.
 
 ## Where middleware live
 
-The built-in middleware are in `ArekX\RestFn\Runner\Middleware`: the
-[authentication middleware](authentication.md) and the error middleware. Put your
-own middleware wherever you like in your project — they only need to implement
-`MiddlewareInterface`.
+The built-in middleware are in `ArekX\RestFn\Runner\Middleware`: the [authentication
+middleware](authentication.md) and the error middleware. Put your own middleware
+wherever you like in your project. They only need to implement `MiddlewareInterface`.

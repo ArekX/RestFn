@@ -26,7 +26,7 @@ namespace ArekX\RestFn\Services\Auth\Contracts;
  * @package ArekX\RestFn\Services\Auth\Contracts
  *
  * Maps a verified token payload to an application identity. Implemented by the
- * application — for example loading a user by the token's subject claim.
+ * application - for example loading a user by the token's subject claim.
  */
 interface AuthenticatorInterface
 {

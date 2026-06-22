@@ -32,7 +32,7 @@ namespace ArekX\RestFn\Runner;
 class Request
 {
     /**
-     * @param mixed $body Decoded request body — the operation tree to evaluate.
+     * @param mixed $body Decoded request body - the operation tree to evaluate.
      * @param array $headers Request headers, keyed by header name.
      * @param array $attributes Arbitrary values attached by middleware.
      */
