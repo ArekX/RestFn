@@ -22,9 +22,9 @@ namespace ArekX\RestFn\DI\Exceptions;
 
 class ConfigNotSpecifiedException extends \Exception
 {
-    public $className;
+    public string $className;
 
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
         parent::__construct("Class with Configurable interface '{$className}' was created but no configuration was specified for it.");

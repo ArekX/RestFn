@@ -19,11 +19,32 @@
 namespace tests;
 
 use ArekX\RestFn\DI\Container;
+use ArekX\RestFn\Parser\Parser;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     public function getcontainer()
     {
         return new Container();
+    }
+
+    /**
+     * Builds a parser through a container so the evaluator and any Config-driven
+     * values are injected the same way they are at runtime.
+     *
+     * @param array $ops Operation classes to register.
+     * @param array $parserConfig Additional per-class config for the parser (e.g. ['limits' => ['maxDepth' => 3]]).
+     */
+    protected function makeParser(array $ops = [], array $parserConfig = []): Parser
+    {
+        $container = new Container([
+            'config' => [
+                'overrides' => [
+                    Parser::class => ['ops' => $ops] + $parserConfig,
+                ],
+            ],
+        ]);
+
+        return $container->make(Parser::class);
     }
 }

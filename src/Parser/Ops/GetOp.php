@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -34,6 +35,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class GetOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -47,7 +52,7 @@ class GetOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) < 3) {
             return ['min_parameters' => 3];
@@ -56,20 +61,20 @@ class GetOp implements OperationInterface
         if (!is_string($value[1]) && !is_array($value[1])) {
             return ['invalid_getter_value' => $value[1]];
         } elseif (is_array($value[1])) {
-            $paramResult = $evaluator->validate($value[1]);
+            $paramResult = $this->evaluator->validate($value[1], $context);
             if ($paramResult !== null) {
                 return ['invalid_getter_expression' => $paramResult];
             }
         }
 
-        $valueResult = $evaluator->validate($value[2]);
+        $valueResult = $this->evaluator->validate($value[2], $context);
         if ($valueResult !== null) {
             return ['invalid_value_expression' => $valueResult];
         }
 
         $defaultResult = $value[3] ?? null;
         if ($defaultResult) {
-            $defaultResult = $evaluator->validate($defaultResult);
+            $defaultResult = $this->evaluator->validate($defaultResult, $context);
             if ($defaultResult !== null) {
                 return ['invalid_default_expression' => $defaultResult];
             }
@@ -82,21 +87,21 @@ class GetOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $result = $evaluator->evaluate($value[2]);
+        $result = $this->evaluator->evaluate($value[2], $context);
 
         $getter = $value[1];
 
         if (is_array($getter)) {
-            $getter = $evaluator->evaluate($getter);
+            $getter = $this->evaluator->evaluate($getter, $context);
         }
 
         $gotResult = Value::get($getter, $result, NAN);
 
         if (is_float($gotResult) && is_nan($gotResult)) {
             $default = $value[3] ?? null;
-            return is_array($default) ? $evaluator->evaluate($default) : null;
+            return is_array($default) ? $this->evaluator->evaluate($default, $context) : null;
         }
 
         return $gotResult;

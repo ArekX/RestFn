@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
@@ -34,6 +35,10 @@ use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
  */
 class MapOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -47,7 +52,7 @@ class MapOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 4) {
             return [
@@ -63,7 +68,7 @@ class MapOp implements OperationInterface
         }
 
         if (is_array($value[1])) {
-            $fromResult = $evaluator->validate($value[1]);
+            $fromResult = $this->evaluator->validate($value[1], $context);
             if ($fromResult) {
                 return [
                     'invalid_from_expression' => $fromResult,
@@ -78,7 +83,7 @@ class MapOp implements OperationInterface
         }
 
         if (is_array($value[2])) {
-            $toResult = $evaluator->validate($value[2]);
+            $toResult = $this->evaluator->validate($value[2], $context);
             if ($toResult) {
                 return [
                     'invalid_to_expression' => $toResult,
@@ -93,12 +98,12 @@ class MapOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $from = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
-        $to = is_string($value[2]) ? $value[2] : $evaluator->evaluate($value[2]);
+        $from = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $to = is_string($value[2]) ? $value[2] : $this->evaluator->evaluate($value[2], $context);
 
-        $result = $evaluator->evaluate($value[3]);
+        $result = $this->evaluator->evaluate($value[3], $context);
 
         if (!is_array($result)) {
             throw new InvalidEvaluation($this, "Expected result to be an array.");
@@ -108,13 +113,13 @@ class MapOp implements OperationInterface
 
         foreach ($result as $item) {
             $key = Value::get($from, $item);
-            $result = Value::get($to, $item);
+            $mappedValue = Value::get($to, $item);
 
             if (!is_string($key)) {
-                throw new \Exception('Invalid key value.');
+                throw new InvalidEvaluation($this, 'Expected key to be a string.');
             }
 
-            $mapped[$key] = $result;
+            $mapped[$key] = $mappedValue;
         }
 
         return $mapped;

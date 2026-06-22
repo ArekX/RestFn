@@ -23,13 +23,13 @@ namespace ArekX\RestFn\Helper;
 
 class Value
 {
-    public static function get($getter, $from, $default = null)
+    public static function get(string|int $getter, mixed $from, mixed $default = null): mixed
     {
         if (is_array($from) && array_key_exists($getter, $from)) {
             return $from[$getter]; // @mago-ignore analysis:mixed-array-index
         }
 
-        $parts = explode('.', $getter);
+        $parts = explode('.', (string) $getter);
         $walker = $from;
 
         foreach ($parts as $key) {

@@ -36,27 +36,27 @@ class ListRequest
         $this->properties = $request['properties'] ?? [];
     }
 
-    public function hasProperties()
+    public function hasProperties(): bool
     {
         return !empty($this->properties);
     }
 
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
-    public function getPage()
+    public function getPage(): int
     {
         return $this->page;
     }
 
-    public function getPageSize()
+    public function getPageSize(): int
     {
         return $this->pageSize;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }

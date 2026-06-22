@@ -63,53 +63,50 @@ class ListOpTest extends OpTestCase
 
     public function testEvaluate()
     {
-        $parser = $this->createStandardParser();
-
-        $parser->setContext('listActions', [
-            'testAction' => DummyListAction::class
-        ]);
-
-        $this->assertEvaluatedWithParser($parser, [
-            'total' => 1,
-            'result' => [
-                ['test' => 1]
-            ]
-        ], 'testAction', DummyReturnOperation::op([
-            'properties' => ['test']
-        ]));
+        $this->assertEvaluatedWithConfig(
+            ['listActions' => ['testAction' => DummyListAction::class]],
+            [
+                'total' => 1,
+                'result' => [
+                    ['test' => 1]
+                ]
+            ],
+            'testAction',
+            DummyReturnOperation::op(['properties' => ['test']])
+        );
     }
 
     public function testEvaluateNoProperties()
     {
-        $parser = $this->createStandardParser();
-
-        $parser->setContext('listActions', [
-            'testAction' => DummyListAction::class
-        ]);
-
         $this->expectException(\Exception::class);
 
-        $this->assertEvaluatedWithParser($parser, [
-            'total' => 1,
-            'result' => [
-                ['test' => 1]
-            ]
-        ], 'testAction', DummyReturnOperation::op([]));
+        $this->assertEvaluatedWithConfig(
+            ['listActions' => ['testAction' => DummyListAction::class]],
+            [
+                'total' => 1,
+                'result' => [
+                    ['test' => 1]
+                ]
+            ],
+            'testAction',
+            DummyReturnOperation::op([])
+        );
     }
 
     public function testEvaluateMissingAction()
     {
-        $parser = $this->createStandardParser();
-
         $this->expectException(\Exception::class);
 
-        $this->assertEvaluatedWithParser($parser, [
-            'total' => 1,
-            'result' => [
-                ['test' => 1]
-            ]
-        ], 'testAction', DummyReturnOperation::op([
-            'properties' => ['test']
-        ]));
+        $this->assertEvaluatedWithConfig(
+            [],
+            [
+                'total' => 1,
+                'result' => [
+                    ['test' => 1]
+                ]
+            ],
+            'testAction',
+            DummyReturnOperation::op(['properties' => ['test']])
+        );
     }
 }

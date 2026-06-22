@@ -19,7 +19,7 @@
 namespace tests\Parser\_mock;
 
 
-use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 class DummyCalledOperation implements OperationInterface
@@ -32,13 +32,13 @@ class DummyCalledOperation implements OperationInterface
         return 'called';
     }
 
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         static::$validated = true;
         return null;
     }
 
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
         static::$evaluated = true;
         return $value[1];

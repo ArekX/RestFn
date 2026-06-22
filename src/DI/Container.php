@@ -21,11 +21,15 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\DI;
 
+use ArekX\RestFn\DI\Attributes\Config;
+use ArekX\RestFn\DI\Attributes\Inject;
 use ArekX\RestFn\DI\Contracts\ConfigurableInterface;
 use ArekX\RestFn\DI\Contracts\FactoryInterface;
-use ArekX\RestFn\DI\Contracts\InjectableInterface;
 use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
+use ArekX\RestFn\DI\Exceptions\CircularDependencyException;
 use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
+use ArekX\RestFn\DI\Exceptions\UnresolvedParameterException;
+use ArekX\RestFn\Helper\Value;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -45,7 +49,7 @@ class Container implements ContainerInterface
      *
      * @var SharedInstanceInterface[]
      */
-    protected $shared = [];
+    protected array $shared = [];
 
     /**
      * Contains className => config storage which contains configurations for all classes
@@ -56,14 +60,14 @@ class Container implements ContainerInterface
      * @see ConfigurableInterface::configure()
      * @var array
      */
-    protected $configMap = [];
+    protected array $configMap = [];
 
     /**
      * Contains all aliases for aliasing between definitions when calling make.
      *
      * @var array
      */
-    protected $aliasMap = [];
+    protected array $aliasMap = [];
 
     /**
      * Contains key, value map of factories for specific classes.
@@ -71,7 +75,7 @@ class Container implements ContainerInterface
      * @see Container::factory()
      * @var array
      */
-    protected $factoryMap = [];
+    protected array $factoryMap = [];
 
     /**
      * Contains key, value maps of disabled factory classes.
@@ -81,28 +85,87 @@ class Container implements ContainerInterface
      *
      * @var array
      */
-    protected $enabledFactories = [];
+    protected array $enabledFactories = [];
+
+    /**
+     * Tracks classes currently being resolved from a blueprint so that
+     * dependency cycles can be detected instead of recursing until the
+     * stack is exhausted.
+     *
+     * @var array
+     */
+    protected array $resolving = [];
+
+    /**
+     * Global configuration shared across all classes.
+     *
+     * Read by Config-attributed properties and parameters as the base layer,
+     * below any per-class override.
+     *
+     * @var array
+     */
+    protected array $globalConfig = [];
+
+    /**
+     * Cache of resolved class blueprints.
+     *
+     * @var array
+     */
+    protected array $blueprintCache = [];
+
+    /**
+     * Sentinel used to distinguish a missing config value from a real null.
+     *
+     * @var object
+     */
+    protected object $configMiss;
 
     /**
      * container constructor
      *
-     * @param array $configMap Configuration map to be passed for classes implementing Configurable
+     * Expected config shape:
+     * [
+     *   'config' => [
+     *       'global'    => [...grouped global config...],
+     *       'overrides' => [ClassName::class => [...grouped per-class config...]],
+     *   ],
+     *   'aliases'   => [definition => withDefinition],
+     *   'factories' => [forClass => factoryClass],
+     * ]
+     *
+     * @param array $config
      * @see ConfigurableInterface::configure()
-     * @see Container::$configMap
      */
     public function __construct(array $config = [])
     {
+        $this->configMiss = new \stdClass();
+
+        $this->shareSelf();
+
         $this->aliasMap = $config['aliases'] ?? [];
 
-        $configurations = $config['configurations'] ?? [];
-        foreach ($configurations as $definition => $config) {
-            $this->configure($definition, $config);
+        $this->globalConfig = $config['config']['global'] ?? [];
+
+        $overrides = $config['config']['overrides'] ?? [];
+        foreach ($overrides as $definition => $override) {
+            $this->configure($definition, $override);
         }
 
         $factories = $config['factories'] ?? [];
         foreach ($factories as $definition => $factoryClass) {
             $this->factory($definition, $factoryClass);
         }
+    }
+
+    /**
+     * Registers the container itself as a shared instance so that classes can
+     * inject the configured container rather than receiving a fresh one.
+     */
+    protected function shareSelf(): void
+    {
+        $this->shared[self::class] = $this;
+        $this->shared[static::class] = $this;
+        $this->shared[ContainerInterface::class] = $this;
     }
 
     /**
@@ -115,7 +178,7 @@ class Container implements ContainerInterface
      * @see Container::make()
      */
     #[\Override]
-    public function get(string $id)
+    public function get(string $id): mixed
     {
         return $this->make($id);
     }
@@ -151,7 +214,8 @@ class Container implements ContainerInterface
      * Creates instance from a class.
      *
      * @param string $definition Class which will be resolved to create instance from.
-     * @param mixed ...$args Constructor arguments passed to the class constructor.
+     * @param array $args Associative map of constructor parameter overrides keyed by parameter name.
+     *                    Parameters not present here are autowired by attribute, type, or default.
      * @return mixed Created instance or existing instance if the class implements SharedInstance
      * @throws \ReflectionException
      *
@@ -159,12 +223,11 @@ class Container implements ContainerInterface
      *
      * @see Container::makeFromBlueprint()
      * @see FactoryInterface For classes which are factory providers
-     * @see InjectableInterface For classes which should be instantiated only once
      * @see SharedInstanceInterface For classes which should be instantiated only once
      * @see ConfigurableInterface For classes to be auto-wired
      *
      */
-    public function make(string $definition, ...$args)
+    public function make(string $definition, array $args = []): mixed
     {
         $definition = $this->resolveAlias($definition);
 
@@ -187,16 +250,16 @@ class Container implements ContainerInterface
      * If a definition is not an object it will be created using make() function.
      *
      * @param string|object $definition Definition to be resolved.
-     * @param mixed ...$args Arguments to be passed to make().
+     * @param array $args Associative constructor overrides passed to make().
      * @return object Passed or created definition.
      * @throws \ReflectionException
      * @throws ConfigNotSpecifiedException
      * @see Container::make()
      */
-    public function share($definition, ...$args)
+    public function share(string|object $definition, array $args = []): object
     {
         if (!is_object($definition)) {
-            $definition = $this->make($definition, ...$args);
+            $definition = $this->make($definition, $args);
         }
 
         return $this->shared[get_class($definition)] = $definition;
@@ -223,7 +286,7 @@ class Container implements ContainerInterface
      * @see FactoryInterface
      * @see Container::make()
      */
-    public function factory(string $forClass, string $factoryClass)
+    public function factory(string $forClass, string $factoryClass): void
     {
         $this->factoryMap[$forClass] = $factoryClass;
         $this->enabledFactories[$factoryClass] = true;
@@ -235,7 +298,7 @@ class Container implements ContainerInterface
      * @param string $factoryClass
      * @see Container::make()
      */
-    public function disableFactory(string $factoryClass)
+    public function disableFactory(string $factoryClass): void
     {
         $this->enabledFactories[$factoryClass] = false;
     }
@@ -246,7 +309,7 @@ class Container implements ContainerInterface
      * @param string $factoryClass
      * @see Container::make()
      */
-    public function enableFactory(string $factoryClass)
+    public function enableFactory(string $factoryClass): void
     {
         $this->enabledFactories[$factoryClass] = true;
     }
@@ -262,7 +325,7 @@ class Container implements ContainerInterface
      * @param array $config Configuration to be passed to classes configure method.
      * @see ConfigurableInterface
      */
-    public function configure($definition, array $config)
+    public function configure(string $definition, array $config): void
     {
         $this->configMap[$definition] = $config;
     }
@@ -273,7 +336,7 @@ class Container implements ContainerInterface
      * @param string $definition
      * @param string $withDefinition
      */
-    public function alias($definition, $withDefinition)
+    public function alias(string $definition, string $withDefinition): void
     {
         $this->aliasMap[$definition] = $withDefinition;
     }
@@ -288,39 +351,66 @@ class Container implements ContainerInterface
      * @return array|mixed
      * @throws \ReflectionException
      */
-    protected function resolveBlueprint($class)
+    protected function resolveBlueprint(string $class): array
     {
-        static $cache = [];
-
-        if (!empty($cache[$class])) {
-            return $cache[$class];
+        if (!empty($this->blueprintCache[$class])) {
+            return $this->blueprintCache[$class];
         }
 
         $reflection = new \ReflectionClass($class);
 
-        $dependencyMap = [];
-
-        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            if (!$property->hasType()) {
-                continue;
+        $constructor = $reflection->getConstructor();
+        $parameters = [];
+        if ($constructor !== null) {
+            foreach ($constructor->getParameters() as $param) {
+                $hasDefault = $param->isDefaultValueAvailable();
+                $parameters[] = [
+                    'name' => $param->getName(),
+                    'inject' => $this->readAttribute($param, Inject::class),
+                    'config' => $this->readAttribute($param, Config::class),
+                    'type' => $this->resolvableTypeName($param->getType()),
+                    'hasDefault' => $hasDefault,
+                    'default' => $hasDefault ? $param->getDefaultValue() : null,
+                ];
             }
-
-            /** @var \ReflectionNamedType $type */
-            $type = $property->getType();
-
-            $typeName = $type->getName();
-            if (!class_exists($typeName) && !interface_exists($typeName)) {
-                continue;
-            }
-
-            $dependencyMap[$property->getName()] = $typeName;
         }
 
-        return $cache[$class] = [
+        return $this->blueprintCache[$class] = [
             'reflection' => $reflection,
-            'construct' => $reflection->getConstructor() !== null,
-            'dependencies' => $dependencyMap,
+            'constructor' => $constructor !== null,
+            'parameters' => $parameters,
         ];
+    }
+
+    /**
+     * Reads the first instance of an attribute from a reflector, or null.
+     *
+     * @param \ReflectionProperty|\ReflectionParameter $reflector
+     * @param string $attributeClass
+     * @return object|null
+     */
+    protected function readAttribute(\ReflectionProperty|\ReflectionParameter $reflector, string $attributeClass): ?object
+    {
+        $attributes = $reflector->getAttributes($attributeClass);
+
+        return empty($attributes) ? null : $attributes[0]->newInstance();
+    }
+
+    /**
+     * Returns the type name if it is an autowirable class or interface, otherwise null.
+     *
+     * @param \ReflectionType|null $type
+     * @return string|null
+     */
+    protected function resolvableTypeName(?\ReflectionType $type): ?string
+    {
+        if (!$type instanceof \ReflectionNamedType) {
+            return null;
+        }
+
+        $name = $type->getName();
+
+        return (class_exists($name) || interface_exists($name)) ? $name : null;
     }
 
     /**
@@ -335,7 +425,32 @@ class Container implements ContainerInterface
      * @see Container::resolveDefinition() For how definitions are resolved.
      * @see Container::resolveBlueprint() For how class blueprint for injectables are resolved.
      */
-    protected function makeFromBlueprint(string $class, $args): object
+    protected function makeFromBlueprint(string $class, array $args): object
+    {
+        if (!empty($this->resolving[$class])) {
+            throw new CircularDependencyException($class, array_keys($this->resolving));
+        }
+
+        $this->resolving[$class] = true;
+
+        try {
+            return $this->buildFromBlueprint($class, $args);
+        } finally {
+            unset($this->resolving[$class]);
+        }
+    }
+
+    /**
+     * Instantiates and wires a class from its resolved blueprint.
+     *
+     * @param string $class
+     * @param $args
+     * @return object
+     *
+     * @throws ConfigNotSpecifiedException
+     * @throws \ReflectionException
+     */
+    protected function buildFromBlueprint(string $class, array $args): object
     {
         $blueprint = $this->resolveBlueprint($class);
 
@@ -349,12 +464,6 @@ class Container implements ContainerInterface
             $this->share($instance);
         }
 
-        if ($instance instanceof InjectableInterface) {
-            foreach ($blueprint['dependencies'] as $property => $type) {
-                $instance->{$property} = $this->make($type);
-            }
-        }
-
         if ($instance instanceof ConfigurableInterface) {
             if (empty($this->configMap[$class])) {
                 throw new ConfigNotSpecifiedException($class);
@@ -363,11 +472,74 @@ class Container implements ContainerInterface
             $instance->configure($this->configMap[$class]);
         }
 
-        if ($blueprint['construct']) {
-            $instance->__construct(...$args);
+        if ($blueprint['constructor']) {
+            $instance->__construct(...$this->resolveParameters($class, $blueprint['parameters'], $args));
         }
 
         return $instance;
+    }
+
+    /**
+     * Resolves constructor arguments in declaration order.
+     *
+     * For each parameter, resolution is: name override -> Inject attribute ->
+     * Config attribute -> autowire by type -> default value -> error.
+     *
+     * @param string $class
+     * @param array $parameters Parameter blueprints.
+     * @param array $args Associative overrides keyed by parameter name.
+     * @return array Positional argument list.
+     * @throws UnresolvedParameterException
+     * @throws \ReflectionException
+     * @throws ConfigNotSpecifiedException
+     */
+    protected function resolveParameters(string $class, array $parameters, array $args): array
+    {
+        $resolved = [];
+
+        foreach ($parameters as $param) {
+            $name = $param['name'];
+
+            if (array_key_exists($name, $args)) {
+                $resolved[] = $args[$name];
+            } elseif ($param['inject'] !== null) {
+                $resolved[] = $this->make($param['inject']->definition ?? $param['type']);
+            } elseif ($param['config'] !== null) {
+                $resolved[] = $this->resolveConfigValue($class, $param['config']);
+            } elseif ($param['type'] !== null) {
+                $resolved[] = $this->make($param['type']);
+            } elseif ($param['hasDefault']) {
+                $resolved[] = $param['default'];
+            } else {
+                throw new UnresolvedParameterException($class, $name);
+            }
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * Resolves a Config attribute value through the override then global layers.
+     *
+     * @param string $class
+     * @param Config $config
+     * @return mixed Per-class override, else global value, else the attribute default.
+     */
+    protected function resolveConfigValue(string $class, Config $config): mixed
+    {
+        $miss = $this->configMiss;
+
+        $value = Value::get($config->key, $this->configMap[$class] ?? [], $miss);
+        if ($value !== $miss) {
+            return $value;
+        }
+
+        $value = Value::get($config->key, $this->globalConfig, $miss);
+        if ($value !== $miss) {
+            return $value;
+        }
+
+        return $config->default;
     }
 
     /**
@@ -379,7 +551,7 @@ class Container implements ContainerInterface
      * @throws ConfigNotSpecifiedException
      * @throws \ReflectionException
      */
-    protected function makeUsingFactory(string $definition, array $args)
+    protected function makeUsingFactory(string $definition, array $args): mixed
     {
         $factoryClass = $this->factoryMap[$definition];
 
@@ -388,7 +560,7 @@ class Container implements ContainerInterface
         }
 
         /** @var FactoryInterface $factory */
-        $factory = $this->make($factoryClass, $args);
+        $factory = $this->make($factoryClass);
 
         $this->disableFactory($factoryClass);
         $instance = $factory->create($definition, $args);
@@ -403,7 +575,7 @@ class Container implements ContainerInterface
      * @param string $definition
      * @return string Resolved definition.
      */
-    protected function resolveAlias(string $definition)
+    protected function resolveAlias(string $definition): string
     {
         if (empty($this->aliasMap[$definition])) {
             return $definition;

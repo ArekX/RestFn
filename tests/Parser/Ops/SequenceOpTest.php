@@ -44,6 +44,38 @@ class SequenceOpTest extends OpTestCase
         ], DummyOperation::op(), DummyFailOperation::op());
     }
 
+    public function testValidateWithinMaxOperations()
+    {
+        $this->assertValidatedWithConfig(
+            ['limits' => ['maxSequenceOperations' => 2]],
+            null,
+            DummyOperation::op(),
+            DummyOperation::op()
+        );
+    }
+
+    public function testValidateExceedingMaxOperationsFails()
+    {
+        $this->assertValidatedWithConfig(
+            ['limits' => ['maxSequenceOperations' => 2]],
+            ['max_operations' => 2],
+            DummyOperation::op(),
+            DummyOperation::op(),
+            DummyOperation::op()
+        );
+    }
+
+    public function testValidateUsesDefaultMaxOperations()
+    {
+        $operations = array_fill(0, SequenceOp::DEFAULT_MAX_OPERATIONS + 1, DummyOperation::op());
+
+        $this->assertValidatedWithConfig(
+            [],
+            ['max_operations' => SequenceOp::DEFAULT_MAX_OPERATIONS],
+            ...$operations
+        );
+    }
+
     public function testEvaluate()
     {
         $this->assertEvaluated(null);

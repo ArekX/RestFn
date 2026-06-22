@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Contracts;
 
+use ArekX\RestFn\Parser\Context;
+
 /**
  * Interface RuleParser
  * @package ArekX\RestFn\Parser\Contracts
@@ -30,37 +32,20 @@ namespace ArekX\RestFn\Parser\Contracts;
 interface EvaluatorInterface
 {
     /**
-     * Sets context for this evaluator.
-     *
-     * This is specific data which can be used by ops to help
-     * resolve their rules.
-     *
-     * @param string $key Name of the value to set in current context.
-     * @param mixed $value Value which will be set.
-     * @return $this
-     */
-    public function setContext(string $key, mixed $value);
-
-    /**
-     * Returns currently set context data by key.
-     *
-     * @return mixed
-     */
-    public function getContext(string $key);
-
-    /**
      * Validates rules sent rules against a value.
      *
      * @param array $value Value to be validated with rules.
+     * @param Context $context Per-evaluation context.
      * @return null|array Returns list of errors if validation fails, or null if validation is successful.
      */
-    public function validate(array $value): ?array;
+    public function validate(array $value, Context $context): ?array;
 
     /**
      * Evaluates a value.
      *
      * @param array $value Value to be evaluated.
+     * @param Context $context Per-evaluation context.
      * @return mixed Returns a result from evaluated value.
      */
-    public function evaluate(array $value);
+    public function evaluate(array $value, Context $context): mixed;
 }

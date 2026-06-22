@@ -19,6 +19,8 @@
 namespace tests\Parser\Ops;
 
 
+use ArekX\RestFn\DI\Container;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Parser;
 use tests\Parser\_mock\DummyCalledOperation;
@@ -31,51 +33,66 @@ class OpTestCase extends TestCase
 {
     public ?string $opClass;
 
+    /**
+     * Builds the operation under test through a container so its evaluator and
+     * any Config-driven values are injected exactly as they are at runtime. The
+     * evaluator is a parser registered with the standard dummy operations so
+     * recursion into sub-expressions works.
+     *
+     * @param array $opConfig Per-class config for the operation under test.
+     * @return OperationInterface
+     */
+    protected function makeOp(array $opConfig = []): OperationInterface
+    {
+        $container = new Container([
+            'config' => [
+                'overrides' => [
+                    Parser::class => ['ops' => $this->standardOps()],
+                    $this->opClass => $opConfig,
+                ],
+            ],
+        ]);
+
+        $container->make(Parser::class);
+
+        return $container->make($this->opClass);
+    }
+
+    protected function standardOps(): array
+    {
+        return [
+            DummyOperation::class,
+            DummyFailOperation::class,
+            DummyReturnOperation::class,
+            DummyCalledOperation::class,
+        ];
+    }
+
     public function assertValidated($expectedResult, ...$opParams)
     {
-        $parser = $this->createStandardParser();
+        $this->assertValidatedWithConfig([], $expectedResult, ...$opParams);
+    }
 
-        /** @var OperationInterface $instance */
-        $instance = new $this->opClass();
-
+    public function assertValidatedWithConfig(array $opConfig, $expectedResult, ...$opParams)
+    {
         DummyCalledOperation::$validated = false;
 
-        $this->assertEquals($expectedResult, $instance->validate($parser, [$this->opClass::name(), ...$opParams]));
-    }
+        $instance = $this->makeOp($opConfig);
 
-    public function getParser($ops = [])
-    {
-        $parser = new Parser();
-        $parser->container = $this->getcontainer();
-
-        $parser->configure(['ops' => $ops]);
-        return $parser;
-    }
-
-    public function assertEvaluatedWithParser($parser, $expectedResult, ...$opParams)
-    {
-        $op = $this->opClass;
-
-        /** @var OperationInterface $instance */
-        $instance = $this->getcontainer()->make($op);
-
-        DummyCalledOperation::$evaluated = false;
-
-        $this->assertEquals($expectedResult, $instance->evaluate($parser, [$op::name(), ...$opParams]));
+        $this->assertEquals($expectedResult, $instance->validate([$this->opClass::name(), ...$opParams], new Context()));
     }
 
     public function assertEvaluated($expectedResult, ...$opParams)
     {
-        $this->assertEvaluatedWithParser($this->createStandardParser(), $expectedResult, ...$opParams);
+        $this->assertEvaluatedWithConfig([], $expectedResult, ...$opParams);
     }
 
-    protected function createStandardParser(): Parser
+    public function assertEvaluatedWithConfig(array $opConfig, $expectedResult, ...$opParams)
     {
-        return $this->getParser([
-            DummyOperation::class,
-            DummyFailOperation::class,
-            DummyReturnOperation::class,
-            DummyCalledOperation::class
-        ]);
+        DummyCalledOperation::$evaluated = false;
+
+        $instance = $this->makeOp($opConfig);
+
+        $this->assertEquals($expectedResult, $instance->evaluate([$this->opClass::name(), ...$opParams], new Context()));
     }
 }

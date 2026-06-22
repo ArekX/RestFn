@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -34,6 +35,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
 // @mago-ignore lint:cyclomatic-complexity
 class SortOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -47,7 +52,7 @@ class SortOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         $max = count($value);
         if ($max > 4 || $max < 3) {
@@ -58,25 +63,25 @@ class SortOp implements OperationInterface
         }
 
         if ($max === 4) {
-            return $this->validateBySignature($evaluator, $value);
+            return $this->validateBySignature($value, $context);
         }
 
-        return $this->validateNormalSignature($evaluator, $value);
+        return $this->validateNormalSignature($value, $context);
     }
 
-    protected function validateBySignature(EvaluatorInterface $evaluator, $value)
+    protected function validateBySignature(mixed $value, Context $context): ?array
     {
-        $result = $this->validateByValue($evaluator, $value[1]);
+        $result = $this->validateByValue($value[1], $context);
         if ($result) {
             return $result;
         }
 
-        $result = $this->validateDirectionValue($evaluator, $value[2]);
+        $result = $this->validateDirectionValue($value[2], $context);
         if ($result) {
             return $result;
         }
 
-        $result = $this->validateFromValue($evaluator, $value[3]);
+        $result = $this->validateFromValue($value[3], $context);
         if ($result) {
             return $result;
         }
@@ -84,10 +89,10 @@ class SortOp implements OperationInterface
         return null;
     }
 
-    protected function validateByValue(EvaluatorInterface $evaluator, $byValue)
+    protected function validateByValue(mixed $byValue, Context $context): ?array
     {
         if (is_array($byValue)) {
-            $byResult = $evaluator->validate($byValue);
+            $byResult = $this->evaluator->validate($byValue, $context);
 
             if ($byResult !== null) {
                 return [
@@ -103,10 +108,10 @@ class SortOp implements OperationInterface
         return null;
     }
 
-    protected function validateDirectionValue(EvaluatorInterface $evaluator, $directionValue)
+    protected function validateDirectionValue(mixed $directionValue, Context $context): ?array
     {
         if (is_array($directionValue)) {
-            $byResult = $evaluator->validate($directionValue);
+            $byResult = $this->evaluator->validate($directionValue, $context);
 
             if ($byResult !== null) {
                 return [
@@ -122,9 +127,9 @@ class SortOp implements OperationInterface
         return null;
     }
 
-    protected function validateFromValue(EvaluatorInterface $evaluator, $fromValue)
+    protected function validateFromValue(mixed $fromValue, Context $context): ?array
     {
-        $byResult = $evaluator->validate($fromValue);
+        $byResult = $this->evaluator->validate($fromValue, $context);
 
         if ($byResult !== null) {
             return [
@@ -135,14 +140,14 @@ class SortOp implements OperationInterface
         return null;
     }
 
-    protected function validateNormalSignature(EvaluatorInterface $evaluator, $value)
+    protected function validateNormalSignature(mixed $value, Context $context): ?array
     {
-        $result = $this->validateDirectionValue($evaluator, $value[1]);
+        $result = $this->validateDirectionValue($value[1], $context);
         if ($result) {
             return $result;
         }
 
-        $result = $this->validateFromValue($evaluator, $value[2]);
+        $result = $this->validateFromValue($value[2], $context);
         if ($result) {
             return $result;
         }
@@ -154,14 +159,14 @@ class SortOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
         $max = count($value);
 
         if ($max === 4) {
-            $byValue = is_string($value[1]) || is_int($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
-            $direction = is_string($value[2]) ? $value[2] : $evaluator->evaluate($value[2]);
-            $from = $evaluator->evaluate($value[3]);
+            $byValue = is_string($value[1]) || is_int($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+            $direction = is_string($value[2]) ? $value[2] : $this->evaluator->evaluate($value[2], $context);
+            $from = $this->evaluator->evaluate($value[3], $context);
 
             if ($direction === 'asc') {
                 usort($from, static fn($a, $b) => Value::get($byValue, $a) <=> Value::get($byValue, $b));
@@ -172,8 +177,8 @@ class SortOp implements OperationInterface
             return $from;
         }
 
-        $direction = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
-        $from = $evaluator->evaluate($value[2]);
+        $direction = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $from = $this->evaluator->evaluate($value[2], $context);
 
         if ($direction === 'asc') {
             usort($from, static fn($a, $b) => $a <=> $b);

@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
@@ -33,6 +34,10 @@ use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
  */
 class IfElseOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -46,7 +51,7 @@ class IfElseOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 4) {
             return [
@@ -59,17 +64,17 @@ class IfElseOp implements OperationInterface
             return ['all_if_expressions_must_be_arrays' => true];
         }
 
-        $ifResult = $evaluator->validate($value[1]);
+        $ifResult = $this->evaluator->validate($value[1], $context);
         if ($ifResult) {
             return ['if_expression_invalid' => $ifResult];
         }
 
-        $trueExpressionResult = $evaluator->validate($value[2]);
+        $trueExpressionResult = $this->evaluator->validate($value[2], $context);
         if ($trueExpressionResult) {
             return ['true_expression_invalid' => $trueExpressionResult];
         }
 
-        $falseExpressionResult = $evaluator->validate($value[3]);
+        $falseExpressionResult = $this->evaluator->validate($value[3], $context);
         if ($falseExpressionResult) {
             return ['false_expression_invalid' => $falseExpressionResult];
         }
@@ -81,9 +86,9 @@ class IfElseOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $result = $evaluator->evaluate($value[1]);
-        return $evaluator->evaluate($value[$result ? 2 : 3]);
+        $result = $this->evaluator->evaluate($value[1], $context);
+        return $this->evaluator->evaluate($value[$result ? 2 : 3], $context);
     }
 }

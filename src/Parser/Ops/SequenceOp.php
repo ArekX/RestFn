@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\DI\Attributes\Config;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -32,6 +34,17 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class SequenceOp implements OperationInterface
 {
+    /**
+     * Default maximum number of operations a sequence may contain when the
+     * 'maxSequenceOperations' option is not configured.
+     */
+    public const DEFAULT_MAX_OPERATIONS = 64;
+
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+        #[Config('limits.maxSequenceOperations', default: self::DEFAULT_MAX_OPERATIONS)] public int $maxOperations = self::DEFAULT_MAX_OPERATIONS,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -45,14 +58,20 @@ class SequenceOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         $max = count($value);
+
+        $operationCount = $max - 1;
+
+        if ($operationCount > $this->maxOperations) {
+            return ['max_operations' => $this->maxOperations];
+        }
 
         $errors = [];
 
         for ($i = 1; $i < $max; $i++) {
-            $result = $evaluator->validate($value[$i]);
+            $result = $this->evaluator->validate($value[$i], $context);
             if ($result) {
                 $errors[$i] = $result;
             }
@@ -65,13 +84,13 @@ class SequenceOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
         $max = count($value);
         $lastResult = null;
 
         for ($i = 1; $i < $max; $i++) {
-            $lastResult = $evaluator->evaluate($value[$i]);
+            $lastResult = $this->evaluator->evaluate($value[$i], $context);
         }
 
         return $lastResult;

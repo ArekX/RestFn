@@ -21,12 +21,14 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\DI\Attributes\Config;
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\DI\Contracts\InjectableInterface;
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\ActionInterface;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 
 /**
  * Class RunOp
@@ -34,14 +36,13 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  *
  * Represents Run operation
  */
-class RunOp implements OperationInterface, InjectableInterface
+class RunOp implements OperationInterface
 {
-    /**
-     * Injected container used to make actions
-     *
-     * @var Container
-     */
-    public Container $container;
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+        public Container $container,
+        #[Config('actions', default: [])] public array $actions = [],
+    ) {}
 
     /**
      * @inheritDoc
@@ -56,7 +57,7 @@ class RunOp implements OperationInterface, InjectableInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 3) {
             return [
@@ -65,13 +66,13 @@ class RunOp implements OperationInterface, InjectableInterface
             ];
         }
 
-        $nameResult = $this->validateActionNameValue($evaluator, $value[1]);
+        $nameResult = $this->validateActionNameValue($value[1], $context);
 
         if ($nameResult !== null) {
             return $nameResult;
         }
 
-        $dataResult = $this->validateDataValue($evaluator, $value[2]);
+        $dataResult = $this->validateDataValue($value[2], $context);
 
         if ($dataResult !== null) {
             return $dataResult;
@@ -80,10 +81,10 @@ class RunOp implements OperationInterface, InjectableInterface
         return null;
     }
 
-    protected function validateActionNameValue(EvaluatorInterface $evaluator, $actionValue)
+    protected function validateActionNameValue(mixed $actionValue, Context $context): ?array
     {
         if (is_array($actionValue)) {
-            $byResult = $evaluator->validate($actionValue);
+            $byResult = $this->evaluator->validate($actionValue, $context);
 
             if ($byResult !== null) {
                 return [
@@ -99,10 +100,10 @@ class RunOp implements OperationInterface, InjectableInterface
         return null;
     }
 
-    protected function validateDataValue(EvaluatorInterface $evaluator, $actionValue)
+    protected function validateDataValue(mixed $actionValue, Context $context): ?array
     {
         if (is_array($actionValue)) {
-            $byResult = $evaluator->validate($actionValue);
+            $byResult = $this->evaluator->validate($actionValue, $context);
 
             if ($byResult !== null) {
                 return [
@@ -118,15 +119,15 @@ class RunOp implements OperationInterface, InjectableInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $actionName = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
-        $data = is_array($value[2]) ? $evaluator->evaluate($value[2]) : $value[2];
+        $actionName = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $data = is_array($value[2]) ? $this->evaluator->evaluate($value[2], $context) : $value[2];
 
-        $actionClass = Value::get($actionName, $evaluator->getContext('actions'));
+        $actionClass = Value::get($actionName, $this->actions);
 
         if (empty($actionClass)) {
-            throw new \Exception('Invalid action: ' . $actionName);
+            throw new InvalidEvaluation($this, "Invalid action: {$actionName}.");
         }
 
         /** @var ActionInterface $action */

@@ -19,8 +19,10 @@
 namespace tests\DI;
 
 
+use ArekX\RestFn\DI\Exceptions\CircularDependencyException;
 use ArekX\RestFn\DI\Exceptions\ConfigNotSpecifiedException;
 use ArekX\RestFn\DI\Container;
+use tests\DI\_mock\DummyCircularA;
 use tests\DI\_mock\DummyClass;
 use tests\DI\_mock\DummyClassWithArgs;
 use tests\DI\_mock\DummyConfigurableClass;
@@ -50,7 +52,7 @@ class ContainerMakeTest extends TestCase
         $container = new Container();
 
         /** @var DummyClassWithArgs $value */
-        $value = $container->make(DummyClassWithArgs::class, 'test1', 'test2');
+        $value = $container->make(DummyClassWithArgs::class, ['arg1' => 'test1', 'arg2' => 'test2']);
 
         $this->assertEquals('test1', $value->arg1, 'Arg1 is set.');
         $this->assertEquals('test2', $value->arg2, 'Arg2 is set.');
@@ -66,8 +68,10 @@ class ContainerMakeTest extends TestCase
             'test' => 1
         ];
         $container = new Container([
-            'configurations' => [
-                DummyConfigurableClass::class => $testConfig
+            'config' => [
+                'overrides' => [
+                    DummyConfigurableClass::class => $testConfig
+                ]
             ]
         ]);
 
@@ -88,8 +92,10 @@ class ContainerMakeTest extends TestCase
             'test' => 1
         ];
         $container = new Container([
-            'configurations' => [
-                DummyConfigurableClass::class => $testConfig
+            'config' => [
+                'overrides' => [
+                    DummyConfigurableClass::class => $testConfig
+                ]
             ]
         ]);
 
@@ -112,13 +118,15 @@ class ContainerMakeTest extends TestCase
             'test' => 1
         ];
         $container = new Container([
-            'configurations' => [
-                DummyConfigurableClassWithArgs::class => $testConfig
+            'config' => [
+                'overrides' => [
+                    DummyConfigurableClassWithArgs::class => $testConfig
+                ]
             ]
         ]);
 
         /** @var DummyConfigurableClassWithArgs $value */
-        $value = $container->make(DummyConfigurableClassWithArgs::class, 'arg1', 'arg2');
+        $value = $container->make(DummyConfigurableClassWithArgs::class, ['arg1' => 'arg1', 'arg2' => 'arg2']);
 
         $this->assertInstanceOf(DummyConfigurableClassWithArgs::class, $value, 'Created is of type of DummyClassWithArgs.');
         $this->assertEquals($value->passedConfig, $testConfig, 'Config is passed correctly.');
@@ -136,7 +144,7 @@ class ContainerMakeTest extends TestCase
 
         $this->expectException(ConfigNotSpecifiedException::class);
 
-        $container->make(DummyConfigurableClass::class, 'arg1', 'arg2');
+        $container->make(DummyConfigurableClass::class);
     }
 
     /**
@@ -151,7 +159,7 @@ class ContainerMakeTest extends TestCase
         $container->configure(DummyConfigurableClass::class, $testConfig);
 
         /** @var DummyConfigurableClass $value */
-        $value = $container->make(DummyConfigurableClass::class, 'arg1', 'arg2');
+        $value = $container->make(DummyConfigurableClass::class);
 
         $this->assertInstanceOf(DummyConfigurableClass::class, $value, 'Created is of type of DummyClassWithArgs.');
         $this->assertEquals($value->passedConfig, $testConfig, 'Config is passed correctly.');
@@ -168,7 +176,7 @@ class ContainerMakeTest extends TestCase
         ]);
 
         /** @var DummyClass $value */
-        $value = $container->make(DummyClass::class, 'arg1', 'arg2');
+        $value = $container->make(DummyClass::class);
 
         $this->assertInstanceOf(DummyOverrideClass::class, $value, 'Created is of type of DummyOverrideClass.');
     }
@@ -185,8 +193,31 @@ class ContainerMakeTest extends TestCase
         $container->alias(DummyClass::class, DummyOverrideClass::class);
 
         /** @var DummyClass $value */
-        $value = $container->make(DummyClass::class, 'arg1', 'arg2');
+        $value = $container->make(DummyClass::class);
 
         $this->assertInstanceOf(DummyOverrideClass::class, $value, 'Created is of type of DummyOverrideClass.');
+    }
+
+    public function testCircularDependencyIsDetected()
+    {
+        $container = new Container();
+
+        $this->expectException(CircularDependencyException::class);
+
+        $container->make(DummyCircularA::class);
+    }
+
+    public function testResolutionRecoversAfterCircularDependency()
+    {
+        $container = new Container();
+
+        try {
+            $container->make(DummyCircularA::class);
+        } catch (CircularDependencyException) {
+            // Expected: the cycle is rejected.
+        }
+
+        // The failed resolution must not leave stale state that blocks later, valid makes.
+        $this->assertInstanceOf(DummyClass::class, $container->make(DummyClass::class));
     }
 }

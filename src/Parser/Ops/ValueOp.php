@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 /**
@@ -46,7 +46,7 @@ class ValueOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 2) {
             return [
@@ -62,7 +62,7 @@ class ValueOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
         return $value[1];
     }

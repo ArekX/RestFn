@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -32,6 +33,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class CompareOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -45,7 +50,7 @@ class CompareOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 4) {
             return [
@@ -54,13 +59,13 @@ class CompareOp implements OperationInterface
             ];
         }
 
-        $leftResult = $evaluator->validate($value[1]);
+        $leftResult = $this->evaluator->validate($value[1], $context);
 
         if ($leftResult !== null) {
             return ['invalid_left_expression' => $leftResult];
         }
 
-        $rightResult = $evaluator->validate($value[3]);
+        $rightResult = $this->evaluator->validate($value[3], $context);
 
         if ($rightResult !== null) {
             return ['invalid_right_expression' => $rightResult];
@@ -69,7 +74,7 @@ class CompareOp implements OperationInterface
         $operation = $value[2] ?? '';
 
         if (is_array($operation)) {
-            $operationResult = $evaluator->validate($operation);
+            $operationResult = $this->evaluator->validate($operation, $context);
             if ($operationResult) {
                 return ['invalid_operation_expression' => $operationResult];
             }
@@ -97,16 +102,18 @@ class CompareOp implements OperationInterface
             default:
                 return ['invalid_operation' => $operation];
         }
+
+        return null;
     }
 
     /**
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $leftResult = $evaluator->evaluate($value[1]);
-        $rightResult = $evaluator->evaluate($value[3]);
+        $leftResult = $this->evaluator->evaluate($value[1], $context);
+        $rightResult = $this->evaluator->evaluate($value[3], $context);
 
         switch ($value[2]) {
             case '=':

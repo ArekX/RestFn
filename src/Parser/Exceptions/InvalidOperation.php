@@ -23,7 +23,7 @@ namespace ArekX\RestFn\Parser\Exceptions;
 
 class InvalidOperation extends \Exception
 {
-    public function __construct($operation)
+    public function __construct(string $operation)
     {
         parent::__construct("Invalid operation: " . $operation);
     }

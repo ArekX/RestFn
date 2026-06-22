@@ -18,6 +18,8 @@
 
 namespace tests\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
+use ArekX\RestFn\Parser\Ops\SequenceOp;
 use ArekX\RestFn\Parser\Ops\VarOp;
 use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyOperation;
@@ -65,26 +67,76 @@ class VarOpTest extends OpTestCase
 
     public function testEvaluateSet()
     {
-        $parser = $this->createStandardParser();
+        $parser = $this->makeParser([
+            VarOp::class,
+            SequenceOp::class,
+            DummyReturnOperation::class,
+        ]);
 
-        $this->assertEvaluatedWithParser($parser, null, "name");
-        $this->assertEvaluatedWithParser($parser, null, DummyReturnOperation::op("name"));
-        $this->assertEvaluatedWithParser($parser, 1, "name", DummyReturnOperation::op(1));
-        $this->assertEvaluatedWithParser($parser, 1, "name");
-        $this->assertEvaluatedWithParser($parser, 42, DummyReturnOperation::op("name"), DummyReturnOperation::op(42));
-        $this->assertEvaluatedWithParser($parser, 42, DummyReturnOperation::op("name"));
+        // An unset variable evaluates to null.
+        $this->assertSame(null, $parser->evaluate(['var', 'name'], new Context()));
+
+        // Setting a variable returns the assigned value.
+        $this->assertSame(1, $parser->evaluate(['var', 'name', DummyReturnOperation::op(1)], new Context()));
+
+        // The binding is readable later within the same evaluation.
+        $this->assertSame(1, $parser->evaluate([
+            'sequence',
+            ['var', 'name', DummyReturnOperation::op(1)],
+            ['var', 'name'],
+        ], new Context()));
+
+        // The name itself may be an expression for both the set and the get.
+        $this->assertSame(42, $parser->evaluate([
+            'sequence',
+            ['var', DummyReturnOperation::op('name'), DummyReturnOperation::op(42)],
+            ['var', DummyReturnOperation::op('name')],
+        ], new Context()));
+    }
+
+    public function testVariablesLiveOnTheContextNotTheParser()
+    {
+        $parser = $this->makeParser([
+            VarOp::class,
+            DummyReturnOperation::class,
+        ]);
+
+        $context = new Context();
+        $parser->evaluate(['var', 'name', DummyReturnOperation::op('value')], $context);
+
+        // A fresh context starts clean - no state leaks through the stateless parser.
+        $this->assertSame(null, $parser->evaluate(['var', 'name'], new Context()));
+
+        // Reusing the same context preserves bindings - the caller owns the lifecycle.
+        $this->assertSame('value', $parser->evaluate(['var', 'name'], $context));
     }
 
     public function testEvaluateTraversal()
     {
-        $parser = $this->createStandardParser();
+        $parser = $this->makeParser([
+            VarOp::class,
+            SequenceOp::class,
+            DummyReturnOperation::class,
+        ]);
         $input = [
             "name" => "john doe"
         ];
 
-        $this->assertEvaluatedWithParser($parser, null, "profile.name");
-        $this->assertEvaluatedWithParser($parser, $input, "profile", DummyReturnOperation::op($input));
-        $this->assertEvaluatedWithParser($parser, "john doe", "profile.name");
-        $this->assertEvaluatedWithParser($parser, "john doe", DummyReturnOperation::op("profile.name"));
+        // An unset path evaluates to null.
+        $this->assertSame(null, $parser->evaluate(['var', 'profile.name'], new Context()));
+
+        // A dotted path traverses a stored array within the same evaluation.
+        $this->assertSame('john doe', $parser->evaluate([
+            'sequence',
+            ['var', 'profile', DummyReturnOperation::op($input)],
+            ['var', 'profile.name'],
+        ], new Context()));
+
+        // The get path may itself be an expression.
+        $this->assertSame('john doe', $parser->evaluate([
+            'sequence',
+            ['var', 'profile', DummyReturnOperation::op($input)],
+            ['var', DummyReturnOperation::op('profile.name')],
+        ], new Context()));
     }
 }

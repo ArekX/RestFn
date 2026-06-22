@@ -93,7 +93,7 @@ class ContainerFactoryTest extends TestCase
         $this->assertFalse($factory->wasCalled());
 
         /** @var DummyClassWithArgs $newInstance */
-        $newInstance = $container->make(DummyClassWithArgs::class, 'a', 'b');
+        $newInstance = $container->make(DummyClassWithArgs::class, ['arg1' => 'a', 'arg2' => 'b']);
 
         $this->assertInstanceOf(DummyClassWithArgs::class, $newInstance);
         $this->assertEquals('a', $newInstance->arg1);

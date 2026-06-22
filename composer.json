@@ -21,8 +21,8 @@
     "psr/container": "^2.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "*",
-    "phpunit/php-code-coverage": "*"
+    "phpunit/phpunit": "^13.0",
+    "phpunit/php-code-coverage": "^13.0"
   },
   "scripts": {
     "test": "php vendor/bin/phpunit",

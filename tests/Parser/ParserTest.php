@@ -19,9 +19,28 @@
 namespace tests\Parser;
 
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
 use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
-use ArekX\RestFn\Parser\Parser;
+use ArekX\RestFn\Parser\Exceptions\MaxDepthExceededException;
+use ArekX\RestFn\Parser\Ops\AndOp;
+use ArekX\RestFn\Parser\Ops\CastOp;
+use ArekX\RestFn\Parser\Ops\CoalesceOp;
+use ArekX\RestFn\Parser\Ops\CompareOp;
+use ArekX\RestFn\Parser\Ops\GetOp;
+use ArekX\RestFn\Parser\Ops\IfElseOp;
+use ArekX\RestFn\Parser\Ops\ListOp;
+use ArekX\RestFn\Parser\Ops\MapOp;
+use ArekX\RestFn\Parser\Ops\MergeOp;
+use ArekX\RestFn\Parser\Ops\NotOp;
+use ArekX\RestFn\Parser\Ops\ObjectOp;
+use ArekX\RestFn\Parser\Ops\OrOp;
+use ArekX\RestFn\Parser\Ops\RunOp;
+use ArekX\RestFn\Parser\Ops\SequenceOp;
+use ArekX\RestFn\Parser\Ops\SortOp;
+use ArekX\RestFn\Parser\Ops\TakeOp;
+use ArekX\RestFn\Parser\Ops\ValueOp;
+use ArekX\RestFn\Parser\Ops\VarOp;
 use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyNestedOperation;
 use tests\Parser\_mock\DummyOperation;
@@ -29,29 +48,11 @@ use tests\TestCase;
 
 class ParserTest extends TestCase
 {
-    public function testContextSuccessfullySet()
-    {
-        $context = [
-            'test' => 'context',
-            'random' => rand(1, 555)
-        ];
-
-        $parser = new Parser();
-        $parser->setContext('testContext', $context);
-        $this->assertSame($context, $parser->getContext('testContext'));
-    }
-
-    public function testNoSetContextReturnsEmptyArray()
-    {
-        $this->assertSame(null, (new Parser())->getContext('testContext'));
-    }
-
-
     public function testEmptyArrayPassedToRule()
     {
         $parser = $this->getParser();
 
-        $this->assertEquals([], $parser->evaluate([]));
+        $this->assertEquals([], $parser->evaluate([], new Context()));
     }
 
     public function testInvalidRulePassedToParser()
@@ -60,7 +61,7 @@ class ParserTest extends TestCase
 
         $this->expectException(InvalidValueFormatException::class);
 
-        $parser->evaluate('invalidrule');
+        $parser->evaluate('invalidrule', new Context());
     }
 
     public function testInvalidOperationThrowsException()
@@ -69,23 +70,15 @@ class ParserTest extends TestCase
 
         $this->expectException(InvalidOperation::class);
 
-        $parser->evaluate(['test']);
+        $parser->evaluate(['test'], new Context());
     }
 
-    public function testParserConfigure()
+    public function testParserBuildsOpsMapFromConfig()
     {
-        $ops = [
-            DummyOperation::name() => DummyOperation::class
-        ];
+        $parser = $this->makeParser([DummyOperation::class]);
 
-        $parser = new Parser();
-        $parser->container = $this->getcontainer();
-        $parser->configure([
-            'ops' => [DummyOperation::class]
-        ]);
-
-        $this->assertEquals($ops, $parser->ops);
-        $this->assertEquals(1, $parser->evaluate(['test']));
+        $this->assertEquals([DummyOperation::name() => DummyOperation::class], $parser->ops);
+        $this->assertEquals(1, $parser->evaluate(['test'], new Context()));
     }
 
     public function testOperationIsEvaluated()
@@ -94,7 +87,7 @@ class ParserTest extends TestCase
             DummyOperation::class
         ]);
 
-        $this->assertEquals(1, $parser->evaluate(['test']));
+        $this->assertEquals(1, $parser->evaluate(['test'], new Context()));
     }
 
     public function testNestedOperationsIsEvaluated()
@@ -104,7 +97,7 @@ class ParserTest extends TestCase
             DummyOperation::class
         ]);
 
-        $this->assertEquals('nested-1', $parser->evaluate(['nested', ['test']]));
+        $this->assertEquals('nested-1', $parser->evaluate(['nested', ['test']], new Context()));
     }
 
 
@@ -114,7 +107,7 @@ class ParserTest extends TestCase
             DummyOperation::class
         ]);
 
-        $this->assertEquals(null, $parser->validate([]));
+        $this->assertEquals(null, $parser->validate([], new Context()));
     }
 
     public function testValidateSuccess()
@@ -123,23 +116,19 @@ class ParserTest extends TestCase
             DummyOperation::class
         ]);
 
-        $this->assertEquals(null, $parser->validate(['test']));
+        $this->assertEquals(null, $parser->validate(['test'], new Context()));
     }
 
     public function testValidateFail()
     {
         $parser = $this->getParser([DummyFailOperation::class]);
 
-        $this->assertEquals([DummyFailOperation::name(), ['failed' => true]], $parser->validate([DummyFailOperation::name()]));
+        $this->assertEquals([DummyFailOperation::name(), ['failed' => true]], $parser->validate([DummyFailOperation::name()], new Context()));
     }
 
-    public function getParser($ops = [])
+    public function getParser($ops = [], array $parserConfig = [])
     {
-        $parser = new Parser();
-        $parser->container = $this->getcontainer();
-
-        $parser->configure(['ops' => $ops]);
-        return $parser;
+        return $this->makeParser($ops, $parserConfig);
     }
 
     public function testInvalidValidationError()
@@ -147,7 +136,7 @@ class ParserTest extends TestCase
         $parser = $this->getParser();
         $this->expectException(InvalidValueFormatException::class);
 
-        $parser->validate('invalidrule');
+        $parser->validate('invalidrule', new Context());
     }
 
     public function testInvalidOpValidation()
@@ -156,7 +145,7 @@ class ParserTest extends TestCase
 
         $this->expectException(InvalidOperation::class);
 
-        $this->assertEquals(null, $parser->validate(['test']));
+        $this->assertEquals(null, $parser->validate(['test'], new Context()));
     }
 
     public function testNestedValidationFail()
@@ -168,7 +157,7 @@ class ParserTest extends TestCase
 
         $this->assertEquals(
             [DummyNestedOperation::name(), [DummyFailOperation::name(), ['failed' => true]]],
-            $parser->validate([DummyNestedOperation::name(), [DummyFailOperation::name()]])
+            $parser->validate([DummyNestedOperation::name(), [DummyFailOperation::name()]], new Context())
         );
     }
 
@@ -179,6 +168,86 @@ class ParserTest extends TestCase
             DummyOperation::class
         ]);
 
-        $this->assertEquals(null, $parser->validate(['nested', ['test']]));
+        $this->assertEquals(null, $parser->validate(['nested', ['test']], new Context()));
+    }
+
+    public function testEvaluateWithinMaxDepthSucceeds()
+    {
+        $parser = $this->getParser(
+            [DummyNestedOperation::class, DummyOperation::class],
+            ['limits' => ['maxDepth' => 3]]
+        );
+
+        // ['nested', ['nested', ['test']]] is exactly 3 levels deep.
+        $this->assertEquals('nested-nested-1', $parser->evaluate($this->buildNested(2), new Context()));
+    }
+
+    public function testEvaluateExceedingMaxDepthThrows()
+    {
+        $parser = $this->getParser(
+            [DummyNestedOperation::class, DummyOperation::class],
+            ['limits' => ['maxDepth' => 3]]
+        );
+
+        $this->expectException(MaxDepthExceededException::class);
+
+        $parser->evaluate($this->buildNested(3), new Context());
+    }
+
+    public function testValidateExceedingMaxDepthThrows()
+    {
+        $parser = $this->getParser(
+            [DummyNestedOperation::class, DummyOperation::class],
+            ['limits' => ['maxDepth' => 3]]
+        );
+
+        $this->expectException(MaxDepthExceededException::class);
+
+        $parser->validate($this->buildNested(3), new Context());
+    }
+
+    /**
+     * Builds an expression nested $levels deep around a leaf ['test'] operation.
+     */
+    protected function buildNested(int $levels): array
+    {
+        $expression = ['test'];
+
+        for ($i = 0; $i < $levels; $i++) {
+            $expression = ['nested', $expression];
+        }
+
+        return $expression;
+    }
+
+    public function testBuiltInOpNamesAreUnique()
+    {
+        $ops = [
+            AndOp::class,
+            CastOp::class,
+            CoalesceOp::class,
+            CompareOp::class,
+            GetOp::class,
+            IfElseOp::class,
+            ListOp::class,
+            MapOp::class,
+            MergeOp::class,
+            NotOp::class,
+            ObjectOp::class,
+            OrOp::class,
+            RunOp::class,
+            SequenceOp::class,
+            SortOp::class,
+            TakeOp::class,
+            ValueOp::class,
+            VarOp::class,
+        ];
+
+        $names = array_map(static fn(string $op) => $op::name(), $ops);
+
+        $duplicates = array_keys(array_filter(array_count_values($names), static fn(int $count) => $count > 1));
+
+        $this->assertSame([], $duplicates, 'Built-in operations must have unique names.');
+        $this->assertCount(count($ops), array_unique($names));
     }
 }

@@ -25,8 +25,6 @@ namespace ArekX\RestFn\DI\Contracts;
  * @package ArekX\RestFn\DI\Contracts
  *
  * Classes which implement this interface will be instantiated only once and then
- * shared across all other classes which implement Injectable.
- *
- * @see InjectableInterface
+ * shared across all calls to the container.
  */
 interface SharedInstanceInterface {}

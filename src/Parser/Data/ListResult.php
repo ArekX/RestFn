@@ -32,12 +32,12 @@ class ListResult
         $this->result = $result;
     }
 
-    public function getTotalItems()
+    public function getTotalItems(): int
     {
         return $this->totalItems;
     }
 
-    public function getResult()
+    public function getResult(): array
     {
         return $this->result;
     }

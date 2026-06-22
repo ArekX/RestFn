@@ -21,13 +21,14 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser;
 
+use ArekX\RestFn\DI\Attributes\Config;
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\DI\Contracts\ConfigurableInterface;
-use ArekX\RestFn\DI\Contracts\InjectableInterface;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
 use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
+use ArekX\RestFn\Parser\Exceptions\MaxDepthExceededException;
 
 /**
  * Class Parser
@@ -35,49 +36,31 @@ use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
  *
  * This class represents a parser which is used to handle the requests.
  */
-class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInterface
+class Parser implements EvaluatorInterface, SharedInstanceInterface
 {
     /**
-     * Injected container used to create operations.
-     *
-     * @var Container
-     */
-    public Container $container;
-
-    /**
-     * Operation handlers where each operation is mapped to a class
+     * Operation handlers where each operation is mapped to a class.
      *
      * @var array
      */
-    public $ops = [];
+    public array $ops = [];
 
     /**
-     * Represents current context.
-     *
-     * Contexts is an arbitrary data which is is stored inside a Parser
-     * purpose of the context is to have a centralized data store which is accessible
-     * by all of the rules during evaluation or validation.
-     *
-     * @var array
+     * @param Container $container Container used to create operations.
+     * @param array $operations Operation classes to register, from the 'ops' config value.
+     * @param int $maxDepth Maximum allowed nesting depth, from the 'limits.maxDepth' config value.
+     *                      Guards against stack exhaustion from deeply nested, client-supplied expressions.
      */
-    protected $context = [];
-
-    /**
-     * Configures parser with data.
-     *
-     * @param array $config
-     */
-    #[\Override]
-    public function configure(array $config)
-    {
-        /** @var OperationInterface[] $ops */
-        $ops = $config['ops'];
-
-        $this->ops = [];
-
-        foreach ($ops as $op) {
-            $this->ops[$op::name()] = $op;
+    public function __construct(
+        public Container $container,
+        #[Config('ops', default: [])] array $operations = [],
+        #[Config('limits.maxDepth', default: 64)] public int $maxDepth = 64,
+    ) {
+        foreach ($operations as $operation) {
+            $this->ops[$operation::name()] = $operation;
         }
+
+        $this->container->alias(EvaluatorInterface::class, static::class);
     }
 
     /**
@@ -87,24 +70,48 @@ class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInt
      * otherwise errors are returned in nested format.
      *
      * @param mixed $value
+     * @param Context $context
      * @return array|null
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
+     * @throws MaxDepthExceededException
      */
     #[\Override]
-    public function validate($value): null|array
+    public function validate($value, Context $context): null|array
     {
         if (empty($value)) {
             return null;
         }
 
-        $result = $this->getOperation($value)->validate($this, $value);
+        $this->enterDepth($context);
+
+        try {
+            $result = $this->getOperation($value)->validate($value, $context);
+        } finally {
+            $context->leave();
+        }
 
         if ($result !== null) {
             return [$this->getRuleName($value), $result];
         }
 
         return null;
+    }
+
+    /**
+     * Increments the context depth and ensures it does not exceed the maximum.
+     *
+     * @param Context $context
+     * @throws MaxDepthExceededException When the configured maximum depth is exceeded.
+     */
+    protected function enterDepth(Context $context): void
+    {
+        $context->enter();
+
+        if ($context->getDepth() > $this->maxDepth) {
+            $context->leave();
+            throw new MaxDepthExceededException($this->maxDepth);
+        }
     }
 
     /**
@@ -115,7 +122,7 @@ class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInt
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
      */
-    protected function getOperation($value)
+    protected function getOperation(mixed $value): OperationInterface
     {
         if (!is_array($value)) {
             throw new InvalidValueFormatException();
@@ -132,7 +139,7 @@ class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInt
         return $this->container->make($operationClass);
     }
 
-    protected function getRuleName($value): string
+    protected function getRuleName(mixed $value): string
     {
         return $value[0] ?? '';
     }
@@ -141,31 +148,25 @@ class Parser implements InjectableInterface, ConfigurableInterface, EvaluatorInt
      * Evaluates a value and returns a result.
      *
      * @param mixed $value
+     * @param Context $context
      * @return array|mixed
      * @throws InvalidOperation
      * @throws InvalidValueFormatException
+     * @throws MaxDepthExceededException
      */
     #[\Override]
-    public function evaluate($value)
+    public function evaluate($value, Context $context): mixed
     {
         if (empty($value)) {
             return [];
         }
 
-        return $this->getOperation($value)->evaluate($this, $value);
-    }
+        $this->enterDepth($context);
 
-    #[\Override]
-    public function getContext(string $key)
-    {
-        return $this->context[$key] ?? null;
-    }
-
-    #[\Override]
-    public function setContext(string $key, $value)
-    {
-        $this->context[$key] = $value;
-
-        return $this;
+        try {
+            return $this->getOperation($value)->evaluate($value, $context);
+        } finally {
+            $context->leave();
+        }
     }
 }

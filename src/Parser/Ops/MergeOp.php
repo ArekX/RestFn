@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -32,6 +33,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class MergeOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -45,7 +50,7 @@ class MergeOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         $max = count($value);
         if ($max < 2) {
@@ -55,7 +60,7 @@ class MergeOp implements OperationInterface
         $errors = [];
 
         for ($i = 1; $i < $max; $i++) {
-            $result = $evaluator->validate($value[$i]);
+            $result = $this->evaluator->validate($value[$i], $context);
             if ($result) {
                 $errors[$i] = $result;
             }
@@ -68,13 +73,13 @@ class MergeOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
         $result = [];
 
         $max = count($value);
         for ($i = 1; $i < $max; $i++) {
-            $result = array_merge($result, $evaluator->evaluate($value[$i]));
+            $result = array_merge($result, $this->evaluator->evaluate($value[$i], $context));
         }
 
         return $result;

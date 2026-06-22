@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -32,6 +33,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class NotOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -45,7 +50,7 @@ class NotOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 2) {
             return [
@@ -54,7 +59,7 @@ class NotOp implements OperationInterface
             ];
         }
 
-        $result = $evaluator->validate($value[1]);
+        $result = $this->evaluator->validate($value[1], $context);
 
         if ($result !== null) {
             return ['op_error' => $result];
@@ -67,8 +72,8 @@ class NotOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        return !$evaluator->evaluate($value[1]);
+        return !$this->evaluator->evaluate($value[1], $context);
     }
 }

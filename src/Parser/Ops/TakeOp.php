@@ -21,9 +21,10 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
-use Exception;
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 
 /**
  * Class TakeOp
@@ -34,6 +35,10 @@ use Exception;
  */
 class TakeOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -47,7 +52,7 @@ class TakeOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 3) {
             return [
@@ -61,13 +66,13 @@ class TakeOp implements OperationInterface
         }
 
         if (is_array($value[1])) {
-            $takeResult = $evaluator->validate($value[1]);
+            $takeResult = $this->evaluator->validate($value[1], $context);
             if ($takeResult) {
                 return ['invalid_amount_expression' => $takeResult];
             }
         }
 
-        $errors = $evaluator->validate($value[2]);
+        $errors = $this->evaluator->validate($value[2], $context);
 
         if ($errors !== null) {
             return ['value_error' => $errors];
@@ -80,18 +85,18 @@ class TakeOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $result = $evaluator->evaluate($value[2]);
+        $result = $this->evaluator->evaluate($value[2], $context);
 
         if (!is_array($result)) {
-            throw new Exception('Result must be an array');
+            throw new InvalidEvaluation($this, 'Expected result to be an array.');
         }
 
         $amount = $value[1];
 
         if (is_array($amount)) {
-            $amount = $evaluator->evaluate($amount);
+            $amount = $this->evaluator->evaluate($amount, $context);
         }
 
         if ($amount == 0) {

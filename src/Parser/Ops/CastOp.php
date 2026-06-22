@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 
 /**
  * Class CastOp
@@ -32,6 +34,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class CastOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -45,7 +51,7 @@ class CastOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 3) {
             return [
@@ -54,13 +60,13 @@ class CastOp implements OperationInterface
             ];
         }
 
-        $result = $this->validateTypeValue($evaluator, $value[1]);
+        $result = $this->validateTypeValue($value[1], $context);
 
         if ($result !== null) {
             return $result;
         }
 
-        $from = $evaluator->validate($value[2]);
+        $from = $this->evaluator->validate($value[2], $context);
 
         if ($from !== null) {
             return ['invalid_value_expression' => $from];
@@ -69,10 +75,10 @@ class CastOp implements OperationInterface
         return null;
     }
 
-    protected function validateTypeValue(EvaluatorInterface $evaluator, $typeValue)
+    protected function validateTypeValue(mixed $typeValue, Context $context): ?array
     {
         if (is_array($typeValue)) {
-            $byResult = $evaluator->validate($typeValue);
+            $byResult = $this->evaluator->validate($typeValue, $context);
 
             if ($byResult !== null) {
                 return [
@@ -92,10 +98,10 @@ class CastOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $cast = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
-        $from = $evaluator->evaluate($value[2]);
+        $cast = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $from = $this->evaluator->evaluate($value[2], $context);
 
         switch ($cast) {
             case 'bool':
@@ -108,6 +114,6 @@ class CastOp implements OperationInterface
                 return (float) $from;
         }
 
-        throw new \Exception('Invalid cast name:' . $cast);
+        throw new InvalidEvaluation($this, "Invalid cast type: {$cast}.");
     }
 }

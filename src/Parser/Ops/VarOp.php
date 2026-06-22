@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
@@ -33,6 +33,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  */
 class VarOp implements OperationInterface
 {
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
     /**
      * @inheritDoc
      */
@@ -46,7 +50,7 @@ class VarOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         $max = count($value);
 
@@ -58,7 +62,7 @@ class VarOp implements OperationInterface
         }
 
         if (is_array($value[1])) {
-            $result = $evaluator->validate($value[1]);
+            $result = $this->evaluator->validate($value[1], $context);
 
             if ($result !== null) {
                 return [
@@ -72,7 +76,7 @@ class VarOp implements OperationInterface
         }
 
         if ($max === 3) {
-            $result = $evaluator->validate($value[2]);
+            $result = $this->evaluator->validate($value[2], $context);
 
             if ($result !== null) {
                 return [
@@ -88,22 +92,18 @@ class VarOp implements OperationInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
         $max = count($value);
 
-        $getter = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
+        $getter = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
 
         if ($max === 2) {
-            return Value::get($getter, $evaluator->getContext('variables'));
+            return $context->getVariable($getter);
         }
 
-        $setValue = $evaluator->evaluate($value[2]);
-
-        $variables = $evaluator->getContext('variables') ?: [];
-        $variables[$getter] = $setValue;
-        $evaluator->setContext('variables', $variables);
-
+        $setValue = $this->evaluator->evaluate($value[2], $context);
+        $context->setVariable($getter, $setValue);
         return $setValue;
     }
 }

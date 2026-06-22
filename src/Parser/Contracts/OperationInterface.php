@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Contracts;
 
+use ArekX\RestFn\Parser\Context;
+
 /**
  * Interface Operation
  * @package ArekX\RestFn\Parser\Contracts
@@ -35,20 +37,20 @@ interface OperationInterface
      * Validate a rule against a value and return errors if any.
      *
      * @param array $value Value to be validated.
-     * @param EvaluatorInterface $evaluator Evaluator which created the operation.
+     * @param Context $context Per-evaluation context.
      *
      * @return null|array Returns null if rules and value are valid, array of errors otherwise.
      */
-    public function validate(EvaluatorInterface $evaluator, array $value);
+    public function validate(array $value, Context $context): ?array;
 
     /**
      * Evaluates rules against a value.
      *
      * @param array $value Value to be evaluated against.
-     * @param EvaluatorInterface $evaluator Evaluator which created this rule.
+     * @param Context $context Per-evaluation context.
      * @return mixed Evaluated result
      */
-    public function evaluate(EvaluatorInterface $evaluator, array $value);
+    public function evaluate(array $value, Context $context): mixed;
 
     /**
      * Returns a name of the operation

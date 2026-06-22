@@ -71,29 +71,27 @@ class RunOpTest extends OpTestCase
 
     public function testEvaluate()
     {
-        $parser = $this->createStandardParser();
-
-        $parser->setContext('actions', [
-            'testAction' => DummyAction::class
-        ]);
-
         $data = ['test' => 'data', 'value' => rand(1, 5000)];
 
-        $this->assertEvaluatedWithParser($parser, [
-            'result' => 1
-        ], 'testAction', DummyReturnOperation::op($data));
+        $this->assertEvaluatedWithConfig(
+            ['actions' => ['testAction' => DummyAction::class]],
+            ['result' => 1],
+            'testAction',
+            DummyReturnOperation::op($data)
+        );
     }
 
     public function testEvaluateMissingAction()
     {
-        $parser = $this->createStandardParser();
-
         $data = ['test' => 'data', 'value' => rand(1, 5000)];
 
         $this->expectException(\Exception::class);
 
-        $this->assertEvaluatedWithParser($parser, [
-            'result' => 1
-        ], 'testAction', DummyReturnOperation::op($data));
+        $this->assertEvaluatedWithConfig(
+            [],
+            ['result' => 1],
+            'testAction',
+            DummyReturnOperation::op($data)
+        );
     }
 }

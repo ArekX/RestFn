@@ -21,13 +21,15 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
+use ArekX\RestFn\DI\Attributes\Config;
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\DI\Contracts\InjectableInterface;
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\ListActionInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Data\ListRequest;
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 
 /**
  * Class ListOp
@@ -35,14 +37,13 @@ use ArekX\RestFn\Parser\Data\ListRequest;
  *
  * Represents List operation
  */
-class ListOp implements OperationInterface, InjectableInterface
+class ListOp implements OperationInterface
 {
-    /**
-     * Injected container used to make actions
-     *
-     * @var Container
-     */
-    public Container $container;
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+        public Container $container,
+        #[Config('listActions', default: [])] public array $listActions = [],
+    ) {}
 
     /**
      * @inheritDoc
@@ -50,14 +51,14 @@ class ListOp implements OperationInterface, InjectableInterface
     #[\Override]
     public static function name(): string
     {
-        return 'run';
+        return 'list';
     }
 
     /**
      * @inheritDoc
      */
     #[\Override]
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function validate(array $value, Context $context): ?array
     {
         if (count($value) !== 3) {
             return [
@@ -66,13 +67,13 @@ class ListOp implements OperationInterface, InjectableInterface
             ];
         }
 
-        $nameResult = $this->validateActionNameValue($evaluator, $value[1]);
+        $nameResult = $this->validateActionNameValue($value[1], $context);
 
         if ($nameResult !== null) {
             return $nameResult;
         }
 
-        $dataResult = $evaluator->validate($value[2]);
+        $dataResult = $this->evaluator->validate($value[2], $context);
 
         if ($dataResult !== null) {
             return [
@@ -83,10 +84,10 @@ class ListOp implements OperationInterface, InjectableInterface
         return null;
     }
 
-    protected function validateActionNameValue(EvaluatorInterface $evaluator, $actionValue): ?array
+    protected function validateActionNameValue($actionValue, Context $context): ?array
     {
         if (is_array($actionValue)) {
-            $byResult = $evaluator->validate($actionValue);
+            $byResult = $this->evaluator->validate($actionValue, $context);
 
             if ($byResult !== null) {
                 return [
@@ -106,21 +107,21 @@ class ListOp implements OperationInterface, InjectableInterface
      * @inheritDoc
      */
     #[\Override]
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        $actionName = is_string($value[1]) ? $value[1] : $evaluator->evaluate($value[1]);
-        $data = $evaluator->evaluate($value[2]);
+        $actionName = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $data = $this->evaluator->evaluate($value[2], $context);
 
         $request = new ListRequest($data);
 
         if (!$request->hasProperties()) {
-            throw new \Exception('Properties must be specified.');
+            throw new InvalidEvaluation($this, 'Properties must be specified.');
         }
 
-        $actionClass = Value::get($actionName, $evaluator->getContext('listActions'));
+        $actionClass = Value::get($actionName, $this->listActions);
 
         if (empty($actionClass)) {
-            throw new \Exception('Invalid list action: ' . $actionName);
+            throw new InvalidEvaluation($this, "Invalid list action: {$actionName}.");
         }
 
         /** @var ListActionInterface $action */

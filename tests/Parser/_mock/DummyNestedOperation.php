@@ -19,20 +19,25 @@
 namespace tests\Parser\_mock;
 
 
+use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
 class DummyNestedOperation implements OperationInterface
 {
-    public function validate(EvaluatorInterface $evaluator, array $value)
+    public function __construct(
+        public EvaluatorInterface $evaluator,
+    ) {}
+
+    public function validate(array $value, Context $context): ?array
     {
-        $result = $evaluator->validate($value[1]);
+        $result = $this->evaluator->validate($value[1], $context);
         return $result ? $result : null;
     }
 
-    public function evaluate(EvaluatorInterface $evaluator, array $value)
+    public function evaluate(array $value, Context $context): mixed
     {
-        return 'nested-' . $evaluator->evaluate($value[1]);
+        return 'nested-' . $this->evaluator->evaluate($value[1], $context);
     }
 
     public static function name(): string
