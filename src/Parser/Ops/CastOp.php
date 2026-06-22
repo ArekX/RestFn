@@ -100,7 +100,7 @@ class CastOp implements OperationInterface
     #[\Override]
     public function evaluate(array $value, Context $context): mixed
     {
-        $cast = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $cast = $this->evaluator->resolve($value[1], $context);
         $from = $this->evaluator->evaluate($value[2], $context);
 
         switch ($cast) {

@@ -93,11 +93,7 @@ class TakeOp implements OperationInterface
             throw new InvalidEvaluation($this, 'Expected result to be an array.');
         }
 
-        $amount = $value[1];
-
-        if (is_array($amount)) {
-            $amount = $this->evaluator->evaluate($amount, $context);
-        }
+        $amount = $this->evaluator->resolve($value[1], $context);
 
         if ($amount == 0) {
             return [];

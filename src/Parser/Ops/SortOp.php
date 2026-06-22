@@ -164,8 +164,8 @@ class SortOp implements OperationInterface
         $max = count($value);
 
         if ($max === 4) {
-            $byValue = is_string($value[1]) || is_int($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
-            $direction = is_string($value[2]) ? $value[2] : $this->evaluator->evaluate($value[2], $context);
+            $byValue = $this->evaluator->resolve($value[1], $context);
+            $direction = $this->evaluator->resolve($value[2], $context);
             $from = $this->evaluator->evaluate($value[3], $context);
 
             if ($direction === 'asc') {
@@ -177,7 +177,7 @@ class SortOp implements OperationInterface
             return $from;
         }
 
-        $direction = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $direction = $this->evaluator->resolve($value[1], $context);
         $from = $this->evaluator->evaluate($value[2], $context);
 
         if ($direction === 'asc') {

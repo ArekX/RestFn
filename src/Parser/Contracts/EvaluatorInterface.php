@@ -48,4 +48,17 @@ interface EvaluatorInterface
      * @return mixed Returns a result from evaluated value.
      */
     public function evaluate(array $value, Context $context): mixed;
+
+    /**
+     * Resolves a value that may be either a literal or a sub-expression.
+     *
+     * Arrays are treated as sub-expressions and evaluated; any other value is
+     * returned unchanged. This is the single rule operations use to accept
+     * "a literal here, or an expression that produces one".
+     *
+     * @param mixed $value Literal value or sub-expression to resolve.
+     * @param Context $context Per-evaluation context.
+     * @return mixed The literal, or the result of evaluating the sub-expression.
+     */
+    public function resolve(mixed $value, Context $context): mixed;
 }

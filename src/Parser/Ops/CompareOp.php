@@ -115,7 +115,7 @@ class CompareOp implements OperationInterface
         $leftResult = $this->evaluator->evaluate($value[1], $context);
         $rightResult = $this->evaluator->evaluate($value[3], $context);
 
-        switch ($value[2]) {
+        switch ($this->evaluator->resolve($value[2], $context)) {
             case '=':
                 return $leftResult == $rightResult;
             case '==':

@@ -33,7 +33,7 @@ class MockContainerFactory implements FactoryInterface, SharedInstanceInterface
     /**
      * @inheritDoc
      */
-    public function create(string $definition, array $args)
+    public function create(string $definition, array $args): mixed
     {
         $this->wasCalled = true;
         return new $definition(...$args);

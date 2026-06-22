@@ -35,5 +35,5 @@ interface ConfigurableInterface
      *
      * @param array $config Array containing keys and values of configuration data.
      */
-    public function configure(array $config);
+    public function configure(array $config): void;
 }

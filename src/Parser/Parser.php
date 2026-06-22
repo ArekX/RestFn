@@ -77,7 +77,7 @@ class Parser implements EvaluatorInterface, SharedInstanceInterface
      * @throws MaxDepthExceededException
      */
     #[\Override]
-    public function validate($value, Context $context): null|array
+    public function validate(mixed $value, Context $context): null|array
     {
         if (empty($value)) {
             return null;
@@ -155,7 +155,7 @@ class Parser implements EvaluatorInterface, SharedInstanceInterface
      * @throws MaxDepthExceededException
      */
     #[\Override]
-    public function evaluate($value, Context $context): mixed
+    public function evaluate(mixed $value, Context $context): mixed
     {
         if (empty($value)) {
             return [];
@@ -168,5 +168,14 @@ class Parser implements EvaluatorInterface, SharedInstanceInterface
         } finally {
             $context->leave();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[\Override]
+    public function resolve(mixed $value, Context $context): mixed
+    {
+        return is_array($value) ? $this->evaluate($value, $context) : $value;
     }
 }

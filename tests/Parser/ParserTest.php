@@ -90,6 +90,19 @@ class ParserTest extends TestCase
         $this->assertEquals(1, $parser->evaluate(['test'], new Context()));
     }
 
+    public function testResolveReturnsLiteralsAndEvaluatesExpressions()
+    {
+        $parser = $this->getParser([DummyOperation::class]);
+        $context = new Context();
+
+        // Non-array values are literals, returned unchanged.
+        $this->assertSame('literal', $parser->resolve('literal', $context));
+        $this->assertSame(7, $parser->resolve(7, $context));
+
+        // Arrays are sub-expressions and get evaluated.
+        $this->assertSame(1, $parser->resolve(['test'], $context));
+    }
+
     public function testNestedOperationsIsEvaluated()
     {
         $parser = $this->getParser([

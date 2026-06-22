@@ -1,6 +1,12 @@
 # RestFn
 
-Functional style rest framework
+RestFn ("REST function") is a PHP library for building a single functional endpoint:
+clients send one composable expression — a tree of operations — that the server
+validates and evaluates to fetch and reshape exactly the data they need. It provides
+the engine (an operation language and a dependency injection container); you wire it
+into your own endpoint.
+
+Requires PHP 8.4+.
 
 [![Documentation Status](https://readthedocs.org/projects/restfn/badge/?version=latest)](https://restfn.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://scrutinizer-ci.com/g/ArekX/RestFn/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ArekX/RestFn/build-status/master)

@@ -30,7 +30,7 @@ class DummyConfigurableClassWithArgs implements ConfigurableInterface
     /**
      * @inheritDoc
      */
-    public function configure(array $config)
+    public function configure(array $config): void
     {
         $this->passedConfig = $config;
     }

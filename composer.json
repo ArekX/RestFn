@@ -1,7 +1,7 @@
 {
   "name": "arekx/restfn",
   "description": "Functional Rest framework",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "Aleksandar Panic",

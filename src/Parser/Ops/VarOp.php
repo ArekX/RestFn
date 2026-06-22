@@ -96,7 +96,7 @@ class VarOp implements OperationInterface
     {
         $max = count($value);
 
-        $getter = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $getter = $this->evaluator->resolve($value[1], $context);
 
         if ($max === 2) {
             return $context->getVariable($getter);

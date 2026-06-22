@@ -91,11 +91,7 @@ class GetOp implements OperationInterface
     {
         $result = $this->evaluator->evaluate($value[2], $context);
 
-        $getter = $value[1];
-
-        if (is_array($getter)) {
-            $getter = $this->evaluator->evaluate($getter, $context);
-        }
+        $getter = $this->evaluator->resolve($value[1], $context);
 
         $gotResult = Value::get($getter, $result, NAN);
 

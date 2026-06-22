@@ -29,7 +29,7 @@ class DummyConfigurableClass implements ConfigurableInterface
     /**
      * @inheritDoc
      */
-    public function configure(array $config)
+    public function configure(array $config): void
     {
         $this->passedConfig = $config;
         $this->callStack[] = __METHOD__;

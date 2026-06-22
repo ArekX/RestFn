@@ -106,4 +106,11 @@ class CompareOpTest extends OpTestCase
         $this->assertEvaluated(false, DummyReturnOperation::op(1), '+', DummyReturnOperation::op(2));
         $this->assertEvaluated(false, DummyReturnOperation::op(1), '-', DummyReturnOperation::op(2));
     }
+
+    public function testEvaluateWithComputedOperator()
+    {
+        // The operator slot may itself be an expression that produces the operator.
+        $this->assertEvaluated(true, DummyReturnOperation::op(2), DummyReturnOperation::op('>'), DummyReturnOperation::op(1));
+        $this->assertEvaluated(false, DummyReturnOperation::op(2), DummyReturnOperation::op('<'), DummyReturnOperation::op(1));
+    }
 }

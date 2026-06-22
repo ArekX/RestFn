@@ -43,5 +43,5 @@ interface FactoryInterface
      * @param array $args Constructor arguments passed for this class creation.
      * @return mixed Instance to be returned.
      */
-    public function create(string $definition, array $args);
+    public function create(string $definition, array $args): mixed;
 }

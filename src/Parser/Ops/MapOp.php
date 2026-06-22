@@ -100,8 +100,8 @@ class MapOp implements OperationInterface
     #[\Override]
     public function evaluate(array $value, Context $context): mixed
     {
-        $from = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
-        $to = is_string($value[2]) ? $value[2] : $this->evaluator->evaluate($value[2], $context);
+        $from = $this->evaluator->resolve($value[1], $context);
+        $to = $this->evaluator->resolve($value[2], $context);
 
         $result = $this->evaluator->evaluate($value[3], $context);
 

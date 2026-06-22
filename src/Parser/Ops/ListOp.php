@@ -84,7 +84,7 @@ class ListOp implements OperationInterface
         return null;
     }
 
-    protected function validateActionNameValue($actionValue, Context $context): ?array
+    protected function validateActionNameValue(mixed $actionValue, Context $context): ?array
     {
         if (is_array($actionValue)) {
             $byResult = $this->evaluator->validate($actionValue, $context);
@@ -109,7 +109,7 @@ class ListOp implements OperationInterface
     #[\Override]
     public function evaluate(array $value, Context $context): mixed
     {
-        $actionName = is_string($value[1]) ? $value[1] : $this->evaluator->evaluate($value[1], $context);
+        $actionName = $this->evaluator->resolve($value[1], $context);
         $data = $this->evaluator->evaluate($value[2], $context);
 
         $request = new ListRequest($data);
