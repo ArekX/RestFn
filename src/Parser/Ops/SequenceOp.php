@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -43,7 +42,8 @@ class SequenceOp implements OperationInterface, SharedInstanceInterface
 
     public function __construct(
         protected EvaluatorInterface $evaluator,
-        #[Config('limits.maxSequenceOperations', default: self::DEFAULT_MAX_OPERATIONS)] protected int $maxOperations = self::DEFAULT_MAX_OPERATIONS,
+        #[Config('limits.maxSequenceOperations', default: self::DEFAULT_MAX_OPERATIONS)]
+        protected int $maxOperations = self::DEFAULT_MAX_OPERATIONS,
     ) {}
 
     /**

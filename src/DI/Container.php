@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -347,8 +346,8 @@ class Container implements ContainerInterface
      * Resolved blueprints are cached in the static variable
      * cache in this function to improve resolution performance.
      *
-     * @param $class
-     * @return array|mixed
+     * @param string $class
+     * @return array
      * @throws \ReflectionException
      */
     protected function resolveBlueprint(string $class): array
@@ -389,8 +388,10 @@ class Container implements ContainerInterface
      * @param string $attributeClass
      * @return object|null
      */
-    protected function readAttribute(\ReflectionProperty|\ReflectionParameter $reflector, string $attributeClass): ?object
-    {
+    protected function readAttribute(
+        \ReflectionProperty|\ReflectionParameter $reflector,
+        string $attributeClass,
+    ): ?object {
         $attributes = $reflector->getAttributes($attributeClass);
 
         return empty($attributes) ? null : $attributes[0]->newInstance();
@@ -410,7 +411,7 @@ class Container implements ContainerInterface
 
         $name = $type->getName();
 
-        return (class_exists($name) || interface_exists($name)) ? $name : null;
+        return class_exists($name) || interface_exists($name) ? $name : null;
     }
 
     /**
@@ -457,7 +458,6 @@ class Container implements ContainerInterface
         /** @var \ReflectionClass $reflection */
         $reflection = $blueprint['reflection'];
 
-        /** @var object $instance */
         $instance = $reflection->newInstanceWithoutConstructor();
 
         if ($instance instanceof SharedInstanceInterface) {

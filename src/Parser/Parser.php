@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -46,8 +45,10 @@ class Parser implements EvaluatorInterface, SharedInstanceInterface
      */
     public function __construct(
         protected Container $container,
-        #[Config('ops', default: [])] protected array $operations = [],
-        #[Config('limits.maxDepth', default: 64)] protected int $maxDepth = 64,
+        #[Config('ops', default: [])]
+        protected array $operations = [],
+        #[Config('limits.maxDepth', default: 64)]
+        protected int $maxDepth = 64,
     ) {}
 
     /**
@@ -64,7 +65,7 @@ class Parser implements EvaluatorInterface, SharedInstanceInterface
      * @throws MaxDepthExceededException
      */
     #[\Override]
-    public function validate(mixed $value, Context $context): null|array
+    public function validate(mixed $value, Context $context): ?array
     {
         if (empty($value)) {
             return null;

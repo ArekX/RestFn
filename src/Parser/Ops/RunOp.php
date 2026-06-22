@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -23,8 +22,8 @@ namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\DI\Attributes\Config;
 use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
+use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\ActionInterface;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
@@ -46,7 +45,8 @@ class RunOp implements OperationInterface, SharedInstanceInterface
         protected EvaluatorInterface $evaluator,
         protected Container $container,
         protected IdentityServiceInterface $identityService,
-        #[Config('actions', default: [])] protected array $actions = [],
+        #[Config('actions', default: [])]
+        protected array $actions = [],
     ) {}
 
     /**

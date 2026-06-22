@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Contracts;
 
-
 use ArekX\RestFn\Parser\Data\ListRequest;
 use ArekX\RestFn\Parser\Data\ListResult;
 

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -20,7 +19,6 @@ declare(strict_types=1);
  **/
 
 namespace ArekX\RestFn\Parser\Contracts;
-
 
 /**
  * Interface Action

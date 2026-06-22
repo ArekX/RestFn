@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -39,8 +38,8 @@ class UnresolvedParameterException extends \Exception
         $this->parameterName = $parameterName;
 
         parent::__construct(
-            "Could not resolve constructor parameter \${$parameterName} for '{$className}'. " .
-                'Provide it as an override, add an Inject/Config attribute, give it an autowirable type, or a default value.'
+            "Could not resolve constructor parameter \${$parameterName} for '{$className}'. "
+            . 'Provide it as an override, add an Inject/Config attribute, give it an autowirable type, or a default value.',
         );
     }
 }

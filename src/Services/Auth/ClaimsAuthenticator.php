@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -42,8 +41,10 @@ class ClaimsAuthenticator implements AuthenticatorInterface
      * @param array $claims Additional claim names to copy into the identity data.
      */
     public function __construct(
-        #[Config('auth.identity.idClaim', default: 'sub')] protected string $idClaim = 'sub',
-        #[Config('auth.identity.claims', default: [])] protected array $claims = [],
+        #[Config('auth.identity.idClaim', default: 'sub')]
+        protected string $idClaim = 'sub',
+        #[Config('auth.identity.claims', default: [])]
+        protected array $claims = [],
     ) {}
 
     /**

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -58,7 +57,8 @@ class Runner
         protected RequestParserInterface $requestParser,
         protected ResponseInterface $response,
         protected Container $container,
-        #[Config('runner.middleware', default: [])] protected array $middleware = [],
+        #[Config('runner.middleware', default: [])]
+        protected array $middleware = [],
     ) {}
 
     /**
@@ -71,7 +71,7 @@ class Runner
     {
         $context = new Context();
 
-        $result = ($this->buildPipeline())($this->readRequest(), $context);
+        $result = $this->buildPipeline()($this->readRequest(), $context);
 
         return $this->response->respond($result);
     }
@@ -105,14 +105,17 @@ class Runner
      */
     protected function buildPipeline(): callable
     {
-        $pipeline = fn(Request $request, Context $context): mixed => $this->handle($request, $context);
+        $pipeline = $this->handle(...);
 
         foreach (array_reverse($this->middleware) as $middlewareClass) {
             /** @var MiddlewareInterface $middleware */
             $middleware = $this->container->make($middlewareClass);
             $next = $pipeline;
-            $pipeline = static fn(Request $request, Context $context): mixed =>
-            $middleware->process($request, $context, $next);
+            $pipeline = static fn(Request $request, Context $context): mixed => $middleware->process(
+                $request,
+                $context,
+                $next,
+            );
         }
 
         return $pipeline;

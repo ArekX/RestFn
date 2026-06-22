@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -179,9 +178,8 @@ class WebApp implements ApplicationInterface
     public static function createDefault(array $config = []): ApplicationInterface
     {
         $config['aliases'] = ($config['aliases'] ?? []) + self::DEFAULT_ALIASES;
-        $config['config']['global']['ops'] = $config['config']['global']['ops'] ?? self::DEFAULT_OPS;
-        $config['config']['global']['runner']['middleware'] =
-            $config['config']['global']['runner']['middleware'] ?? self::DEFAULT_MIDDLEWARE;
+        $config['config']['global']['ops'] ??= self::DEFAULT_OPS;
+        $config['config']['global']['runner']['middleware'] ??= self::DEFAULT_MIDDLEWARE;
 
         $container = new Container($config);
 

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -54,8 +53,10 @@ class AuthenticationMiddleware implements MiddlewareInterface
         protected TokenParserInterface $tokenParser,
         protected AuthenticatorInterface $authenticator,
         protected IdentityServiceInterface $identityService,
-        #[Config('auth.header', default: 'Authorization')] protected string $header = 'Authorization',
-        #[Config('auth.scheme', default: 'Bearer')] protected string $scheme = 'Bearer',
+        #[Config('auth.header', default: 'Authorization')]
+        protected string $header = 'Authorization',
+        #[Config('auth.scheme', default: 'Bearer')]
+        protected string $scheme = 'Bearer',
     ) {}
 
     /**
@@ -82,9 +83,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      */
     protected function extractToken(Request $request): ?string
     {
-        $value = $request->headers[$this->header]
-            ?? $request->headers[strtolower($this->header)]
-            ?? null;
+        $value = $request->headers[$this->header] ?? $request->headers[strtolower($this->header)] ?? null;
 
         if (!is_string($value)) {
             return null;

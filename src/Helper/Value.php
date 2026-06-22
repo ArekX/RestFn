@@ -20,13 +20,12 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Helper;
 
-
 class Value
 {
     public static function get(string|int $getter, mixed $from, mixed $default = null): mixed
     {
         if (is_array($from) && array_key_exists($getter, $from)) {
-            return $from[$getter]; // @mago-ignore analysis:mixed-array-index
+            return $from[$getter];
         }
 
         $parts = explode('.', (string) $getter);

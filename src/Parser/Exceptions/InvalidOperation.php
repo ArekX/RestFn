@@ -26,7 +26,7 @@ class InvalidOperation extends \Exception implements ClientExceptionInterface
 {
     public function __construct(string $operation)
     {
-        parent::__construct("Invalid operation: " . $operation);
+        parent::__construct('Invalid operation: ' . $operation);
     }
 
     /**

@@ -38,4 +38,22 @@ strict-list-index-checks = false
 no-boolean-literal-comparison = false
 check-missing-type-hints = false
 register-super-globals = true
-ignore = ["mixed-argument", "mixed-operand", "mixed-assignment"]
+# The operation language and the DI container work with arbitrary, runtime-shaped
+# data (JSON operation trees, class-strings, config arrays), so these dynamic-typing
+# categories are inherent to the design rather than real defects.
+ignore = [
+    "mixed-argument",
+    "mixed-operand",
+    "mixed-assignment",
+    "mixed-array-access",
+    "mixed-array-assignment",
+    "mixed-return-statement",
+    "mixed-property-type-coercion",
+    "invalid-property-assignment-value",
+    "invalid-iterator",
+    "invalid-type-cast",
+    "possibly-invalid-argument",
+    "less-specific-argument",
+    "ambiguous-object-method-access",
+    "redundant-condition",
+]

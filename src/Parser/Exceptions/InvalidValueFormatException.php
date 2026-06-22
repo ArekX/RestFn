@@ -26,7 +26,7 @@ class InvalidValueFormatException extends \Exception implements ClientExceptionI
 {
     public function __construct()
     {
-        parent::__construct("Passed value must be an array.");
+        parent::__construct('Passed value must be an array.');
     }
 
     /**

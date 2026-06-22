@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -39,5 +38,5 @@ interface TokenParserInterface
      * @return mixed The verified payload (for example JWT claims).
      * @throws InvalidTokenException When the token is malformed, unverifiable, or expired.
      */
-    public function parse(string $token): mixed;
+    public function parse(#[\SensitiveParameter] string $token): mixed;
 }

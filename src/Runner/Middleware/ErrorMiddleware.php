@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -51,7 +50,8 @@ class ErrorMiddleware implements MiddlewareInterface
      *                    a stack trace, from the 'runner.debug' config value.
      */
     public function __construct(
-        #[Config('runner.debug', default: false)] protected bool $debug = false,
+        #[Config('runner.debug', default: false)]
+        protected bool $debug = false,
     ) {}
 
     /**
@@ -78,9 +78,7 @@ class ErrorMiddleware implements MiddlewareInterface
         $isClient = $exception instanceof ClientExceptionInterface;
 
         $body = [
-            'error' => ($isClient || $this->debug)
-                ? $exception->getMessage()
-                : 'An unexpected error occurred.',
+            'error' => $isClient || $this->debug ? $exception->getMessage() : 'An unexpected error occurred.',
         ];
 
         if ($isClient && ($details = $exception->getClientDetails()) !== null) {

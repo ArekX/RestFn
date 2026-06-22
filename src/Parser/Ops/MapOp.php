@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -21,8 +20,8 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Ops;
 
-use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
+use ArekX\RestFn\Helper\Value;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
@@ -107,7 +106,7 @@ class MapOp implements OperationInterface, SharedInstanceInterface
         $result = $this->evaluator->evaluate($value[3], $context);
 
         if (!is_array($result)) {
-            throw new InvalidEvaluation($this, "Expected result to be an array.");
+            throw new InvalidEvaluation($this, 'Expected result to be an array.');
         }
 
         $mapped = [];

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -76,7 +75,7 @@ class OrOp implements OperationInterface, SharedInstanceInterface
         $max = count($value);
 
         for ($i = 1; $i < $max; $i++) {
-            if (!($this->evaluator->evaluate($value[$i], $context))) {
+            if (!$this->evaluator->evaluate($value[$i], $context)) {
                 continue;
             }
 

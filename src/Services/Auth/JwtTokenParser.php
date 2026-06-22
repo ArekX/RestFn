@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -45,8 +44,11 @@ class JwtTokenParser implements TokenParserInterface
      * @param string $algorithm Algorithm the token must be signed with.
      */
     public function __construct(
-        #[Config('auth.jwt.secret', default: '')] protected string $secret = '',
-        #[Config('auth.jwt.algorithm', default: 'HS256')] protected string $algorithm = 'HS256',
+        #[\SensitiveParameter]
+        #[Config('auth.jwt.secret', default: '')]
+        protected string $secret = '',
+        #[Config('auth.jwt.algorithm', default: 'HS256')]
+        protected string $algorithm = 'HS256',
     ) {}
 
     /**
@@ -54,7 +56,7 @@ class JwtTokenParser implements TokenParserInterface
      * @return array The token claims.
      */
     #[\Override]
-    public function parse(string $token): mixed
+    public function parse(#[\SensitiveParameter] string $token): mixed
     {
         if ($this->secret === '') {
             throw new \RuntimeException('JWT secret is not configured (auth.jwt.secret).');
@@ -63,12 +65,7 @@ class JwtTokenParser implements TokenParserInterface
         try {
             $claims = JWT::decode($token, new Key($this->secret, $this->algorithm));
         } catch (
-            ExpiredException
-            | SignatureInvalidException
-            | BeforeValidException
-            | \UnexpectedValueException
-            | \DomainException
-            | \InvalidArgumentException $exception
+            ExpiredException|SignatureInvalidException|BeforeValidException|\UnexpectedValueException|\DomainException|\InvalidArgumentException $exception
         ) {
             throw new InvalidTokenException('Token could not be verified: ' . $exception->getMessage(), 0, $exception);
         }

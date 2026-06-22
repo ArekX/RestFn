@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Copyright 2026 Aleksandar Panic
  *
@@ -39,7 +38,8 @@ class JsonRequestParser implements RequestParserInterface
      * @param string $inputStream Stream the request body is read from.
      */
     public function __construct(
-        #[Config('runner.inputStream', default: 'php://input')] protected string $inputStream = 'php://input',
+        #[Config('runner.inputStream', default: 'php://input')]
+        protected string $inputStream = 'php://input',
     ) {}
 
     /**
@@ -82,10 +82,12 @@ class JsonRequestParser implements RequestParserInterface
         $headers = [];
 
         foreach ($_SERVER as $key => $value) {
-            if (str_starts_with($key, 'HTTP_')) {
-                $name = ucwords(strtolower(str_replace('_', ' ', substr($key, 5))));
-                $headers[str_replace(' ', '-', $name)] = $value;
+            if (!str_starts_with($key, 'HTTP_')) {
+                continue;
             }
+
+            $name = ucwords(strtolower(str_replace('_', ' ', substr($key, 5))));
+            $headers[str_replace(' ', '-', $name)] = $value;
         }
 
         return $headers;

@@ -27,6 +27,8 @@ class ConfigNotSpecifiedException extends \Exception
     public function __construct(string $className)
     {
         $this->className = $className;
-        parent::__construct("Class with Configurable interface '{$className}' was created but no configuration was specified for it.");
+        parent::__construct(
+            "Class with Configurable interface '{$className}' was created but no configuration was specified for it.",
+        );
     }
 }

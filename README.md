@@ -15,11 +15,8 @@ actions.
 
 Requires PHP 8.4+.
 
+[![CI](https://github.com/ArekX/RestFn/actions/workflows/ci.yml/badge.svg)](https://github.com/ArekX/RestFn/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/restfn/badge/?version=latest)](https://restfn.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://scrutinizer-ci.com/g/ArekX/RestFn/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ArekX/RestFn/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ArekX/RestFn/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ArekX/RestFn/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/ArekX/RestFn/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ArekX/RestFn/?branch=master)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/ArekX/RestFn/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
 ## User guide
 
@@ -38,6 +35,18 @@ Testing is done using `PHPUnit`
 
 * To run all tests run `composer test`
 * To generate test coverage run `composer coverage`
+
+## Code quality
+
+Formatting, linting, and static analysis are handled by [Mago](https://mago.carthage.software/),
+installed as a dev dependency.
+
+* To format the code run `composer format`
+* To lint the code run `composer lint`
+* To run static analysis run `composer analyze`
+* To run everything (format check, lint, analyze, tests) run `composer check`
+
+CI runs the tests and all three Mago checks on every push and pull request.
 
 ## License
 
