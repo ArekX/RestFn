@@ -75,7 +75,7 @@ anything runs.
 | Key                  | Default       | Description                                                                                                                                                 |
 | -------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `runner.middleware`  | default stack | Ordered list of middleware classes, outermost first. See [Middleware](middleware.md).                                                                       |
-| `runner.debug`       | `false`       | When `true`, error responses include the real message and a stack trace. Keep it `false` in production. See [Error handling](middleware.md#error-handling). |
+| `runner.debug`       | `false`       | When `true`, error responses include the real message and a stack trace. Keep it `false` in production. See [Error handling](error-handling.md). |
 | `runner.inputStream` | `php://input` | Stream the request body is read from. Handy to point elsewhere in tests. See [Runner](runner.md).                                                           |
 
 `createDefault()` sets `runner.middleware` to `WebApp::DEFAULT_MIDDLEWARE`

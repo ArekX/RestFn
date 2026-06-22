@@ -111,73 +111,14 @@ around `$next`.
 
 That's what the built-in `ErrorMiddleware` does, which is why it sits outermost by
 default: it catches anything thrown below it and turns it into a clean response. See
-[Error handling](#error-handling) below.
+[Error handling](error-handling.md).
 
 ## Error handling
 
-`ErrorMiddleware` is the outermost middleware in the default stack. It wraps the rest
-of the pipeline in a `try`/`catch` and turns any thrown error into a structured JSON
-response, instead of letting it escape as an uncaught exception. That includes a
-malformed request body, which the runner defers into the pipeline so this middleware
-can handle it too.
-
-What ends up in the response depends on the error and on debug mode:
-
-- Client errors, the ones that implement `ClientExceptionInterface` (a malformed
-  body, failed validation, a missing or invalid token), always show their message
-  and any client-safe `details`, because they describe something the caller can fix.
-- Anything else is an internal error (a bug in an action, a failing database call).
-  It's hidden behind a generic `"An unexpected error occurred."` message so no
-  implementation detail leaks to the client.
-
-### Debug mode
-
-Debug mode is controlled by the `runner.debug` config value. It's `false` by default,
-and you should keep it that way in production:
-
-```php
-WebApp::createDefault([
-    'config' => [
-        'global' => [
-            'runner' => ['debug' => getenv('APP_ENV') === 'local'],
-        ],
-    ],
-])->run();
-```
-
-The difference is what the client is allowed to see.
-
-With debug off (production), internal errors are opaque and nothing leaks. A failed
-validation is a client error, so it still returns its message and details so the
-caller can fix the request:
-
-```json
-{ "error": "Request validation failed.", "details": ["get", { "0": "missing key" }] }
-```
-
-But an internal fault doesn't. It collapses to a generic message:
-
-```json
-{ "error": "An unexpected error occurred." }
-```
-
-With debug on (development), every error shows its real message and gains a `debug`
-block with the exception type, the file and line it came from, and the stack trace.
-So the same internal fault becomes:
-
-```json
-{
-    "error": "SQLSTATE[HY000]: connection refused",
-    "debug": {
-        "type": "PDOException",
-        "location": "/app/src/Actions/GetUserAction.php:21",
-        "trace": ["#0 /app/src/...", "#1 /app/src/..."]
-    }
-}
-```
-
-The `debug` block exposes paths and traces, so never enable it on a public
-deployment.
+The outermost middleware in the default stack is `ErrorMiddleware`. It wraps the whole
+pipeline in a `try`/`catch` and turns anything thrown below it into a JSON error,
+hiding internal details unless debug mode is on. It has its own page:
+[Error handling](error-handling.md).
 
 ## Where middleware live
 

@@ -93,7 +93,7 @@ A few things can stop a request inside the Runner:
 With the default setup you don't catch these yourself. The `ErrorMiddleware` at the
 top of the stack catches anything thrown below it, including a deferred parse
 failure, and turns it into a JSON error response, hiding internal details unless
-`runner.debug` is on. See [Error handling](middleware.md#error-handling).
+`runner.debug` is on. See [Error handling](error-handling.md).
 
 So your `index.php` stays a single line:
 

@@ -63,5 +63,6 @@ walkthrough.
 - [Actions](actions.md) - defining your own actions.
 - [Authentication](authentication.md) - protecting actions with tokens.
 - [Runner](runner.md) and [Middleware](middleware.md) - the request lifecycle.
+- [Error Handling](error-handling.md) - how errors become JSON responses.
 - [Dependency Injection](di.md) - how wiring works.
 - [Configuration](configuration.md) - every config value and its default.

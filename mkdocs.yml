@@ -35,6 +35,7 @@ nav:
   - Authentication: authentication.md
   - Runner: runner.md
   - Middleware: middleware.md
+  - Error Handling: error-handling.md
   - Dependency Injection: di.md
   - Configuration: configuration.md
   - License: license.md

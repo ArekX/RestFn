@@ -32,10 +32,10 @@ and the interface-to-implementation bindings (aliases) when it's built. See
 ### WebApp
 
 `WebApp` is the entry point. `WebApp::createDefault()` takes your config, merges it
-over the default bindings, builds the container, resolves the application, and runs
-it. The application itself is small: it gets the `Runner` injected and runs it. You
-can replace the whole application by binding `ApplicationInterface` to your own
-class.
+over the default bindings, builds the container, and resolves the application, which
+it returns. You call `run()` on it. The application itself is small: it gets the
+`Runner` injected and runs it. You can replace the whole application by binding
+`ApplicationInterface` to your own class.
 
 ### Runner
 
@@ -88,7 +88,8 @@ actions check whether an action needs authentication. See
 
 Putting it together, a single request goes like this:
 
-1. The web server calls your `index.php`, which calls `WebApp::createDefault()`.
+1. The web server calls your `index.php`, which builds the app with
+   `WebApp::createDefault()` and calls `run()` on it.
 2. The `Runner` reads the request body and turns it into a `Request`.
 3. Middleware run on the way in. By default error handling wraps everything, and
    authentication establishes the identity from a bearer token.
