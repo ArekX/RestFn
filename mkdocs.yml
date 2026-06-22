@@ -5,9 +5,7 @@ site_description: "Functional style Rest framework"
 repo_url: "https://github.com/ArekX/RestFn"
 copyright: "RestFn is licensed under the <a href='https://restfn.readthedocs.io/en/latest/license/'>Apache 2.0 license</a>"
 
-theme:
-  name: null
-  custom_dir: './docs/build/cinder'
+theme: readthedocs
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
