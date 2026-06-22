@@ -10,6 +10,10 @@ then this operation will return an already set variable by this name or `null` i
 * __&lt;value: expression(any)&gt;__ - [Optional value]. If it's set then this operation will set a variable to the
 value evaluated in this expression. If this is set then this value will also be return as a result of this operation.
 
+When reading, the `name` supports the same dot syntax as [get](get.md): if a
+variable holds an array, `["var", "user.user_id"]` returns the nested value. You
+always set the whole variable by its plain name.
+
 ## Usage
 
 

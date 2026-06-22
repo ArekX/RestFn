@@ -33,10 +33,13 @@ Request:
 ```json
 ["ifElse", 
   ["not", ["run", "getUser", 1]], 
-  ["value", "There is an user with ID 1"], 
-  ["value", "No user found."] 
+  ["value", "No user with ID 1"], 
+  ["value", "There is an user with ID 1"] 
 ]
 ```
+
+Because `getUser` returns a user, `not` inverts that truthy result to `false`, so
+the `false` branch is returned.
 
 Response:
 ```json

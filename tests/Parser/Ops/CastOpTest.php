@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 namespace tests\Parser\Ops;
 
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 use ArekX\RestFn\Parser\Ops\CastOp;
 use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyOperation;
@@ -85,7 +86,7 @@ class CastOpTest extends OpTestCase
 
     public function testEvaluateInvalid()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidEvaluation::class);
         $this->assertEvaluated(null, 'invalid type', DummyReturnOperation::op(1));
     }
 }

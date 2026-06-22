@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 namespace tests\Parser\Ops;
 
+use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
 use ArekX\RestFn\Parser\Ops\ListOp;
 use tests\Parser\_mock\DummyFailOperation;
 use tests\Parser\_mock\DummyListAction;
@@ -78,7 +79,7 @@ class ListOpTest extends OpTestCase
 
     public function testEvaluateNoProperties()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidEvaluation::class);
 
         $this->assertEvaluatedWithConfig(
             ['listActions' => ['testAction' => DummyListAction::class]],
@@ -95,7 +96,7 @@ class ListOpTest extends OpTestCase
 
     public function testEvaluateMissingAction()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidEvaluation::class);
 
         $this->assertEvaluatedWithConfig(
             [],

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\DI\Attributes\Config;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
@@ -32,7 +33,7 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  *
  * Represents operation which runs one sequence and returns last result
  */
-class SequenceOp implements OperationInterface
+class SequenceOp implements OperationInterface, SharedInstanceInterface
 {
     /**
      * Default maximum number of operations a sequence may contain when the
@@ -41,8 +42,8 @@ class SequenceOp implements OperationInterface
     public const DEFAULT_MAX_OPERATIONS = 64;
 
     public function __construct(
-        public EvaluatorInterface $evaluator,
-        #[Config('limits.maxSequenceOperations', default: self::DEFAULT_MAX_OPERATIONS)] public int $maxOperations = self::DEFAULT_MAX_OPERATIONS,
+        protected EvaluatorInterface $evaluator,
+        #[Config('limits.maxSequenceOperations', default: self::DEFAULT_MAX_OPERATIONS)] protected int $maxOperations = self::DEFAULT_MAX_OPERATIONS,
     ) {}
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ class UnresolvedParameterException extends \Exception
 
         parent::__construct(
             "Could not resolve constructor parameter \${$parameterName} for '{$className}'. " .
-            'Provide it as an override, add an Inject/Config attribute, give it an autowirable type, or a default value.'
+                'Provide it as an override, add an Inject/Config attribute, give it an autowirable type, or a default value.'
         );
     }
 }

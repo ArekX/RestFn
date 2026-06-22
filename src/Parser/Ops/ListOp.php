@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,16 @@ namespace ArekX\RestFn\Parser\Ops;
 use ArekX\RestFn\DI\Attributes\Config;
 use ArekX\RestFn\DI\Container;
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\ListActionInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Data\ListRequest;
 use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
+use ArekX\RestFn\Services\Auth\Contracts\AuthenticatedActionInterface;
+use ArekX\RestFn\Services\Auth\Contracts\IdentityServiceInterface;
+use ArekX\RestFn\Services\Auth\Exceptions\AuthenticationRequiredException;
 
 /**
  * Class ListOp
@@ -37,12 +41,13 @@ use ArekX\RestFn\Parser\Exceptions\InvalidEvaluation;
  *
  * Represents List operation
  */
-class ListOp implements OperationInterface
+class ListOp implements OperationInterface, SharedInstanceInterface
 {
     public function __construct(
-        public EvaluatorInterface $evaluator,
-        public Container $container,
-        #[Config('listActions', default: [])] public array $listActions = [],
+        protected EvaluatorInterface $evaluator,
+        protected Container $container,
+        protected IdentityServiceInterface $identityService,
+        #[Config('listActions', default: [])] protected array $listActions = [],
     ) {}
 
     /**
@@ -126,6 +131,10 @@ class ListOp implements OperationInterface
 
         /** @var ListActionInterface $action */
         $action = $this->container->make($actionClass);
+
+        if ($action instanceof AuthenticatedActionInterface && !$this->identityService->isAuthenticated()) {
+            throw new AuthenticationRequiredException($actionName);
+        }
 
         $result = $action->run($request);
 

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,21 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Exceptions;
 
+use ArekX\RestFn\Contracts\ClientExceptionInterface;
 
-class InvalidValueFormatException extends \Exception
+class InvalidValueFormatException extends \Exception implements ClientExceptionInterface
 {
     public function __construct()
     {
         parent::__construct("Passed value must be an array.");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[\Override]
+    public function getClientDetails(): ?array
+    {
+        return null;
     }
 }

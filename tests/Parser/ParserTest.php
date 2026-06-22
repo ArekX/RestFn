@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@
 namespace tests\Parser;
 
 
+use ArekX\RestFn\App\WebApp;
+use ArekX\RestFn\DI\Container;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Exceptions\InvalidOperation;
 use ArekX\RestFn\Parser\Exceptions\InvalidValueFormatException;
@@ -73,12 +75,21 @@ class ParserTest extends TestCase
         $parser->evaluate(['test'], new Context());
     }
 
-    public function testParserBuildsOpsMapFromConfig()
+    public function testParserDispatchesOperationsByConfiguredName()
+    {
+        // Operations are configured as a name => class map and dispatched by name.
+        $parser = $this->makeParser([DummyOperation::class]);
+
+        $this->assertEquals(1, $parser->evaluate([DummyOperation::name()], new Context()));
+    }
+
+    public function testParserRejectsUnknownOperationName()
     {
         $parser = $this->makeParser([DummyOperation::class]);
 
-        $this->assertEquals([DummyOperation::name() => DummyOperation::class], $parser->ops);
-        $this->assertEquals(1, $parser->evaluate(['test'], new Context()));
+        $this->expectException(InvalidOperation::class);
+
+        $parser->evaluate(['unregistered'], new Context());
     }
 
     public function testOperationIsEvaluated()
@@ -231,6 +242,19 @@ class ParserTest extends TestCase
         }
 
         return $expression;
+    }
+
+    public function testBuiltInOperationsAreSharedInstances()
+    {
+        $container = new Container([
+            'aliases' => WebApp::DEFAULT_ALIASES,
+        ]);
+
+        // Operations are stateless (all per-evaluation state lives in the Context),
+        // so the container shares a single instance of each across the request.
+        $this->assertSame($container->make(AndOp::class), $container->make(AndOp::class));
+        $this->assertSame($container->make(RunOp::class), $container->make(RunOp::class));
+        $this->assertSame($container->make(ValueOp::class), $container->make(ValueOp::class));
     }
 
     public function testBuiltInOpNamesAreUnique()

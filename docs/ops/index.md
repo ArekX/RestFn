@@ -1,7 +1,54 @@
-# Ops
+# Operations
 
-Operations are used during the requests to handle specific actions. You can pass multiple
-operations in one request.
+Operations are the building blocks of a request. A request is a tree of
+operations, and the server evaluates it to produce a result. You can combine as
+many operations as you need in one request.
+
+## How an operation looks
+
+An operation is a JSON array. The first element is the operation name, and the
+rest are its parameters:
+
+```json
+["get", "email", ["run", "getUser", 1]]
+```
+
+Parameters can be other operations, which is how operations nest. The tree above
+reads inside out: `run` calls an action, and `get` pulls a field out of its
+result.
+
+## Literals and expressions
+
+Many parameters accept either a literal value or an expression (another
+operation). The rule is simple: if a parameter is an array it is treated as an
+expression and evaluated, otherwise it is used as is.
+
+This means a plain string, number or boolean is taken literally, but to pass an
+array or object literally — without it being read as an operation — you wrap it in
+the [value](value.md) operation:
+
+```json
+["run", "createUser", ["value", {"email": "user@example.com"}]]
+```
+
+## Validation
+
+Before a request is evaluated it is validated. Validation walks the whole tree and
+checks that every operation has the parameters it expects. If something is wrong,
+the request is rejected with a nested error that points at the part of the tree
+that failed, so a malformed request never runs.
+
+## Allowed operations
+
+All built-in operations are available by default, so you can use the full
+language without registering anything. If you want to restrict what a client can
+use, set the `ops` config value to a map of operation name to class. That map
+becomes the allow list, and only those operations can be used.
+
+For worked examples that combine these operations to solve common tasks, see the
+[Cookbook](../cookbook.md).
+
+## Supported operations
 
 You can find all the supported operations below:
 
@@ -10,8 +57,8 @@ You can find all the supported operations below:
 |-------------------------|----------------|
 | [Value](value.md)       | `["value", <literal: any>]` <br><br>  Returns a `literal` value directly as a result. |
 | [Take](take.md)         | `["take", <number: int, expression(int)>, <result: expression(array)>]` <br><br> Takes a number of items from an resulting expression array and returns them. |
-| [And](and.md)           | `["and", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]` <br><br> Runs AND operation returing true if all `check` values are true. |
-| [Or](or.md)             | `["or", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]` <br><br> Runs OR operation returning first true value from `check`. |
+| [And](and.md)           | `["and", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]` <br><br> Runs AND operation returning true if all `check` values are true. |
+| [Or](or.md)             | `["or", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]` <br><br> Runs OR operation returning `true` on the first truthy `check`, or `false` if none. |
 | [Not](not.md)           | `["not", <check: expression(boolean)>]` <br><br> Runs NOT operation on result of `check`. |
 | [Get](get.md)           | `["get", <key: string, expression(string)>, <result: expression(array)> [, <default: expression(any)>]]` <br><br> Gets a value specified by `key` from a `result`. |
 | [Compare](compare.md)   | `["compare",  <valueA: expression(any)>, <operation: string, expression(string)>, <valueB: expression(any)>]` <br><br>  Compares results of `valueA` and `valueB` by using `operation` |

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace ArekX\RestFn\Parser\Ops;
 
 use ArekX\RestFn\Helper\Value;
+use ArekX\RestFn\DI\Contracts\SharedInstanceInterface;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\EvaluatorInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
@@ -33,10 +34,10 @@ use ArekX\RestFn\Parser\Contracts\OperationInterface;
  * Represents one get operation
  *
  */
-class GetOp implements OperationInterface
+class GetOp implements OperationInterface, SharedInstanceInterface
 {
     public function __construct(
-        public EvaluatorInterface $evaluator,
+        protected EvaluatorInterface $evaluator,
     ) {}
 
     /**

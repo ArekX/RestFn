@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,15 @@ class MergeOpTest extends OpTestCase
     public function testJoinArrays()
     {
         $this->assertEvaluated([
-            1, 2, 3, 4, 1, 2, 3, 4, 5
+            1,
+            2,
+            3,
+            4,
+            1,
+            2,
+            3,
+            4,
+            5
         ], DummyReturnOperation::op([1, 2, 3, 4]), DummyReturnOperation::op([1, 2, 3, 4, 5]));
     }
 

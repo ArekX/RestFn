@@ -1,5 +1,5 @@
 site_name: RestFn
-site_url: https://github.com/ArekX/RestFn
+site_url: https://restfn.readthedocs.io/
 site_author: Aleksandar Panic
 site_description: "Functional style Rest framework"
 repo_url: "https://github.com/ArekX/RestFn"
@@ -9,7 +9,34 @@ theme:
   name: null
   custom_dir: './docs/build/cinder'
 nav:
-  - Home:
-      - Readme:  index.md
-  - DI: di.md
-  - Ops: ops/index.md
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - Operations:
+    - Overview: ops/index.md
+    - And: ops/and.md
+    - Cast: ops/cast.md
+    - Coalesce: ops/coalesce.md
+    - Compare: ops/compare.md
+    - Get: ops/get.md
+    - If Else: ops/ifelse.md
+    - List: ops/list.md
+    - Map: ops/map.md
+    - Merge: ops/merge.md
+    - Not: ops/not.md
+    - Object: ops/object.md
+    - Or: ops/or.md
+    - Run: ops/run.md
+    - Sequence: ops/sequence.md
+    - Sort: ops/sort.md
+    - Take: ops/take.md
+    - Value: ops/value.md
+    - Var: ops/var.md
+  - Cookbook: cookbook.md
+  - Actions: actions.md
+  - Authentication: authentication.md
+  - Runner: runner.md
+  - Middleware: middleware.md
+  - Dependency Injection: di.md
+  - Configuration: configuration.md
+  - License: license.md

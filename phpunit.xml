@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.0/phpunit.xsd" cacheDirectory=".phpunit.cache">
   <testsuites>
+    <testsuite name="App">
+      <directory>tests/App</directory>
+    </testsuite>
     <testsuite name="DI">
       <directory>tests/DI</directory>
     </testsuite>
@@ -9,6 +12,12 @@
     </testsuite>
     <testsuite name="Helper">
       <directory>tests/Helper</directory>
+    </testsuite>
+    <testsuite name="Runner">
+      <directory>tests/Runner</directory>
+    </testsuite>
+    <testsuite name="Services">
+      <directory>tests/Services</directory>
     </testsuite>
   </testsuites>
   <source>

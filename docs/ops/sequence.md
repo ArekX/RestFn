@@ -47,3 +47,10 @@ Response:
 
 You would use this operation if you need to run multiple operations sequentially, and you can do it all in one
 request. These include when you need to create an user and link it to an entity, or create multiple items all at once.
+
+## Limit
+
+A single sequence may contain at most `limits.maxSequenceOperations` items (64 by
+default), which bounds how much one request can ask for. A sequence with more
+items than that is rejected during validation. See
+[Configuration](../configuration.md#limits-hardening) to change it.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Exceptions;
 
+use ArekX\RestFn\Contracts\ClientExceptionInterface;
+
 /**
  * Class MaxDepthExceededException
  * @package ArekX\RestFn\Parser\Exceptions
@@ -29,7 +31,7 @@ namespace ArekX\RestFn\Parser\Exceptions;
  * depth. Guards against stack exhaustion from deeply nested, client-supplied
  * expressions.
  */
-class MaxDepthExceededException extends \Exception
+class MaxDepthExceededException extends \Exception implements ClientExceptionInterface
 {
     public int $maxDepth;
 
@@ -38,5 +40,14 @@ class MaxDepthExceededException extends \Exception
         $this->maxDepth = $maxDepth;
 
         parent::__construct("Maximum expression depth of {$maxDepth} was exceeded.");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[\Override]
+    public function getClientDetails(): ?array
+    {
+        return null;
     }
 }

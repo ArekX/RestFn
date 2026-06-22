@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,24 @@ declare(strict_types=1);
 
 namespace ArekX\RestFn\Parser\Exceptions;
 
+use ArekX\RestFn\Contracts\ClientExceptionInterface;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 
-class InvalidEvaluation extends \Exception
+class InvalidEvaluation extends \Exception implements ClientExceptionInterface
 {
     public function __construct(OperationInterface $op, string $message)
     {
         $name = $op::name();
 
         parent::__construct("Could not evaluate {$name}: {$message}");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[\Override]
+    public function getClientDetails(): ?array
+    {
+        return null;
     }
 }

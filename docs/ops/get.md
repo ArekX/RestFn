@@ -28,7 +28,7 @@ You can also specify an expression to be evaluated as a key which must return a 
 can be walked through. This operation will walk through this array to get the requested value from `key`. If no
 value is found here, `NULL` will be returned or a value specified in optional `default` expression.
 
-* __&lt;default: expression(array)&gt;__ - [Optional value]. If you pass this to the request and nothing can be returned
+* __&lt;default: expression(any)&gt;__ - [Optional value]. If you pass this to the request and nothing can be returned
 from `result` expression, this value will be evaluated and it's result returned directly. If this expression is not
 specified, `NULL` will be returned.
 

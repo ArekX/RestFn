@@ -121,6 +121,10 @@ A `#[Config]` value is resolved through three layers, in order:
 2. **Global** — `config.global` at the dot-path.
 3. **The attribute's `default`.**
 
+In practice you put almost all configuration under `global` — every class reads
+from it, and most config keys are read by a single class anyway. Use `overrides`
+only when one specific class needs a different value than the global one.
+
 ```php
 $container = new Container([
     'config' => [

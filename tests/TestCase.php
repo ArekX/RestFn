@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 namespace tests;
 
 use ArekX\RestFn\DI\Container;
+use ArekX\RestFn\App\WebApp;
 use ArekX\RestFn\Parser\Parser;
 
 class TestCase extends \PHPUnit\Framework\TestCase
@@ -32,19 +33,36 @@ class TestCase extends \PHPUnit\Framework\TestCase
      * Builds a parser through a container so the evaluator and any Config-driven
      * values are injected the same way they are at runtime.
      *
-     * @param array $ops Operation classes to register.
+     * @param array $ops Operation classes to register. Keyed by name automatically.
      * @param array $parserConfig Additional per-class config for the parser (e.g. ['limits' => ['maxDepth' => 3]]).
      */
     protected function makeParser(array $ops = [], array $parserConfig = []): Parser
     {
         $container = new Container([
+            'aliases' => WebApp::DEFAULT_ALIASES,
             'config' => [
-                'overrides' => [
-                    Parser::class => ['ops' => $ops] + $parserConfig,
-                ],
+                'global' => ['ops' => $this->opsMap($ops)] + $parserConfig,
             ],
         ]);
 
         return $container->make(Parser::class);
+    }
+
+    /**
+     * Builds the name => class operation map the parser expects from a plain list
+     * of operation classes, keying each by its own name().
+     *
+     * @param array $classes
+     * @return array
+     */
+    protected function opsMap(array $classes): array
+    {
+        $map = [];
+
+        foreach ($classes as $class) {
+            $map[$class::name()] = $class;
+        }
+
+        return $map;
     }
 }

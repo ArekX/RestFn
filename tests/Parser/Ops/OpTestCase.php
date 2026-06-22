@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace tests\Parser\Ops;
 
 
 use ArekX\RestFn\DI\Container;
+use ArekX\RestFn\App\WebApp;
 use ArekX\RestFn\Parser\Context;
 use ArekX\RestFn\Parser\Contracts\OperationInterface;
 use ArekX\RestFn\Parser\Parser;
@@ -45,11 +46,9 @@ class OpTestCase extends TestCase
     protected function makeOp(array $opConfig = []): OperationInterface
     {
         $container = new Container([
+            'aliases' => WebApp::DEFAULT_ALIASES,
             'config' => [
-                'overrides' => [
-                    Parser::class => ['ops' => $this->standardOps()],
-                    $this->opClass => $opConfig,
-                ],
+                'global' => ['ops' => $this->opsMap($this->standardOps())] + $opConfig,
             ],
         ]);
 

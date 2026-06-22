@@ -2,7 +2,7 @@
 
 This op represents one OR operation.
 
-This operation returns true if one of the items in it is truthy. If one of the items is trutyh then this operation will
+This operation returns true if one of the items in it is truthy. If one of the items is truthy then this operation will
 stop further evaluations.
 
 Definition: `["or", <check1: expression(boolean)>, ...<checkN: expression(boolean)>]`

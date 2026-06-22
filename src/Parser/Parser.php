@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Copyright 2025 Aleksandar Panic
+ * Copyright 2026 Aleksandar Panic
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,29 +39,16 @@ use ArekX\RestFn\Parser\Exceptions\MaxDepthExceededException;
 class Parser implements EvaluatorInterface, SharedInstanceInterface
 {
     /**
-     * Operation handlers where each operation is mapped to a class.
-     *
-     * @var array
-     */
-    public array $ops = [];
-
-    /**
      * @param Container $container Container used to create operations.
-     * @param array $operations Operation classes to register, from the 'ops' config value.
+     * @param array $operations Map of operation name to operation class, from the 'ops' config value.
      * @param int $maxDepth Maximum allowed nesting depth, from the 'limits.maxDepth' config value.
      *                      Guards against stack exhaustion from deeply nested, client-supplied expressions.
      */
     public function __construct(
-        public Container $container,
-        #[Config('ops', default: [])] array $operations = [],
-        #[Config('limits.maxDepth', default: 64)] public int $maxDepth = 64,
-    ) {
-        foreach ($operations as $operation) {
-            $this->ops[$operation::name()] = $operation;
-        }
-
-        $this->container->alias(EvaluatorInterface::class, static::class);
-    }
+        protected Container $container,
+        #[Config('ops', default: [])] protected array $operations = [],
+        #[Config('limits.maxDepth', default: 64)] protected int $maxDepth = 64,
+    ) {}
 
     /**
      * Performs value validation.
@@ -130,11 +117,11 @@ class Parser implements EvaluatorInterface, SharedInstanceInterface
 
         $ruleName = $this->getRuleName($value);
 
-        if (empty($this->ops[$ruleName])) {
+        if (empty($this->operations[$ruleName])) {
             throw new InvalidOperation($ruleName);
         }
 
-        $operationClass = $this->ops[$ruleName];
+        $operationClass = $this->operations[$ruleName];
 
         return $this->container->make($operationClass);
     }

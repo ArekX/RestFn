@@ -8,10 +8,11 @@ the shaped result. You expose your own logic as *actions*, and the client compos
 those actions (and built-in operations like `get`, `map`, `sort`, `ifElse`,
 `sequence`) to fetch and reshape exactly the data it needs in a single request.
 
-RestFn provides the engine: an [operation language](ops/index.md) and a
-[dependency injection container](di.md). You wire it into your endpoint and decide
-how requests come in, how responses go out, and how authentication and
-authorization are enforced (typically inside your actions).
+RestFn gives you the engine: an [operation language](ops/index.md), a request
+[runner](runner.md), [authentication](authentication.md), and a [dependency
+injection container](di.md) that wires it all together. You provide the
+[actions](actions.md) — your own code — and decide which operations the client is
+allowed to use.
 
 ## Requirements
 
@@ -27,43 +28,39 @@ composer require arekx/restfn
 
 ## A first look
 
-```php
-use ArekX\RestFn\DI\Container;
-use ArekX\RestFn\Parser\Context;
-use ArekX\RestFn\Parser\Parser;
-use ArekX\RestFn\Parser\Ops\GetOp;
-use ArekX\RestFn\Parser\Ops\RunOp;
-use ArekX\RestFn\Parser\Ops\ValueOp;
+Your whole API is one PHP file:
 
-// Configure the container once: register the operations and any actions.
-$container = new Container([
+```php
+use ArekX\RestFn\App\WebApp;
+
+echo WebApp::createDefault([
     'config' => [
-        'overrides' => [
-            Parser::class => ['ops' => [
-                ValueOp::class,
-                GetOp::class,
-                RunOp::class,
-                // ...register the operations you want to allow
-            ]],
-            RunOp::class => ['actions' => [
-                'getUser' => \App\Actions\GetUserAction::class,
-            ]],
+        'global' => [
+            // Actions the run operation can call. All operations are available by default.
+            'actions' => ['getUser' => App\Actions\GetUserAction::class],
         ],
     ],
-]);
-
-$parser = $container->make(Parser::class);
-
-// Per request: validate the client program, then evaluate it.
-$program = ['get', 'email', ['run', 'getUser', 1]];
-$context = new Context();
-
-if (($errors = $parser->validate($program, $context)) !== null) {
-    // reject the request with $errors
-}
-
-$result = $parser->evaluate($program, $context); // the user's email
+])->run();
 ```
 
-See the [operation reference](ops/index.md) for the full language and the
-[dependency injection guide](di.md) for how wiring works.
+A client then sends an operation tree as the JSON body:
+
+```json
+["get", "email", ["run", "getUser", 1]]
+```
+
+`run` calls your `getUser` action with `1`, `get` pulls out the `email` field, and
+the response is the email. Read [Getting Started](getting-started.md) for the full
+walkthrough.
+
+## Documentation
+
+- [Getting Started](getting-started.md) — build your first endpoint.
+- [Architecture](architecture.md) — how the pieces fit together.
+- [Operations](ops/index.md) — the operation language.
+- [Cookbook](cookbook.md) — recipes that compose operations for common tasks.
+- [Actions](actions.md) — defining your own actions.
+- [Authentication](authentication.md) — protecting actions with tokens.
+- [Runner](runner.md) and [Middleware](middleware.md) — the request lifecycle.
+- [Dependency Injection](di.md) — how wiring works.
+- [Configuration](configuration.md) — every config value and its default.

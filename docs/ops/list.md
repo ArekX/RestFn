@@ -13,8 +13,8 @@ This action must be defined in the parser in order to be ran. If action does not
 
 * __&lt;data: expression(array)&gt;__ - Data to be sent for the request. The list request accepts following data for the
 request:
-    * properties - Array of strings noting which properties should be returned.
-    * filter - Optional. Key, value json object of filter to be applied.
+    * properties - Required. Array of strings noting which properties should be returned. The request fails if it is missing.
+    * filters - Optional. Key, value json object of filters to be applied.
     * pageSize - Optional. Integer of page size meaning how many items per page to be returned.
     * page - Optional. Zero based integer denoting which page of data to return. 
      
@@ -23,20 +23,23 @@ request:
 
 Request:
 
-This operation runs `user` requesting properties `"username", "email", "user_id"`
+This operation runs `users` requesting properties `"username", "email", "user_id"`
 
 ```json
-["list", "users", {
+["list", "users", ["value", {
    "properties": ["username", "email", "user_id"],
-   "filter": {"email":  "test"}
-}]
+   "filters": {"email":  "test"}
+}]]
 ```
+
+The data is wrapped in [value](value.md) because `list` evaluates it: a bare
+object would be read as an operation. See the [Cookbook](../cookbook.md) for more.
 
 
 Response:
 
-This is an example response of a `user` list action showing two users in one result.
-Total denotes total amount of results for this action and the passed filter.
+This is an example response of a `users` list action showing two users in one result.
+Total denotes total amount of results for this action and the passed filters.
 
 ```json
 {

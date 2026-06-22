@@ -15,7 +15,7 @@ and first non-null result is returned. Results after that are not evaluated.
 
 Request:
 ```json
-["coalesce", ["run", "getUser", 1], ["value", {"name"; "default user"}]]
+["coalesce", ["run", "getUser", 1], ["value", {"name": "default user"}]]
 ```
 
 
